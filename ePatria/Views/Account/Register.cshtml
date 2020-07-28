@@ -1,0 +1,118 @@
+﻿@model ePatria.Models.RegisterViewModel
+@{
+  ViewBag.Title = "Register";
+}
+
+<h2>@ViewBag.Title.</h2>
+
+@using (Html.BeginForm("Register", "Account", FormMethod.Post, new { @class = "form-horizontal", role = "form", id="regform" }))
+{
+  @Html.AntiForgeryToken()
+  <h4>Create a new account.</h4>
+  <hr />
+  <div class="error-container">
+    <ul></ul>
+  </div>
+  @Html.ValidationSummary("", new { @class = "text-danger" })
+  if (ViewBag.NameExist != null)
+    {
+        <ul class="validation-summary-errors text-danger"><li>@ViewBag.NameExist</li></ul>
+    }
+  <div class="form-group">
+    @Html.LabelFor(m => m.UserName, new { @class = "col-md-2 control-label" })
+    <div class="col-md-5">
+      @Html.TextBoxFor(m => m.UserName, new { @class = "form-control" })
+    </div>
+  </div>
+
+  <div class="form-group">
+    @Html.LabelFor(m => m.FirstName, new { @class = "col-md-2 control-label" })
+    <div class="col-md-5">
+      @Html.TextBoxFor(m => m.FirstName, new { @class = "form-control" })
+    </div>
+  </div>
+
+  <div class="form-group">
+    @Html.LabelFor(m => m.LastName, new { @class = "col-md-2 control-label" })
+    <div class="col-md-5">
+      @Html.TextBoxFor(m => m.LastName, new { @class = "form-control" })
+    </div>
+  </div>
+  <div class="form-group">
+    @Html.LabelFor(m => m.Email, new { @class = "col-md-2 control-label" })
+    <div class="col-md-5">
+      @Html.TextBoxFor(m => m.Email, new { @class = "form-control" })
+    </div>
+  </div>
+  <div class="form-group">
+    @Html.LabelFor(m => m.Password, new { @class = "col-md-2 control-label" })
+    <div class="col-md-5">
+      @Html.PasswordFor(m => m.Password, new { @class = "form-control" })
+    </div>
+  </div>
+  <div class="form-group">
+    @Html.LabelFor(m => m.ConfirmPassword, new { @class = "col-md-2 control-label" })
+    <div class="col-md-5">
+      @Html.PasswordFor(m => m.ConfirmPassword, new { @class = "form-control" })
+    </div>
+  </div>
+    <div class="form-group">
+        <label class="col-md-2 control-label">
+            Select User Role
+        </label>
+        <div class="col-md-5">
+            @foreach (var item in (SelectList)ViewBag.RoleId)
+            {
+                <input type="checkbox" name="SelectedRoles" value="@item.Value" class="checkbox-inline" />
+                @Html.Label(item.Value, new { @class = "control-label" })
+                <br />
+                <br />
+            }
+        </div>
+    </div>
+  <div class="form-group">
+    <div class="col-md-offset-1 col-md-5">
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+      <input type="submit" class="btn btn-default" value="Register" />
+    </div>
+  </div>
+}
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+    <script>
+        $("#regform").validate({
+            errorLabelContainer: $("ul", $('div.error-container')),
+            wrapper: 'li',
+            rules: {
+                UserName: "required",
+                FirstName: "required",
+                LastName: "required",
+                Email: "required",
+                Password: "required",
+                ConfirmPassword: "required",
+                SelectedRoles: "required"
+            },
+            messages: {
+                UserName: "Please enter Username",
+                FirstName: "Please enter First Name",
+                LastName: "Please enter Last Name",
+                Email: "Please enter Email",
+                Password: "Please enter Password",
+                ConfirmPassword: "Please enter Confirm Password",
+                SelectedRoles: "Please choice a Role"
+            }
+        });
+    </script>
+}
+
+<style>
+.form-horizontal .control-label{
+    text-align: left;
+    width: 150px;
+}
+.form-horizontal .btn btn-default{
+    text-align: left;
+}
+</style>

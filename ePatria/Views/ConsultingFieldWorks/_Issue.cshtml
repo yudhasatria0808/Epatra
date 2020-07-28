@@ -1,0 +1,303 @@
+﻿@model ePatria.Models.ConsultingRCMDetailRiskControl
+
+@{  
+    Layout = null;
+}
+@using Microsoft.AspNet.Identity;
+@{ var checkPerm = HelperController.getPermissionRoleByPerm("Consulting Control Issue", User.Identity.GetUserId()); }
+@{ var permission = HelperController.getPermission(User.Identity.GetUserId(), "Consulting Control Issue"); }
+@{ var empName = HelperController.getNameByUserName(User.Identity.Name);
+    var isSuperAdmin = HelperController.isSuperAdmin(User.Identity.GetUserId());
+}
+@{ if (@Model != null)
+{
+<div class="form-horizontal">
+    <div class="form-group">
+        @Html.Label("No Ref", htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-5">
+            @Html.TextBox("noref", (string)ViewBag.controlIssueNo, new { @class = "form-control", @readonly = true })
+        </div>
+    </div>
+    <div class="form-group">
+        @Html.Label("Status", htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-5">
+            @Html.TextBox("status_app", ViewBag.controlIssue != null ? (string)ViewBag.controlIssue.Status_App : "Draft", new { @class = "form-control", @readonly = true })
+        </div>
+    </div>
+    <div class="form-group">
+        @Html.Label("Title", htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-5">
+            @if (ViewBag.controlIssue == null || ViewBag.controlIssue.Status_App == "Draft")
+            {
+                @Html.TextBox("titl", ViewBag.controlIssue != null ? (string)ViewBag.controlIssue.Title : "", new { @class = "form-control" })
+            }else{
+                @Html.TextBox("titl", ViewBag.controlIssue != null ? (string)ViewBag.controlIssue.Title : "", new { @class = "form-control", @readonly = "true" })
+            }  
+        </div>
+    </div>
+    <div class="form-group">
+        @Html.Label("Fact", htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-9">
+            @if (ViewBag.controlIssue == null || ViewBag.controlIssue.Status_App == "Draft")
+            {
+                @Html.TextArea("fact", ViewBag.controlIssue != null ? (string)ViewBag.controlIssue.Fact : "", new { @class = "form-control" })
+            }else{
+                @Html.TextArea("fact", ViewBag.controlIssue != null ? (string)ViewBag.controlIssue.Fact : "", new { @class = "form-control", @readonly = "true" })
+            }
+            <script>
+                CKEDITOR.replace('fact');
+            </script>
+        </div>
+    </div>
+    <div class="form-group">
+        @Html.Label("Criteria", htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-9">
+            @if (ViewBag.controlIssue == null || ViewBag.controlIssue.Status_App == "Draft")
+            {
+                @Html.TextArea("cri", ViewBag.controlIssue != null ? (string)ViewBag.controlIssue.Criteria : "", new { @class = "form-control" })
+            }else{
+                @Html.TextArea("cri", ViewBag.controlIssue != null ? (string)ViewBag.controlIssue.Criteria : "", new { @class = "form-control", @readonly = "true" })
+            }
+            <script>
+                CKEDITOR.replace('cri');
+            </script>
+        </div>
+    </div>
+    <div class="form-group">
+        @Html.Label("Impact", htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-9">
+            @if (ViewBag.controlIssue == null || ViewBag.controlIssue.Status_App == "Draft")
+            {
+                @Html.TextArea("imp", ViewBag.controlIssue != null ? (string)ViewBag.controlIssue.Impact : "", new { @class = "form-control" })
+            }else{
+                @Html.TextArea("imp", ViewBag.controlIssue != null ? (string)ViewBag.controlIssue.Impact : "", new { @class = "form-control", @readonly = "true" })
+            }
+            <script>
+                CKEDITOR.replace('imp');
+            </script>
+        </div>
+    </div>
+    <div class="form-group">
+        @Html.Label("Impact Value", htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-9">
+            @if (ViewBag.controlIssue == null || ViewBag.controlIssue.Status_App == "Draft")
+            {
+                @Html.TextArea("impactval", ViewBag.controlIssue != null ? (string)ViewBag.controlIssue.ImpactValue : "", new { @class = "form-control" })
+            }else{
+                @Html.TextArea("impactval", ViewBag.controlIssue != null ? (string)ViewBag.controlIssue.ImpactValue : "", new { @class = "form-control", @readonly = "true" })
+            }
+            <script>
+                CKEDITOR.replace('impactval');
+            </script>
+        </div>
+    </div>
+    <div class="form-group">
+        @Html.Label("Cause", htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-9">
+            @if (ViewBag.controlIssue == null || ViewBag.controlIssue.Status_App == "Draft")
+            {
+                @Html.TextArea("coz", ViewBag.controlIssue != null ? (string)ViewBag.controlIssue.Cause : "", new { @class = "form-control" })
+            }else{
+                @Html.TextArea("coz", ViewBag.controlIssue != null ? (string)ViewBag.controlIssue.Cause : "", new { @class = "form-control", @readonly = "true" })
+            }
+            <script>
+                CKEDITOR.replace('coz');
+            </script>
+        </div>
+    </div>
+    <div class="form-group">
+        @Html.Label("Recommendation", htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-9">
+            @if (ViewBag.controlIssue == null || ViewBag.controlIssue.Status_App == "Draft")
+            {
+                @Html.TextArea("rec", ViewBag.controlIssue != null ? (string)ViewBag.controlIssue.Recommendation : "", new { @class = "form-control" })
+            }else{
+                @Html.TextArea("rec", ViewBag.controlIssue != null ? (string)ViewBag.controlIssue.Recommendation : "", new { @class = "form-control", @readonly = "true" })
+            }
+            <script>
+                CKEDITOR.replace('rec');
+            </script>
+        </div>
+    </div>
+    <div class="form-group">
+        @Html.Label("Management Response", htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-9">
+            @if (ViewBag.controlIssue == null || ViewBag.controlIssue.Status_App == "Draft")
+            {
+                @Html.TextArea("managres", ViewBag.controlIssue != null ? (string)ViewBag.controlIssue.ManagementResponse : "", new { @class = "form-control" })
+            }else{
+                @Html.TextArea("managres", ViewBag.controlIssue != null ? (string)ViewBag.controlIssue.ManagementResponse : "", new { @class = "form-control", @readonly = "true" })
+            }       
+            <script>
+                CKEDITOR.replace('managres');
+            </script>
+        </div>
+    </div>
+    <div class="form-group">
+        @Html.Label("Finding Type", htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-5">
+            @if (ViewBag.controlIssue == null || ViewBag.controlIssue.Status_App == "Draft")
+            {
+                @Html.DropDownList("findtype", new List<SelectListItem>
+                {
+                    new SelectListItem{ Text="-Please select-", Value = "" },
+                    new SelectListItem{ Text="Operational", Value = "Operational" },
+                    new SelectListItem{ Text="Financial", Value = "Financial" },
+                    new SelectListItem{ Text="Compliance", Value = "Compliance" }
+                }, htmlAttributes: new { @class = "form-control"})
+            }else{
+                @Html.DropDownList("findtype", new List<SelectListItem>
+                {
+                    new SelectListItem{ Text="-Please select-", Value = "" },
+                    new SelectListItem{ Text="Operational", Value = "Operational" },
+                    new SelectListItem{ Text="Financial", Value = "Financial" },
+                    new SelectListItem{ Text="Compliance", Value = "Compliance" }
+                }, htmlAttributes: new { @class = "form-control", @disabled = "true" })
+            }
+        </div>
+    </div>
+    <div class="form-group">
+        @Html.Label("Kepada", htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-5">
+            @if (ViewBag.controlIssue == null || ViewBag.controlIssue.Status_App == "Draft")
+            {
+                @Html.TextBox("PICID", ViewBag.controlIssue != null ? (string)ViewBag.controlIssue.PICID : "", new { @class = "form-control", @placeholder = "Auto Complete" })
+            }else{
+                @Html.TextBox("PICID", ViewBag.controlIssue != null ? (string)ViewBag.controlIssue.PICID : "", new { @class = "form-control", @placeholder = "Auto Complete", @readonly = "true" })
+            }
+        </div>
+    </div>
+    <div class="form-group">
+        @Html.Label("Status", htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-5">
+            @if (ViewBag.controlIssue != null)
+            {
+                <label class="control-label">@ViewBag.controlIssue.Status_App</label>
+            }
+        </div>
+    </div>
+    <div class="form-group">
+        @Html.Label("Keterangan", htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-5">
+            @if (ViewBag.controlIssue == null || ViewBag.controlIssue.Status_App == "Draft")
+            {
+                @Html.TextAreaFor(model => model.keterangan, new { @class = "form-control" })
+            }
+            else
+            {
+                @Html.TextAreaFor(model => model.keterangan, new { @class = "form-control", @readonly = "true" })
+            }
+        </div>
+    </div>
+</div>
+<div class="modal-footer">
+    <button type="button" data-dismiss="modal" class="btn btn-outline dark" onclick="javascript:RefreshPage();">Close</button>
+    @if (ViewBag.controlIssue != null) {
+        if (checkPerm.Contains("IsSubmit1"))
+        {
+            if (permission != null && permission.Any(q => q.IsSubmit1 == true) || isSuperAdmin)
+            {
+                if (ViewBag.controlIssue.Status_App == "Pending for Review by " + checkPerm.Split(':')[1].Split(';')[0])
+                {
+                    if (checkPerm.Contains("IsSubmit2"))
+                    {
+                        <button type="submit" id="submit" name="submit" class="btn btn-outline green" onclick="javascript:SaveIssue('Pending for Review by @checkPerm.Split(':')[2].Split(';')[0]');">Submit</button>
+                        @*<button type="button" class="btn green" onclick="javascript:SaveIssue('Draft');" >Send Back</button>*@
+                    }
+                    else if (checkPerm.Contains("IsApprove"))
+                    {
+                        <button type="submit" id="submit" name="submit" class="btn btn-outline green" onclick="javascript:SaveIssue('Pending for Approve by @checkPerm.Split(':')[3].Split(';')[0]');">Submit</button>
+                        @*<button type="button" class="btn green" onclick="javascript:SaveIssue('Draft');" >Send Back</button>*@
+                    }
+                }
+            }
+        }
+        if (checkPerm.Contains("IsSubmit2"))
+        {
+            if (permission != null && permission.Any(q => q.IsSubmit2 == true) || isSuperAdmin)
+            {
+                if (ViewBag.controlIssue.Status_App == "Pending for Review by " + checkPerm.Split(':')[2].Split(';')[0])
+                {
+                    if (checkPerm.Contains("IsApprove"))
+                    {
+                        <button type="submit" id="submit" name="submit" class="btn btn-outline green" onclick="javascript:SaveIssue('Pending for Approve by @checkPerm.Split(':')[3].Split(';')[0]');">Submit</button>
+                        if (checkPerm.Split(':')[1].Split(';')[0] != checkPerm.Split(':')[2].Split(';')[0]) {
+                            <button type="button" class="btn green" onclick="javascript:SaveIssue('Draft');" >Send Back</button>
+                            }
+                    }
+                }
+            }
+        }
+        if (checkPerm.Contains("IsApprove"))
+        {
+            if (permission != null && permission.Any(q => q.IsApprove == true) || isSuperAdmin)
+            {
+                if (ViewBag.controlIssue.Status_App == "Pending for Approve by " + checkPerm.Split(':')[3].Split(';')[0])
+                {
+                    <button type="button" class="btn green" onclick="javascript:SaveIssue('Approve');" >Approve</button>
+                    <button type="button" class="btn green" onclick="javascript:SaveIssue('Draft');" >Send Back</button>
+                }
+            }
+        }
+        if (permission != null && permission.Any(q => q.IsUpdate == true) || isSuperAdmin)
+        {
+            if (ViewBag.controlIssue.Status_App == "Draft")
+            {
+                if (checkPerm.Contains("IsSubmit1"))
+                {
+                    <button type="submit" id="submit" name="submit" class="btn btn-outline green" onclick="javascript:SaveIssue('Pending for Review by @checkPerm.Split(':')[1].Split(';')[0]');">Submit</button>
+                }
+                else if (checkPerm.Contains("IsSubmit2"))
+                {
+                    <button type="submit" id="submit" name="submit" class="btn btn-outline green" onclick="javascript:SaveIssue('Pending for Review by @checkPerm.Split(':')[2].Split(';')[0]');">Submit</button>
+                }
+                else if (checkPerm.Contains("IsApprove"))
+                {
+                    <button type="submit" id="submit" name="submit" class="btn btn-outline green" onclick="javascript:SaveIssue('Pending for Approve by @checkPerm.Split(':')[3].Split(';')[0]');">Submit</button>
+                }
+                <button type="button" class="btn green" onclick="javascript:SaveIssue('Draft');" >Update</button>
+            }
+        }
+    } else {
+        if (permission != null && permission.Any(q => q.IsCreate == true) || isSuperAdmin)
+        {
+            if (checkPerm.Contains("IsSubmit1"))
+            {
+                <button type="submit" id="submit" name="submit" class="btn btn-outline green" onclick="javascript:SaveIssue('Pending for Review by @checkPerm.Split(':')[1].Split(';')[0]');">Submit</button>
+            }
+            else if (checkPerm.Contains("IsSubmit2"))
+            {
+                <button type="submit" id="submit" name="submit" class="btn btn-outline green" onclick="javascript:SaveIssue('Pending for Review by @checkPerm.Split(':')[2].Split(';')[0]');">Submit</button>
+            }
+                else if (checkPerm.Contains("IsApprove"))
+            {
+                <button type="submit" id="submit" name="submit" class="btn btn-outline green" onclick="javascript:SaveIssue('Pending for Approve by @checkPerm.Split(':')[3].Split(';')[0]');">Submit</button>
+            }
+            <button type="button" class="btn green" onclick="javascript:SaveControlIssue($('#controllist option:selected').val(), $('#noref').val(), $('#titl').val(), 
+            CKEDITOR.instances.fact.getData(), CKEDITOR.instances.cri.getData(), CKEDITOR.instances.imp.getData(), CKEDITOR.instances.impactval.getData(), CKEDITOR.instances.coz.getData(), 
+            CKEDITOR.instances.rec.getData(), CKEDITOR.instances.managres.getData(), $('#findtype').val(), $('#PICID').val(), 'Create', 'Draft');">Save</button>
+        }
+    }
+</div>
+} else
+{
+    <label>Please select a Control first</label>
+}
+}
+<script>
+    $('#PICID').autocomplete({
+        source: '@Url.Action("PICAutocomplete")',
+        appendTo: $('#addDetailIssue'), change: function (event, ui) {
+            if (!ui.item) {
+                $(this).val("");
+            }
+        }
+    });
+    function RefreshPage() {
+        location.reload();
+    }
+</script>
+<style>
+    .cke_dialog {z-index: 1000000 !important;}
+    .cke_panel { z-index: 1000002 !important;}
+</style>

@@ -1,0 +1,172 @@
+﻿<style>
+    .padding5 {
+        padding: 5px;
+    }
+</style>
+
+<div class="modal-dialog modal-lg">
+    <div class="modal-content">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+            <h4 class="modal-title"><i class="fa fa-plus-circle"></i> <b>Add Annual Planning</b></h4>
+        </div>
+        <div class="modal-body">
+            <form id="form-new-annual-planning" role="form">
+                <table id="table-set-engagement">
+                    <tr class="padding5">
+                        <td class="padding5">
+                            Year
+                        </td>
+                        <td class="padding5">
+                            <input type="text" name="Year" class="form-control" value=""/>
+                        </td>
+                    </tr>
+                    <tr class="padding5">
+                        <td class="padding5">
+                            <select name="Activity" class="form-control">
+                                <option value="">Select...</option>
+                                <option value="Activity A">Activity A</option>
+                            </select>
+                        </td>
+                        <td class="padding5">
+                            <button type="button" class="btn btn-default">
+                                Select from Audit Universe
+                            </button>
+                        </td>
+                        <td class="padding5">
+                            <a href="#" id="set-engagement" class="btn btn-pertamina-green">
+                                Set Engagement
+                            </a>
+                        </td>
+                    </tr>
+                </table>
+                <div style="margin-bottom:30px;"></div>
+                <table id="table-new-annual-planning" class="default" style="background-color:#e0393e;" hidden>
+                    <tr>
+                        <td class="padding5">
+                            <select name="Activity" class="form-control">
+                                <option value="">Select...</option>
+                                <option value="Activity A">Activity A</option>
+                            </select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="padding5">
+                            Engagement Name
+                        </td>
+                        <td class="padding5">
+                            :
+                        </td>
+                        <td class="padding5">
+                            <input type="text" name="Engagement Name" class="form-control" value="" />
+                        </td>
+                        <td class="padding5">
+                            <button type="button" onclick="AddEngagementName(this)" class="btn btn-pertamina-green">
+                                <i class="fa fa-plus"></i> Add
+                            </button>
+                        </td>
+                    <tr class="padding5">
+                        <td class="padding5">
+                            Responsible Person
+                        </td>
+                        <td class="padding5">
+                            :
+                        </td>
+                        <td class="padding5">
+                            <select name="Responsible Person" class="form-control">
+                                <option value="">Select...</option>
+                            </select>
+                        </td>
+                    </tr>
+                    <tr class="padding5">
+                        <td class="padding5">
+                            Supervisor
+                        </td>
+                        <td class="padding5">
+                            :
+                        </td>
+                        <td class="padding5">
+                            <select name="Supervisor" class="form-control">
+                                <option value="">Select...</option>
+                            </select>
+                        </td>
+                    </tr>
+                    <tr class="padding5">
+                        <td class="padding5">
+                            Team Leader
+                        </td>
+                        <td class="padding5">
+                            :
+                        </td>
+                        <td class="padding5">
+                            <select name="Team Leader" class="form-control">
+                                <option value="">Select...</option>
+                            </select>
+                        </td>
+                    </tr>
+                    <tr class="padding5">
+                        <td class="padding5">
+                            Member
+                        </td>
+                        <td class="padding5">
+                            :
+                        </td>
+                        <td class="padding5">
+                            <select name="Member" class="form-control">
+                                <option value="">Select...</option>
+                            </select>
+                        </td>
+                        <td>
+                            <button type="button" onclick="AddMember(this)" class="btn btn-pertamina-green">
+                                <i class="fa fa-plus"></i> Add
+                            </button>
+                        </td>
+                    </tr>
+                    </tr>
+                </table>
+                <div class="modal-footer" style="margin-top:10px; margin-bottom:-10px;">
+                    <button type="button" class="btn btn-pertamina-red" data-dismiss="modal"><i class="fa fa-times-circle"></i> Cancel</button>
+                    <button type="submit" class="btn btn-pertamina-blue" data-dismiss="modal"><i class="fa fa-download"></i> Save</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    <!-- /.modal-content -->
+</div>
+<!-- /.modal-dialog -->
+
+<script>
+    $(document).ready(function () {
+        $("#set-engagement").click(function () {
+            $("#table-new-annual-planning").show();
+        });
+    });
+</script>
+<script>
+    function AddEngagementName() {
+        var table = document.getElementById("table-new-annual-planning");
+        var row = table.insertRow();
+        var cell1 = row.insertCell(0);
+        var cell2 = row.insertCell(1);
+        var cell3 = row.insertCell(2);
+        var cell4 = row.insertCell(3);
+        cell3.className = 'padding5';
+        cell3.innerHTML = '<input type="text" name="Engagement Name" class="form-control" value="" />';
+        cell4.innerHTML = '<button type="button" onclick="deleteRow(this)" class="btn btn-pertamina-red"><i class="fa fa-times-circle"></i> Cancel</button>';
+    }
+    function AddMember() {
+        var table = document.getElementById("table-new-annual-planning");
+        var row = table.insertRow();
+        var cell1 = row.insertCell(0);
+        var cell2 = row.insertCell(1);
+        var cell3 = row.insertCell(2);
+        var cell4 = row.insertCell(3);
+        cell3.className = 'padding5';
+        cell3.innerHTML = '</i><input type="text" name="Add Member" class="form-control" value="" />';
+        cell4.innerHTML = '<button type="button" onclick="deleteRow(this)" class="btn btn-pertamina-red"><i class="fa fa-times-circle" style="margin-left:10px;"></i> Cancel</button>';
+    }
+    function deleteRow(r) {
+        var i = r.parentNode.parentNode.rowIndex;
+        document.getElementById("table-new-annual-planning").deleteRow(i);
+    }
+</script>

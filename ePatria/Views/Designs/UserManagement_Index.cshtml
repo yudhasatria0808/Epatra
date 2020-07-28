@@ -1,0 +1,102 @@
+﻿@{
+    ViewBag.Title = "UserManagement_Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="row" style="margin-top:20px;">
+    <div class="col-md-12">
+        <!-- BEGIN EXAMPLE TABLE PORTLET-->
+        <div class="portlet box red-sunglo">
+            <div class="portlet-title">
+                <div class="caption">
+                    <i class="fa fa-users"></i> User Management
+                </div>
+            </div>
+            <div class="portlet-body">
+                <div class="table-toolbar">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="btn-group">
+
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="btn-group pull-right">
+                                <a href="#modal-user-management" data-toggle="modal" class="btn btn-pertamina-green">
+                                    Add New <i class="fa fa-plus"></i>
+                                </a>
+                                <button class="btn dropdown-toggle" data-toggle="dropdown">
+                                    Tools <i class="fa fa-angle-down"></i>
+                                </button>
+                                <ul class="dropdown-menu pull-right">
+                                    <li>
+                                        <a href="javascript:;">
+                                            Print
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="javascript:;">
+                                            Save as PDF
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="javascript:;">
+                                            Export to Excel
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <table class="table table-striped table-hover table-bordered" id="table-user-management">
+                    <thead>
+                        <tr>
+                            <th>
+                                Name
+                            </th>
+                            <th>
+                                No. PEK
+                            </th>
+                            <th>
+                                Username
+                            </th>
+                            <th>
+                                Password
+                            </th>
+                            <th>
+                                Role
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>
+                                <a href="@Url.Action("UserManagement_Details", "Designs")">Yayan Ruhian</a>
+                            </td>
+                            <td>
+                                1234567890
+                            </td>
+                            <td>
+                                yayan_ruhian
+                            </td>
+                            <td>
+                                098765
+                            </td>
+                            <td>
+                                User
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <!-- END EXAMPLE TABLE PORTLET-->
+    </div>
+</div>
+
+<!-- MODAL CREATE START -->
+<div class="modal fade" id="modal-user-management" tabindex="-1" role="basic" aria-hidden="true">
+    @Html.Partial("UserManagement_Create")
+</div>
+<!-- MODAL CREATE END -->

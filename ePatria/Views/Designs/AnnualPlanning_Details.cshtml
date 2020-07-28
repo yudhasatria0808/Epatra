@@ -1,0 +1,166 @@
+﻿@{
+    ViewBag.Title = "AnnualPlanning_Details";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<style>
+    .padding5 {
+        padding: 5px;
+    }
+</style>
+
+<div class="portlet box red-sunglo">
+    <div class="portlet-title">
+        <div class="caption">
+            <i class="fa fa-eye"></i> Annual Planning Details
+        </div>
+    </div>
+    <div class="portlet-body">
+        <div class="table-toolbar">
+            <table>
+                <tr>
+                    <td class="padding5">
+                        <b>Year</b>
+                    </td>
+                    <td class="padding5">
+                        :
+                    </td>
+                    <td class="padding5">
+                        2011
+                    </td>
+                </tr>
+                <tr>
+                    <td class="padding5">
+                        <b>Audit Universe</b>
+                    </td>
+                    <td class="padding5">
+                        :
+                    </td>
+                    <td class="padding5">
+                        Activity A
+                    </td>
+                </tr>
+                <tr>
+                    <td class="padding5">
+                        <b>Engagement Name</b>
+                    </td>
+                    <td class="padding5">
+                        :
+                    </td>
+                    <td class="padding5">
+                        Engagement A
+                    </td>
+                </tr>
+                <tr>
+                    <td class="padding5">
+                        <b>Period</b>
+                    </td>
+                    <td class="padding5">
+                        :
+                    </td>
+                    <td class="padding5">
+                        September 6, 2015 - October 21, 2015
+                    </td>
+                </tr>
+                <tr>
+                    <td class="padding5">
+                        <b>Status</b>
+                    </td>
+                    <td class="padding5">
+                        :
+                    </td>
+                    <td class="padding5">
+                        On Progress
+                    </td>
+                </tr>
+                <tr>
+                    <td class="padding5">
+                        <b>Responsible Person</b>
+                    </td>
+                    <td class="padding5">
+                        :
+                    </td>
+                    <td class="padding5">
+                        Yayan Ruhian
+                    </td>
+                </tr>
+                <tr>
+                    <td class="padding5">
+                        <b>Supervisor</b>
+                    </td>
+                    <td class="padding5">
+                        :
+                    </td>
+                    <td class="padding5">
+                        Chuck Norris
+                    </td>
+                </tr>
+                <tr>
+                    <td class="padding5">
+                        <b>Team Leader</b>
+                    </td>
+                    <td class="padding5">
+                        :
+                    </td>
+                    <td class="padding5">
+                        Arnold Swazanazegar
+                    </td>
+                </tr>
+                <tr>
+                    <td class="padding5">
+                        <b>Member</b>
+                    </td>
+                    <td class="padding5">
+                        :
+                    </td>
+                    <td class="padding5">
+                        Brian
+                    </td>
+                </tr>
+                <tr>
+                    <td class="padding5">
+                        <b></b>
+                    </td>
+                    <td class="padding5"></td>
+                    <td class="padding5">
+                        Derpina
+                    </td>
+                </tr>
+                <tr>
+                    <td class="padding5">
+                        <b></b>
+                    </td>
+                    <td class="padding5"></td>
+                    <td class="padding5">
+                        Greg
+                    </td>
+                </tr>
+            </table>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="btn-group"></div>
+                </div>
+                <div class="col-md-6">
+                    <div class="btn-group pull-right">
+                        <a href="#modal-edit" data-toggle="modal" class="btn btn-pertamina-black">
+                            <i class="fa fa-edit"> Edit</i>
+                        </a>
+                        <a href="@Url.Action("AnnualPlanning_Index", "Designs")" class="btn btn-default">
+                            <i class="fa fa-arrow-circle-left"> Back</i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+<!-- END EXAMPLE TABLE PORTLET-->
+				</div>
+			</div>
+<!-- MODAL EDIT START -->
+<div class="modal fade bs-modal-lg" id="modal-edit" tabindex="-1" role="basic" aria-hidden="true">
+    @Html.Partial("AnnualPlanning_Edit")
+    <!-- /.modal-dialog -->
+</div>
+<!-- MODAL EDIT END -->

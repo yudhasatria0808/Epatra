@@ -1,0 +1,29 @@
+﻿@model IEnumerable<ePatria.Models.ExitMeeting>
+
+@{
+    ViewBag.Title = "Index";
+    Layout = null;
+}
+
+@using Microsoft.AspNet.Identity;
+@{ var Perm = HelperController.getPermission(User.Identity.GetUserId(), "Exit Meeting"); }
+@foreach (var item in Model)
+{
+    <li>
+        <div class="col1">
+            <div class="cont">
+                <div class="cont-col1">
+                    <div class="label label-sm label-info">
+                        <i class="fa fa-user"></i>
+                    </div>
+                </div>
+                <div class="cont-col2">
+                    <div class="desc">
+                        <label><i>Exit Meeting</i> for <a href="@Url.Action("Edit", "ExitMeetings", new { id = item.ExitMeetingID })"> @Html.DisplayFor(modelItem => item.LetterOfCommand.NomorSP)</a>, Status : <i>@item.Status</i></label>
+                        [@Html.ActionLink("Preview", "../ExitMeetings/Preview", new { id = item.ExitMeetingID })]
+                    </div>
+                </div>
+            </div>
+        </div>
+    </li>
+}

@@ -1,0 +1,185 @@
+﻿@model ePatria.Models.Questioner
+
+@{
+    ViewBag.Title = "Edit";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Edit</h2>
+@using Microsoft.AspNet.Identity;
+@{ 
+    var checkPerm = HelperController.getPermissionRoleByPerm("Questioner", User.Identity.GetUserId());
+    var userPerm = HelperController.getPermission(User.Identity.GetUserId(), "Questioner");
+}
+@using (Html.BeginForm(null, null, FormMethod.Post, new {id="quesform"}))
+{
+    @Html.AntiForgeryToken()
+    
+    <div class="form-horizontal">
+        <h4>Questioner</h4>
+        <hr />
+        <div class="error-container">
+            <ul></ul>
+        </div>
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        @Html.HiddenFor(model => model.QuestionerID)
+        @Html.HiddenFor(model => model.Status)
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Name, "Question Name", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-5">
+                @Html.EditorFor(model => model.Name, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Type, "Question Type", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-5">
+                @*@Html.EditorFor(model => model.AssuranceType, new { htmlAttributes = new { @class = "form-control" } })*@
+                @Html.RadioButtonFor(model => model.Type, "TextBox") Text Box &nbsp;
+                @*<br />*@
+                @Html.RadioButtonFor(model => model.Type, "TextArea") Text Area &nbsp;
+                @*<br />*@
+                @Html.RadioButtonFor(model => model.Type, "Rating") Rating
+                @Html.ValidationMessageFor(model => model.Type, "", new { @class = "text-danger" })
+            </div>
+        </div>
+       @*@if (Model.Type == "Textbox") { 
+            <div class="form-group">
+                @Html.LabelFor(model => model.Value, "Siapakah Nama Anda", htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-5">
+                    @Html.Editor("Textbox", new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.Value, "", new { @class = "text-danger" })
+                </div>
+            </div>
+       }
+        @if (Model.Type == "Textarea") {
+            <div class="form-group">
+                @Html.LabelFor(model => model.Value, "Jelaskan Tentang Diri Anda", htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-5">
+                    @Html.TextArea("Textarea", new { @class = "form-control", @rows = "4" })
+                    @Html.ValidationMessageFor(model => model.Value, "", new { @class = "text-danger" })
+                </div>
+            </div>
+        }*@
+        @if (Model.Type == "Rating") {
+            <div class="form-group" id="rating">
+                @Html.LabelFor(model => model.Value, "Berapakah rating yang anda berikan", htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-1">
+                    @Html.DropDownList("Rating1", new List<SelectListItem>
+                         {  
+                            new SelectListItem{ Text="1", Value = "1" },
+                            new SelectListItem{ Text="2", Value = "2" },
+                            new SelectListItem{ Text="3", Value = "3" },
+                            new SelectListItem{ Text="4", Value = "4" }
+                         }, htmlAttributes: new { @class = "form-control"})
+                </div>
+                <div class="control-label col-md-1">
+                    To
+                </div>
+                <div class="col-md-1">
+                    @Html.DropDownList("Rating2", new List<SelectListItem>
+                         {
+                            new SelectListItem{ Text="1", Value = "1" },
+                            new SelectListItem{ Text="2", Value = "2" },
+                            new SelectListItem{ Text="3", Value = "3" },
+                            new SelectListItem{ Text="4", Value = "4" },
+                            new SelectListItem{ Text="5", Value = "5" },
+                            new SelectListItem{ Text="6", Value = "6" },
+                            new SelectListItem{ Text="7", Value = "7" },
+                            new SelectListItem{ Text="8", Value = "8" },
+                            new SelectListItem{ Text="9", Value = "9" },
+                            new SelectListItem{ Text="10", Value = "10" },
+                         }, htmlAttributes: new { @class = "form-control"})
+                </div>
+            </div>
+        }
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-5">
+                @*<input type="submit" value="Create" class="btn btn-default" />*@
+                @if (userPerm.Any(d => d.IsCreate))
+                {
+                    if (userPerm.Any(d => d.IsSubmit1))
+                    {
+                        if (checkPerm.Contains("IsSubmit2"))
+                        {
+                            <button class="btn btn-primary" name="submit" type="submit" id="submit" value="Submit For Review By @checkPerm.Split(':')[2].Split(';')[0]"> Submit</button>
+                        }
+                        else if (checkPerm.Contains("IsApprove"))
+                        {
+                            <button class="btn btn-primary" name="submit" type="submit" id="submit" value="Submit For Approve By @checkPerm.Split(':')[3].Split(';')[0]"> Submit</button>
+                        }
+                    }
+                    else
+                    {
+                        <button class="btn btn-primary" name="submit" type="submit" id="submit" value="Submit For Review By @checkPerm.Split(':')[1].Split(';')[0]"> Submit</button>
+                    }
+                }
+                else if (userPerm.Any(d => d.IsSubmit1))
+                {
+                    if (checkPerm.Contains("IsSubmit2"))
+                    {
+                        <button class="btn btn-primary" name="submit" type="submit" id="submit" value="Submit For Review By @checkPerm.Split(':')[2].Split(';')[0]"> Submit</button>
+                    }
+                    else if (checkPerm.Contains("IsApprove"))
+                    {
+                        <button class="btn btn-primary" name="submit" type="submit" id="submit" value="Submit For Approve By @checkPerm.Split(':')[3].Split(';')[0]"> Submit</button>
+                    }
+                }
+                else if (userPerm.Any(d => d.IsSubmit2))
+                {
+                    if (checkPerm.Contains("IsApprove"))
+                    {
+                        <button class="btn btn-primary" name="submit" type="submit" id="submit" value="Submit For Approve By @checkPerm.Split(':')[3].Split(';')[0]"> Submit</button>
+                    }
+                }
+
+                @*@if (checkPerm.Contains("IsSubmit1"))
+                {
+                    <input class="btn btn-primary" name="submit" type="submit" id="submit" value="Submit For Review By @checkPerm.Split(':')[1].Split(';')[0]" />
+                }
+                else if (checkPerm.Contains("IsSubmit2"))
+                {
+                    <input class="btn btn-primary" name="submit" type="submit" id="submit" value="Submit For Review By @checkPerm.Split(':')[2].Split(';')[0]" />
+                }
+                else if (checkPerm.Contains("IsApprove"))
+                {
+                    <input class="btn btn-primary" name="submit" type="submit" id="submit" value="Submit For Approve By @checkPerm.Split(':')[3].Split(';')[0]" />
+                }*@
+                <input class="btn btn-primary" name="submit" type="submit" id="submit" value="Save" />
+            </div>
+        </div>
+    </div>
+}
+
+<div>
+    @Html.ActionLink("Back to List", "Index")
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+    <script>
+        $("#quesform").validate({
+            errorLabelContainer: $("ul", $('div.error-container')),
+            wrapper: 'li',
+            rules: {
+                Name: "required",
+                Type: "required"
+            },
+            messages: {
+                Name: "Please enter Question Name",
+                Type: "Please enter Question Type"
+            }
+        });
+    </script>
+}
+<script>
+    $("input[name='Type']").on("change", function () {
+        if ($(this).val() == "Rating")
+            $("#rating").show();
+        else
+            $("#rating").hide();
+    });
+</script>

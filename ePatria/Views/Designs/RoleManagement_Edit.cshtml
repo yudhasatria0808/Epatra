@@ -1,0 +1,66 @@
+﻿<style>
+    .padding5 {
+        padding: 5px;
+    }
+</style>
+
+<div class="modal-dialog">
+    <div class="modal-content">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+            <h4 class="modal-title"><b><i class="fa fa-edit"></i> Edit Role Management</b></h4>
+        </div>
+        <div class="modal-body">
+            <form id="edit-role" role="form">
+                <table id="new-role-table">
+                    <tr class="padding5">
+                        <td class="padding5">
+                            Role Name
+                        </td>
+                        <td class="padding5">
+                            :
+                        </td>
+                        <td class="padding5">
+                            <input type="text" name="Role Name" value="PDQA" />
+                        </td>
+                    </tr>
+                    <tr class="padding5">
+                        <td class="padding5">
+                            Permission
+                        </td>
+                        <td class="padding5">
+                            :
+                        </td>
+                        <td class="padding5">
+                            <select name="Employee Type">
+                                <option value="">Select...</option>
+                                <option value="User Management">User Management</option>
+                                <option value="Role Management">Role Management</option>
+                            </select>
+                        </td>
+                    </tr>
+                    <tr class="padding5">
+                        <td class="padding5">
+                            Permission
+                        </td>
+                        <td class="padding5">
+                            :
+                        </td>
+                        <td class="padding5">
+                            <select name="Employee Type">
+                                <option value="">Select...</option>
+                                <option value="Read Only">Read Only</option>
+                                <option value="Read and Write">Read and Write</option>
+                            </select>
+                        </td>
+                    </tr>
+                </table>
+                <div class="modal-footer" style="margin-top:10px; margin-bottom:-10px;">
+                    <button type="button" class="btn btn-pertamina-red" data-dismiss="modal"><i class="fa fa-times-circle"></i> Close</button>
+                    <button type="submit" class="btn btn-pertamina-blue" data-dismiss="modal"><i class="fa fa-download"></i> Save</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    <!-- /.modal-content -->
+</div>

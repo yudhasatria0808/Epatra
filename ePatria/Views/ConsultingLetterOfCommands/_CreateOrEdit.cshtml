@@ -1,0 +1,286 @@
+@model ePatria.Models.ConsultingLetterOfCommand
+
+@* This partial view defines form fields that will appear when creating and editing entities *@
+
+<div class="form-group">
+    @Html.LabelFor(model => model.ConsultingRequestID, "Consulting Request", htmlAttributes: new { @class = "control-label col-md-2" })
+    <div class="col-md-5">
+        @Html.TextBox("ConsultingRequest", null, new { @class = "form-control", placeholder = "Auto Complete", @onchange = "javascript: GetActiv(this.value);" })
+        @Html.ValidationMessageFor(model => model.ConsultingRequestID, "", new { @class = "text-danger" })
+    </div>
+</div>
+
+<div class="form-group">
+    @Html.Label("Activity", htmlAttributes: new { @class = "control-label col-md-2" })
+    <div class="col-md-5">
+        @Html.TextBox("ActivityName", null, new { @class = "form-control", @readonly = true })
+        @Html.ValidationMessage("", new { @class = "text-danger" })
+    </div>
+</div>
+
+
+<div class="form-group">
+    @Html.LabelFor(model => model.EngagementName, "Engagement Name", htmlAttributes: new { @class = "control-label col-md-2" })
+    <div class="col-md-5">
+        @Html.EditorFor(model => model.EngagementName, new { htmlAttributes = new { @class = "form-control" } })
+        @Html.ValidationMessageFor(model => model.EngagementName, "", new { @class = "text-danger" })
+    </div>
+</div>
+
+<div class="form-group input-group-sm">
+    @Html.LabelFor(model => model.StartDate, "Periode", htmlAttributes: new { @class = "control-label col-md-2" })
+    <div class="col-md-2">
+        @Html.TextBoxFor(model => model.StartDate, "{0:dd/MM/yyyy}", new { @class = "form-control datepicker", @readonly = true })
+        @Html.ValidationMessageFor(model => model.StartDate, "", new { @class = "text-danger" })
+    </div>
+    <div class="col-md-2">
+        @Html.TextBoxFor(model => model.EndDate, "{0:dd/MM/yyyy}", new { @class = "form-control datepicker", @readonly = true })
+        @Html.ValidationMessageFor(model => model.EndDate, "", new { @class = "text-danger" })
+    </div>
+</div>
+
+<div class="form-group">
+    @Html.LabelFor(model => model.PicID,"Responsible Person", htmlAttributes: new { @class = "control-label col-md-2" })
+    <div class="col-md-5">
+        @Html.EditorFor(model => model.PicID, new { htmlAttributes = new { @class = "form-control", placeholder = "Auto Complete" } })
+        @Html.ValidationMessageFor(model => model.PicID, "", new { @class = "text-danger" })
+    </div>
+</div>
+
+<div class="form-group">
+    @Html.LabelFor(model => model.SupervisorID,"Supervisor", htmlAttributes: new { @class = "control-label col-md-2" })
+    <div class="col-md-5">
+        @Html.EditorFor(model => model.SupervisorID, new { htmlAttributes = new { @class = "form-control",placeholder = "Auto Complete" } })
+        @Html.ValidationMessageFor(model => model.SupervisorID, "", new { @class = "text-danger" })
+    </div>
+</div>
+
+<div class="form-group">
+    @Html.LabelFor(model => model.TeamLeaderID,"Team Leader", htmlAttributes: new { @class = "control-label col-md-2" })
+    <div class="col-md-5">
+        @Html.EditorFor(model => model.TeamLeaderID, new { htmlAttributes = new { @class = "form-control", placeholder = "Auto Complete" } })
+        @Html.ValidationMessageFor(model => model.TeamLeaderID, "", new { @class = "text-danger" })
+    </div>
+</div>
+
+<div id="MembersGroup">
+    <div class="form-group" id="memberdiv1">
+        @Html.Label("Member 1", htmlAttributes: new { @class = "control-label col-md-2", @id = "questionlabel#1" })
+        <a href="#" class="btn btn-sm green" id='addButton'><i class="fa fa-plus"></i></a>
+        <a href="#" class="btn btn-sm red" id='removeButton'><i class="fa fa-times"></i></a>
+        <div class="col-md-5">
+            @Html.TextBox("member-1", null, new { @class = "form-control member", placeholder = "Auto Complete" })
+        </div>
+    </div>
+</div>
+
+<div id="DasarGroup">
+    <div class="form-group" id="dasardiv1">
+        @Html.Label("Dasar 1", htmlAttributes: new { @class = "control-label col-md-2", @id = "questionlabel#1" })
+        <a href="#" class="btn btn-sm green" id='addButtondasar'><i class="fa fa-plus"></i></a>
+        <a href="#" class="btn btn-sm red" id='removeButtondasar'><i class="fa fa-times"></i></a>
+        <div class="col-md-5">
+            @Html.TextBox("dasar-1", null, new { @class = "form-control" })
+        </div>
+    </div>
+</div>
+        
+
+
+<div class="form-group">
+    @Html.LabelFor(model => model.Menimbang, htmlAttributes: new { @class = "control-label col-md-2" })
+    <div class="col-md-5">
+        @*@Html.EditorFor(model => model.Menimbang, new { htmlAttributes = new { @class = "form-control" } })*@
+        @Html.TextArea("Menimbang", new { @class = "form-control", @rows = "4" })
+        @Html.ValidationMessageFor(model => model.Menimbang, "", new { @class = "text-danger" })
+    </div>
+</div>
+
+<div id="UntukGroup">
+    <div class="form-group" id="untukdiv1">
+        @Html.Label("Untuk 1", htmlAttributes: new { @class = "control-label col-md-2", @id = "questionlabel#1" })
+        <a href="#" class="btn btn-sm green" id='addButtonuntuk'><i class="fa fa-plus"></i></a>
+        <a href="#" class="btn btn-sm red" id='removeButtonuntuk'><i class="fa fa-times"></i></a>
+        <div class="col-md-5">
+            @Html.TextBox("untuk-1", null, new { @class = "form-control" })
+        </div>
+    </div>
+</div>
+
+<div class="form-group">
+    @Html.LabelFor(model => model.Penutup, htmlAttributes: new { @class = "control-label col-md-2" })
+    <div class="col-md-5">
+        @*@Html.EditorFor(model => model.Penutup, new { htmlAttributes = new { @class = "form-control" } })*@
+        @Html.TextArea("Penutup", new { @class = "form-control", @rows = "4" })
+        @Html.ValidationMessageFor(model => model.Penutup, "", new { @class = "text-danger" })
+    </div>
+</div>
+
+<div id="TembusanGroup">
+    <div class="form-group" id="tembusandiv1">
+        @Html.Label("Tembusan 1", htmlAttributes: new { @class = "control-label col-md-2", @id = "questionlabel#1" })
+        <a href="#" class="btn btn-sm green" id='addButtontembusan'><i class="fa fa-plus"></i></a>
+        <a href="#" class="btn btn-sm red" id='removeButtontembusan'><i class="fa fa-times"></i></a>
+        <div class="col-md-5">
+            @Html.TextBox("tembusan-1", null, new { @class = "form-control" })
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    $(function () {
+        $('#ConsultingRequest').autocomplete({
+            source: '@Url.Action("Autocomplete")'
+        });
+        $('#PicID').autocomplete({
+            source: '@Url.Action("AutocompleteMem")'
+        });
+        $('#SupervisorID').autocomplete({
+            source: '@Url.Action("AutocompleteMem")'
+        });
+        $('#TeamLeaderID').autocomplete({
+            source: '@Url.Action("AutocompleteMem")'
+        });
+        $('.member').autocomplete({
+            source: '@Url.Action("AutocompleteMem")'
+        });
+    });
+
+    function GetActiv(_noreq) {
+        var url = "/ConsultingLetterOfCommands/GetActiv/";
+
+        $.ajax({
+            url: url,
+            data: { noreq: _noreq },
+            cache: false,
+            type: "POST",
+            success: function (data) {
+
+                $('#ActivityName').val(data)
+            },
+            error: function (reponse) {
+                alert("error : " + reponse);
+            }
+        });
+    }
+
+    var counter = 2;
+    $(document).ready(function () {
+        $("#addButton").click(function () {
+            if (counter > 10) {
+                alert("Maksimal 10 Member");
+                return false;
+            }
+            var newTextBoxDiv = $(document.createElement('div'))
+                 .attr("id", 'memberdiv' + counter).addClass("form-group");
+            var html = '<label class = "control-label col-md-2">Member ' + counter + '</label>' +
+                '<div class="col-md-5"><input name="member-' + counter + '" id="member-' + counter +
+                '" value="" class="form-control member" type="text" placeholder = "Auto Complete" >';
+
+
+            newTextBoxDiv.after().html(html);
+            newTextBoxDiv.appendTo("#MembersGroup");
+            counter++;
+            $('.member').autocomplete({
+                source: '@Url.Action("AutocompleteMem")'
+            });
+        });
+        $("#removeButton").click(function () {
+            if (counter == 1) {
+                alert("No more Member to remove");
+                return false;
+            }
+            counter--;
+            $("#memberdiv" + counter).remove();
+        });
+    });
+
+
+    var counters = 2;
+    $(document).ready(function () {
+        $("#addButtondasar").click(function () {
+            if (counters > 10) {
+                alert("Maksimal 10 Dasar");
+                return false;
+            }
+            var newTextBoxDiv = $(document.createElement('div'))
+                 .attr("id", 'dasardiv' + counters).addClass("form-group");
+            var html = '<label class = "control-label col-md-2">Dasar ' + counters + '</label>' +
+                '<div class="col-md-5"><input name="dasar-' + counters + '" id="dasar-' + counters +
+                '" value="" class="form-control" type="text" >';
+
+
+            newTextBoxDiv.after().html(html);
+            newTextBoxDiv.appendTo("#DasarGroup");
+            counters++;
+            
+        });
+        $("#removeButtondasar").click(function () {
+            if (counters == 1) {
+                alert("No more Dasar to remove");
+                return false;
+            }
+            counters--;
+            $("#dasardiv" + counters).remove();
+        });
+    });
+
+    var counteruntuk = 2;
+    $(document).ready(function () {
+        $("#addButtonuntuk").click(function () {
+            if (counteruntuk > 10) {
+                alert("Maksimal 10 Untuk");
+                return false;
+            }
+            var newTextBoxDiv = $(document.createElement('div'))
+                 .attr("id", 'untukdiv' + counteruntuk).addClass("form-group");
+            var html = '<label class = "control-label col-md-2">Untuk ' + counteruntuk + '</label>' +
+                '<div class="col-md-5"><input name="untuk-' + counteruntuk + '" id="untuk-' + counteruntuk +
+                '" value="" class="form-control" type="text" >';
+
+
+            newTextBoxDiv.after().html(html);
+            newTextBoxDiv.appendTo("#UntukGroup");
+            counteruntuk++;
+
+        });
+        $("#removeButtonuntuk").click(function () {
+            if (counteruntuk == 1) {
+                alert("No more Untuk to remove");
+                return false;
+            }
+            counteruntuk--;
+            $("#untukdiv" + counteruntuk).remove();
+        });
+    });
+
+    var countertembusan = 2;
+    $(document).ready(function () {
+        $("#addButtontembusan").click(function () {
+            if (countertembusan > 10) {
+                alert("Maksimal 10 Tembusan");
+                return false;
+            }
+            var newTextBoxDiv = $(document.createElement('div'))
+                 .attr("id", 'tembusandiv' + countertembusan).addClass("form-group");
+            var html = '<label class = "control-label col-md-2">Tembusan ' + countertembusan + '</label>' +
+                '<div class="col-md-5"><input name="tembusan-' + countertembusan + '" id="tembusan-' + countertembusan +
+                '" value="" class="form-control" type="text" >';
+
+
+            newTextBoxDiv.after().html(html);
+            newTextBoxDiv.appendTo("#TembusanGroup");
+            countertembusan++;
+
+        });
+        $("#removeButtontembusan").click(function () {
+            if (countertembusan == 1) {
+                alert("No more Tembusan to remove");
+                return false;
+            }
+            countertembusan--;
+            $("#tembusandiv" + countertembusan).remove();
+        });
+    });
+
+</script>

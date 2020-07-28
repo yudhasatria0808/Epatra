@@ -1,0 +1,137 @@
+﻿@model IEnumerable<ePatria.Models.ApplicationUser>
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Index</h2>
+<div class="row" style="margin-top:20px;">
+    <div class="col-md-12">
+        <!-- BEGIN EXAMPLE TABLE PORTLET-->
+        <div class="portlet box red-sunglo">
+            <div class="portlet-title">
+                <div class="caption">
+                    <i class="fa fa-users"></i> User Management
+                </div>
+            </div>
+            <div class="portlet-body">
+                <div class="table-toolbar">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="btn-group">
+
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="btn-group pull-right">
+                                <a href="@Url.Action("Register", "Account")" class="btn green">
+                                    Add New <i class="fa fa-plus"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <table class="table table-striped table-hover table-bordered" id="table-user-management">
+                    <thead>
+                        <tr>
+                            <th>
+                                Name
+                            </th>
+                            <th>
+                                Username
+                            </th>
+                            <th>
+                                Status
+                            </th>
+                            <th>
+                                Email
+                            </th>
+                            <th style="text-align:center">
+                                Action
+                            </th>
+                        </tr>
+                    </thead>
+
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>
+                                @item.FirstName&nbsp;@item.LastName 
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.UserName)
+                            </td>
+                            <td>
+                                @item.getEmployeeStatus(item.UserName)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Email)
+                            </td>
+                            <td style="text-align:center">
+                                @Html.ActionLink("Edit", "Edit", new { id = item.Id }) |
+                                @Html.ActionLink("Details", "Details", new { id = item.Id }) |
+                                @Html.ActionLink("Delete", "Delete", new { id = item.Id })
+                            </td>
+                        </tr>
+                    }
+
+                    @*<tbody>
+                        <tr>
+                            <td>
+                                <a href="@Url.Action("UserManagement_Details", "Designs")">Yayan Ruhian</a>
+                            </td>
+                            <td>
+                                1234567890
+                            </td>
+                            <td>
+                                yayan_ruhian
+                            </td>
+                            <td>
+                                User
+                            </td>
+                        </tr>
+                    </tbody>*@
+                </table>
+            </div>
+        </div>
+        <!-- END EXAMPLE TABLE PORTLET-->
+    </div>
+</div>
+
+<!-- MODAL CREATE START -->
+@*<div class="modal fade" id="modal-user-management" tabindex="-1" role="basic" aria-hidden="true">
+        @Html.Partial("UserManagement_Create")
+    </div>*@
+<!-- MODAL CREATE END -->
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+    @if (ViewBag.message != null)
+    {
+    <script>
+        $(document).ready(function () {
+            toastr.success("@ViewBag.message", "Success");
+        });
+    </script>
+    }
+}
+
+<script>
+    $(document).ready(function () {
+        $('#table-user-management').DataTable({
+            dom: 'T<"clear">lfrtip',
+            tableTools: {
+                "sSwfPath": "/Content/assets/global/plugins/datatables/extensions/TableTools/swf/copy_csv_xls_pdf.swf",
+                "aButtons": [
+                {
+                    "sExtends": "xls",
+                    "mColumns": [0, 1, 2, 3],
+                    "sPdfOrientation": "landscape",
+                    "sPdfMessage": "User Management",
+                    "sButtonText": "Export to excel",
+                    "sFileName": "UserManagement.xls"
+                },
+                ]
+            }
+        });
+    });
+</script>

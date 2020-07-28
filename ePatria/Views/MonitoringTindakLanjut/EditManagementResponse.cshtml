@@ -1,0 +1,90 @@
+﻿@model ePatria.Models.RCMDetailRiskControlIssue
+
+@{  
+    Layout = null;
+}
+
+
+<div class="form-horizontal">
+    @Html.Hidden("RCMDetailRiskControlIssueID")
+    <div class="form-group">
+        @Html.Label("Management Response", htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-5">
+            @Html.TextArea("ManagementResponse", null, new { @class = "form-control" })
+        </div>
+    </div>
+    <div class="form-group">
+        @Html.Label("Status", htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-5">
+            @Html.DropDownList("status", new List<SelectListItem>
+                 {
+                    new SelectListItem{ Text="-Please select-", Value = "0" },
+                    new SelectListItem{ Text="Agree", Value = "Agree" },
+                    new SelectListItem{ Text="Done", Value = "Done" },
+                    new SelectListItem{ Text="Disagree", Value = "Disagree" },
+                    new SelectListItem{ Text="Irrelevant", Value = "Irrelevant" }
+                 }, htmlAttributes: new { @class = "form-control"})
+        </div>
+    </div>
+    <div class="form-group">
+        @Html.Label("Due Date", htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-5">
+            @Html.TextBox("Due_Date", null, new { @class = "form-control datepicker", @readonly = true })
+        </div>
+    </div>
+    <div class="form-group">
+        @Html.Label("PIC", htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-5">
+            @Html.TextBox("picName", null, new { @class = "form-control", @placeholder = "Auto Complete"})
+        </div>
+    </div>
+</div>
+
+<script>
+    $(function () {
+        $(".datepicker").datepicker({
+            dateFormat: 'dd/mm/yy',
+            changeYear: true,
+            changeMonth: true,
+            showAnim: 'slideDown'
+        });
+        $.validator.addMethod("date",
+            function (value, element) {
+                return this.optional(element) !== null;
+                // || parseDate(value, "dd/mm/yy") !== null;
+            });
+    });
+    $('#picName').autocomplete({
+        source: '@Url.Action("PICAutocomplete")',
+        appendTo: $('#editResponse'), change: function (event, ui) {
+            if (!ui.item) {
+                $(this).val("");
+            }
+        }
+    });
+    function UpdateManagementResponse(_issueID, _managementResponse, _issueStatus, _dueDate, _picName) {
+        $.ajax({
+            url: "../UpdateManagementResponse/",
+            data: {
+                issueID: _issueID,
+                managementResponse: _managementResponse,
+                issueStatus: _issueStatus,
+                dueDate: _dueDate,
+                picName: _picName,
+            },
+            cache: false,
+            type: "POST",
+            success: function (data) {
+                $('#table-editissue').load("@ViewBag.Issues #table-editissue");
+                $('#editResponse').modal('hide');
+            },
+            error: function (reponse) {
+                alert("error : " + reponse);
+            }
+        });
+    };
+</script>
+
+<style>
+    .ui-datepicker {z-index:100000 !important;}
+</style>

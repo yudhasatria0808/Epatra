@@ -1,0 +1,119 @@
+﻿@model ePatria.Models.Employee
+
+@{
+    ViewBag.Title = "Details";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Details</h2>
+
+<div>
+    <h4>Employee</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            Employee Type
+        </dt>
+
+        <dd>
+            <b>:</b>&nbsp;&nbsp;&nbsp;@Html.DisplayFor(model => model.Type)
+        </dd>
+
+        <dt>
+            Employee Name
+        </dt>
+
+        <dd>
+            <b>:</b>&nbsp;&nbsp;&nbsp;@Html.DisplayFor(model => model.Name)
+        </dd>
+
+        <dt>
+            No. PEK
+        </dt>
+
+        <dd>
+            <b>:</b>&nbsp;&nbsp;&nbsp;@Html.DisplayFor(model => model.NoPEK)
+        </dd>
+
+        <dt>
+            Email
+        </dt>
+
+        <dd>
+            <b>:</b>&nbsp;&nbsp;&nbsp;@Html.DisplayFor(model => model.Email)
+        </dd>
+
+        <dt>
+            Telephone
+        </dt>
+
+        <dd>
+            <b>:</b>&nbsp;&nbsp;&nbsp;@Html.DisplayFor(model => model.PhoneNumber)
+        </dd>
+
+        <dt>
+            Status
+        </dt>
+
+        <dd>
+            <b>:</b>&nbsp;&nbsp;&nbsp;@Html.DisplayFor(model => model.Status)
+        </dd>
+
+        <dt>
+            Organization 
+        </dt>
+
+        <dd>
+            <b>:</b>&nbsp;&nbsp;&nbsp;@Html.DisplayFor(model => model.Organizations.Name)
+        </dd>
+
+        <dt>
+            Position 
+        </dt>
+
+        <dd>
+            <b>:</b>&nbsp;&nbsp;&nbsp;@Html.DisplayFor(model => model.Positions.PositionName)
+        </dd>
+
+        @*<dt>
+            @Html.DisplayName("File")
+        </dt>
+
+        <dd>
+            @if (ViewBag.paths != null)
+            {
+                @*if (ViewBag.Extension1 == "image")
+                {
+                    <img src="@ViewBag.subPath1" alt="image" width="20%" height="20%"/>
+                    @Html.ActionLink("View Full Size", "../"+(string)ViewBag.subPath1, null, new { target="_blank" })
+                } else 
+                {
+                   @Html.LabelFor(model => model.EmployeeID, (string)ViewBag.newFName1) <br />
+                   @Html.ActionLink("Download File", "../"+(string)ViewBag.subPath1, null, new { target="_blank" })
+                }*@
+                @*foreach (var path in ViewBag.paths)
+                {
+                    <div>
+                    @Html.ActionLink("Download", "../"+(string)path, null, new { target="_blank", @class="btn btn-xs green" })
+                    @Html.LabelFor(model => model.EmployeeID, (string)path.Split('/')[3])
+                    </div>
+                    
+                }
+            }
+        </dd>*@
+    </dl>
+</div>
+<p>
+    @Html.ActionLink("Back to List", "Index")
+</p>
+
+<style>
+.dl-horizontal dt{
+    text-align: left;
+    width: 130px;
+}
+
+.dl-horizontal dd{
+    margin-left: 0;
+}
+</style>

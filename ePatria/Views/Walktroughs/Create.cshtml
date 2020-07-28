@@ -1,0 +1,65 @@
+﻿@model ePatria.Models.Walktrough
+
+@{
+    ViewBag.Title = "Create";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+@Scripts.Render("~/bundles/jqueryval")
+
+    
+    <div class="portlet-body">
+        <ul class="nav nav-tabs" id="wtab">
+            <li class="active">
+                <a href="#tab_BPM" data-toggle="tab"> BPM(Business Process Model) </a>
+            </li>
+            <li>
+                <a href="#tab_RCM" data-toggle="tab"> RCM(Risk Control Matrix) </a>
+            </li>
+        </ul>
+    </div>
+    <div class="tab-content">
+
+        <div class="tab-pane fade active in" id="tab_BPM">
+            @*@Html.Partial("_CreateBPM", Model)*@
+            @Html.Partial("_CreateBPM", Model)
+
+        </div>
+
+        <div class="tab-pane fade" id="tab_RCM">
+            @Html.Partial("_CreateRCM", Model)
+        </div>
+    </div>
+<script>
+    $(function () {
+        $('a[data-toggle="tab"]').on('shown.bs.tab', function () {
+            localStorage.setItem('lastTab', $(this).attr('href'));
+        });
+
+        var lastTab = localStorage.getItem('lastTab');
+        if (lastTab) {
+            $('a[href=' + lastTab + ']').tab('show');
+        }
+        else {
+            $('a[data-toggle="tab"]:first').tab('show');
+        }
+    });
+    $(function () {
+        $("#submit").click(function () {
+            if (confirm("Are You Sure Want To Submit?")) {
+                $('#submit').submit();
+            } else {
+                event.preventDefault();
+            }
+        });
+    });
+</script>
+@if (ViewBag.message != null)
+    {
+        <script>
+            $(document).ready(function () {
+                toastr.success("@ViewBag.message", "Success");
+            });
+        </script>
+    }

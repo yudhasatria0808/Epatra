@@ -1,0 +1,28 @@
+﻿@model IEnumerable<ePatria.Models.Preliminary>
+
+@{
+    ViewBag.Title = "Index";
+    Layout = null;
+}
+
+@using Microsoft.AspNet.Identity;
+@{ var Perm = HelperController.getPermission(User.Identity.GetUserId(), "Preliminary Survey"); }
+@foreach (var item in Model)
+{
+    <li>
+        <div class="col1">
+            <div class="cont">
+                <div class="cont-col1">
+                    <div class="label label-sm label-success">
+                        <i class="fa fa-shopping-cart"></i>
+                    </div>
+                </div>
+                <div class="cont-col2">
+                    <div class="desc">
+                        <label><i>Preliminary</i> <a href="@Url.Action("Details", "Preliminaries", new { id = item.PreliminaryID })"> @Html.DisplayFor(modelItem => item.NomorPreliminarySurvey)</a>, Status : <i>@item.Status</i></label>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </li>
+}

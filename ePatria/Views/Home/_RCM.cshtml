@@ -1,0 +1,29 @@
+﻿@model IEnumerable<ePatria.Models.RiskControlMatrix>
+
+@{
+    ViewBag.Title = "Index";
+    Layout = null;
+}
+
+@using Microsoft.AspNet.Identity;
+@{ var Perm = HelperController.getPermission(User.Identity.GetUserId(), "RCM"); }
+@foreach (var item in Model)
+{
+    <li>
+        <div class="col1">
+            <div class="cont">
+                <div class="cont-col1">
+                    <div class="label label-sm label-info">
+                        <i class="fa fa-bolt"></i>
+                    </div>
+                </div>
+                <div class="cont-col2">
+                    <div class="desc">
+                        <label><i>RCM</i> for BPM @item.getBPMName(item.BusinessProcesID), Status : <i>@item.Status</i></label>
+                        [@Html.ActionLink("Detail", "../Walktroughs/Create", new { id = item.WalktroughID})]
+                    </div>
+                </div>
+            </div>
+        </div>
+    </li>
+}

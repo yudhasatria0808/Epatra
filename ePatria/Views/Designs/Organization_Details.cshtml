@@ -1,0 +1,157 @@
+﻿@{
+    ViewBag.Title = "Organization_Details";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<style>
+    .padding5 {
+        padding: 5px;
+    }
+    ul.ul {
+        list-style-type:none;
+        float:right;
+    }
+    li.li {
+        display:inline;
+        margin:5px;
+    }
+</style>
+
+<div class="portlet box red-sunglo">
+    <div class="portlet-title">
+        <div class="caption">
+            <i class="fa fa-eye"></i> Organization Details
+        </div>
+    </div>
+    <div class="portlet-body">
+        <div class="table-toolbar">
+            <table>
+                <tr>
+                    <td class="padding5">
+                        <b>Organization</b>
+                    </td>
+                    <td class="padding5">
+                        :
+                    </td>
+                    <td class="padding5">
+                        Finance and General & Administration Director
+                    </td>
+                </tr>
+                <tr>
+                    <td class="padding5">
+                        <b>Sub Organization</b>
+                    </td>
+                    <td class="padding5">
+                        :
+                    </td>
+                    <td class="padding5">
+                        General Services and Human Capital
+                    </td>
+                </tr>
+                <tr>
+                    <td class="padding5">
+                        
+                    </td>
+                    <td class="padding5">
+                        
+                    </td>
+                    <td class="padding5">
+                        Controller
+                    </td>
+                </tr>
+            </table>
+                        <ul class="ul">
+                            <li class="li">
+                                <a href="#modal-edit" data-toggle="modal" class="btn btn-pertamina-blue" title="Edit">
+                                    <i class="fa fa-edit fa-2x"></i>
+                                </a>
+                            </li>
+                            <li class="li">
+                                <a href="#modal-delete" data-toggle="modal" class="btn btn-pertamina-red" title="Delete">
+                                    <i class="fa fa-trash-o fa-2x"></i>
+                                </a>
+                            </li>
+                            <li class="li">
+                                <a href="@Url.Action("Position_Index", "Designs")" class="btn btn-default" title="Back">
+                                    <i class="fa fa-arrow-circle-left fa-2x"></i>
+                                </a>
+                            </li>
+                        </ul>
+        </div>
+
+    </div>
+</div>
+<!-- END EXAMPLE TABLE PORTLET-->
+
+<!-- MODAL EDIT START -->
+<div class="modal fade" id="modal-edit" tabindex="-1" role="basic" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                <h4 class="modal-title"><i class="fa fa-plus-circle"></i> <b>Add New Organization</b></h4>
+            </div>
+            <div class="modal-body">
+                <form id="edit-organization" role="form">
+                    <table id="table-edit-organization">
+                        <tr class="padding5">
+                            <td class="padding5">
+                                Organization
+                            </td>
+                            <td class="padding5">
+                                :
+                            </td>
+                            <td class="padding5">
+                                <input type="text" name="Organization" class="form-control" value="" style="width:100%;">
+                            </td>
+                        </tr>
+                        <tr class="padding5">
+                            <td class="padding5">
+                                Sub Organization
+                            </td>
+                            <td class="padding5">
+                                :
+                            </td>
+                            <td class="padding5">
+                                <input type="text" name="Sub Organization" class="form-control" value="" style="width:100%;">
+                            </td>
+                            <td>
+                                <button type="button" onclick="AddSubOrganization(this)" class="btn btn-pertamina-green">
+                                    <i class="fa fa-plus"></i> Add
+                                </button>
+                            </td>
+                        </tr>
+                    </table>
+                    <div class="modal-footer" style="margin-top:10px; margin-bottom:-10px;">
+                        <button type="button" class="btn btn-pertamina-red" data-dismiss="modal"><i class="fa fa-times-circle"></i> Cancel</button>
+                        <button type="submit" class="btn btn-pertamina-blue" data-dismiss="modal"><i class="fa fa-download"></i> Save</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+<!-- MODAL EDIT END -->
+<!-- MODAL DELETE START -->
+<div class="modal fade" id="modal-delete" tabindex="-1" role="basic" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                <h4 class="modal-title"><b><i class="fa fa-trash-o"></i> Delete Organization</b></h4>
+            </div>
+            <div class="modal-body">
+                Are you sure to delete this content?
+                <div class="modal-footer" style="margin-top:10px; margin-bottom:-10px;">
+                    <button type="button" class="btn btn-pertamina-red" data-dismiss="modal"><i class="fa fa-times-circle"></i> No</button>
+                    <button type="submit" class="btn btn-pertamina-blue" data-dismiss="modal"><i class="fa fa-check-circle"></i> Yes</button>
+                </div>
+            </div>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+<!-- MODAL DELETE END -->

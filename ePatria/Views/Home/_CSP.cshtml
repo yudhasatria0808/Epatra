@@ -1,0 +1,50 @@
+﻿@model IEnumerable<ePatria.Models.ConsultingLetterOfCommand>
+
+@{
+    ViewBag.Title = "Consulting Letter Of Command Index";
+}
+
+@using Microsoft.AspNet.Identity;
+@{ var Perm = HelperController.getPermission(User.Identity.GetUserId(), "Consulting Surat Perintah");
+    var isSuperAdmin = HelperController.isSuperAdmin(User.Identity.GetUserId());
+}
+@foreach (var item in Model)
+{
+    <li>
+        <div class="col1">
+            <div class="cont">
+                <div class="cont-col1">
+                    <div class="label label-sm label-success">
+                        <i class="fa fa-bolt"></i>
+                    </div>
+                </div>
+                <div class="cont-col2">
+                    <div class="desc">
+                        <label><i>Consulting SP</i> <a href="@Url.Action("Details", "ConsultingLetterOfCommands", new { id = item.ConsultingSuratPerintahID })"> @Html.DisplayFor(modelItem => item.NomorSP)</a>, Status : <i>@item.Status</i></label>
+                        @if (Perm != null && Perm.Any(q => q.IsUpdate == true) || isSuperAdmin)
+                        {
+                            if (item.Status == "Draft")
+                            {
+                                <label>
+                                    [@Html.ActionLink("Edit", "../ConsultingLetterOfCommands/Edit", new { id = item.ConsultingSuratPerintahID }) |
+                                    @Html.ActionLink("Details", "../ConsultingLetterOfCommands/Details", new { id = item.ConsultingSuratPerintahID }) |
+                                    @Html.ActionLink("Delete", "../ConsultingLetterOfCommands/Delete", new { id = item.ConsultingSuratPerintahID })]
+                                </label>
+                            } else {
+                                <label>
+                                    [@Html.ActionLink("Details", "../ConsultingLetterOfCommands/Details", new { id = item.ConsultingSuratPerintahID }) |
+                                    @Html.ActionLink("Preview", "../ConsultingLetterOfCommands/Preview", new { id=item.ConsultingSuratPerintahID })]
+                                </label>
+                            }
+                        } else {
+                            <label>
+                                [@Html.ActionLink("Details", "../ConsultingLetterOfCommands/Details", new { id = item.ConsultingSuratPerintahID }) |
+                                @Html.ActionLink("Preview", "../ConsultingLetterOfCommands/Preview", new { id=item.ConsultingSuratPerintahID })]
+                            </label>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </li>
+}

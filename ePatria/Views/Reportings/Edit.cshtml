@@ -1,0 +1,253 @@
+﻿@using ePatria.Models;
+@model ePatria.Models.Reporting
+
+@{
+    ePatriaDefault db = new ePatriaDefault();
+    ViewBag.Title = "Edit";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Edit</h2>
+
+@Scripts.Render("~/bundles/jqueryval")
+
+@using (Html.BeginForm(null, null, FormMethod.Post, new { id = "repform" }))
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-horizontal">
+        <h4>Reporting</h4>
+        <hr />
+        <div class="error-container">
+            <ul></ul>
+        </div>
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        @Html.HiddenFor(model => model.ReportingID)
+        @Html.HiddenFor(model => model.LetterOfCommandID)
+        @Html.HiddenFor(model => model.FieldWorkID)
+        <div class="form-group">
+            @Html.Label("No SP", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-5">
+                @Html.EditorFor(model => model.LetterOfCommand.NomorSP, new { htmlAttributes = new { @class = "form-control", @readonly = true } })
+                @Html.ValidationMessageFor(model => model.LetterOfCommandID, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.Label("Activity", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-5">
+                @Html.EditorFor(model => model.LetterOfCommand.Activity.Name, new { htmlAttributes = new { @class = "form-control", @readonly = true } })
+                @Html.ValidationMessageFor(model => model.LetterOfCommand.Activity.Name, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.Label("Engagement", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-5">
+                @Html.EditorFor(model => model.LetterOfCommand.AuditPlanningMemorandum.Preliminary.EngagementActivity.Name, new { htmlAttributes = new { @class = "form-control", @readonly = true } })
+                @Html.ValidationMessageFor(model => model.LetterOfCommand.Preliminary.EngagementActivity.Name, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.NomorLaporan, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-5">
+                @Html.EditorFor(model => model.NomorLaporan, new { htmlAttributes = new { @class = "form-control", @readonly = true } })
+                @Html.ValidationMessageFor(model => model.NomorLaporan, "", new { @class = "text-danger" })
+            </div>
+        </div>
+        <div class="portlet-body">
+            <ul class="nav nav-tabs" id="wtab">
+                <li class="active">
+                    <a href="#tab_MemoPengantar" data-toggle="tab"> Memo Pengantar </a>
+                </li>
+                <li>
+                    <a href="#tab_ExecutiveSummary" data-toggle="tab"> Executive Summary </a>
+                </li>
+                <li>
+                    <a href="#tab_Bab1" data-toggle="tab"> BAB I </a>
+                </li>
+                @*<li>
+                        <a href="#tab_Bab2" data-toggle="tab"> BAB II </a>
+                    </li>*@
+                @{
+    int idxTab = 2;
+    foreach (var item in Model.ListBab)
+    {
+        <li>
+            <a href="#tab_Bab_@idxTab" data-toggle="tab"> BAB @idxTab </a>
+        </li>
+        idxTab++;
+    }
+                }
+            </ul>
+        </div>
+        <div class="tab-content">
+
+            <div class="tab-pane fade active in" id="tab_MemoPengantar">
+                @Html.Partial("_MemoPengantar", Model)
+            </div>
+
+            <div class="tab-pane fade" id="tab_ExecutiveSummary">
+                @Html.Partial("_ExecutiveSummary", Model)
+            </div>
+            <div class="tab-pane fade" id="tab_Bab1">
+                @Html.Partial("_Bab1", Model)
+            </div>
+
+            <div class="tab-pane fade" id="tab_Bab2">
+                @Html.Partial("_Bab2", Model)
+            </div>
+            @{
+    for (int i = 0; i < Model.ListBab.Count(); i++)
+    {
+        <div class="tab-pane fade" id="tab_Bab_@(i+2)">
+            @Html.HiddenFor(model => model.ListBab[i].Bab)
+            <div class="form-group">
+                <label class="control-label col-md-2">Judul</label>
+                <div class="col-md-5">
+                    @Html.EditorFor(model => model.ListBab[i].JudulBab, new { htmlAttributes = new { @class = "form-control", @readonly = true } })
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="control-label col-md-2">Fact</label>
+                <div class="col-md-8">
+                    @Html.TextAreaFor(model => model.ListBab[i].Fact, new { @class = "form-control-editor" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="control-label col-md-2">Criteria</label>
+                <div class="col-md-8">
+                    @Html.TextAreaFor(model => model.ListBab[i].Criteria, new { @class = "form-control-editor" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="control-label col-md-2">Impact</label>
+                <div class="col-md-8">
+                    @Html.TextAreaFor(model => model.ListBab[i].Impact, new { @class = "form-control-editor" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="control-label col-md-2">Impact Value</label>
+                <div class="col-md-8">
+                    @Html.TextAreaFor(model => model.ListBab[i].impactValue, new { @class = "form-control-editor" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="control-label col-md-2">Cause</label>
+                <div class="col-md-8">
+                    @Html.TextAreaFor(model => model.Cause, new { @class = "form-control-editor" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="control-label col-md-2">Recommendation</label>
+                <div class="col-md-8">
+                    @Html.TextAreaFor(model => model.Recommendation, new { @class = "form-control-editor" })
+                </div>
+            </div>
+        </div>
+    }
+
+            }
+        </div>
+        <div class="form-group">
+            <div class="col-md-offset-6 col-md-10">
+                <input type="submit" value="Generate Summary" name="submit" class="btn btn-default" />
+                <input type="submit" value="Generate Report" name="submit" class="btn btn-default" />
+                <input type="submit" value="Save" class="btn btn-default" />
+            </div>
+        </div>
+    </div>
+}
+
+<div>
+    @Html.ActionLink("Back to List", "Index")
+</div>
+
+
+<script>
+    $(document).ready(function () {
+        $('.form-control-editor').each(function () {
+            CKEDITOR.replace(this);
+        });
+    });
+
+    $("#repform").validate({
+        errorLabelContainer: $("ul", $('div.error-container')),
+        wrapper: 'li',
+        ignore: [],
+        rules: {
+            NomorLaporan: "required",
+            MemoDescription: {
+                required: function () {
+                    CKEDITOR.instances.MemoDescription.updateElement();
+                },
+            },
+            SummaryDescription: {
+                required: function () {
+                    CKEDITOR.instances.SummaryDescription.updateElement();
+                },
+            },
+            Bab01Title: "required",
+            Bab01SubTitle: "required",
+            Bab01Description: {
+                required: function () {
+                    CKEDITOR.instances.Bab01Description.updateElement();
+                },
+            },
+            //Bab02Title: "required",
+            //Fact: {
+            //    required: function () {
+            //        CKEDITOR.instances.Fact.updateElement();
+            //    },
+            //},
+            //Criteria: {
+            //    required: function () {
+            //        CKEDITOR.instances.Criteria.updateElement();
+            //    },
+            //},
+            //Impact: {
+            //    required: function () {
+            //        CKEDITOR.instances.Impact.updateElement();
+            //    },
+            //},
+            //impactValue: {
+            //    required: function () {
+            //        CKEDITOR.instances.impactValue.updateElement();
+            //    },
+            //},
+            //Cause: {
+            //    required: function () {
+            //        CKEDITOR.instances.Cause.updateElement();
+            //    },
+            //},
+            //Recommendation: {
+            //    required: function () {
+            //        CKEDITOR.instances.Recommendation.updateElement();
+            //    },
+            //},
+        },
+        messages: {
+            NomorLaporan: "Please enter Nomor Laporan",
+            MemoDescription: "Please enter Memo Pengantar",
+            SummaryDescription: "Please enter Executive Summary",
+            Bab01Title: "Please enter Bab 01 Title",
+            Bab01SubTitle: "Please enter Bab 01 SubTitle",
+            Bab01Description: "Please enter Bab 01 Description",
+            //Bab02Title: "Please enter Bab 02 Title",
+            //Fact: "Please enter Bab 02 Fact",
+            //Criteria: "Please enter Bab 02 Criteria",
+            //Impact: "Please enter Bab 02 Impact",
+            //impactValue: "Please enter Bab 02 impactValue",
+            //Cause: "Please enter Bab 02 Cause",
+            //Recommendation: "Please enter Bab 02 Recommendation",
+        }
+    });
+</script>
+

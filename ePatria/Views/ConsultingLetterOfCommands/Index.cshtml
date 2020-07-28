@@ -1,0 +1,158 @@
+@model IEnumerable<ePatria.Models.ConsultingLetterOfCommand>
+
+@{
+    ViewBag.Title = "Consulting Letter Of Command Index";
+}
+
+@using Microsoft.AspNet.Identity;
+@{  var Perm = HelperController.getPermission(User.Identity.GetUserId(), "Consulting Surat Perintah"); 
+    var isSuperAdmin = HelperController.isSuperAdmin(User.Identity.GetUserId());
+}
+<div class="row" style="margin-top:20px;">
+    <div class="col-md-12">
+        <!-- BEGIN EXAMPLE TABLE PORTLET-->
+        <div class="portlet box red-sunglo">
+            <div class="portlet-title">
+                <div class="caption">
+                    <i class="fa fa-user"></i> Consulting Letter Of Command
+                </div>
+            </div>
+            <div class="portlet-body">
+                <div class="table-toolbar">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="btn-group">
+
+                            </div>
+                        </div>
+                        @if (Perm != null && Perm.Any(q => q.IsCreate == true) || isSuperAdmin)
+                        {
+                            <div class="col-md-6">
+                                <div class="btn-group pull-right">
+                                    <a href="@Url.Action("Create")" class="btn green">Add New <i class="fa fa-plus"></i></a>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+                <table class="table table-striped table-hover table-bordered" id="table-cloc">
+                    <thead>
+                        <tr>
+                            <th>
+                                @Html.DisplayName("Nomer SP")
+                            </th>
+                            <th>
+                                @Html.DisplayName("Nomer Request")
+                            </th>
+                            <th>
+                                @Html.DisplayName("Engagement Name")
+                            </th>
+                            <th>
+                                @Html.DisplayName("Periode")
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.Status)
+                            </th>
+
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr role="row" class="odd">
+                                <td>
+                                    <a href="@Url.Action("Details", "ConsultingLetterOfCommands", new { id = item.ConsultingSuratPerintahID })"> @Html.DisplayFor(modelItem => item.NomorSP)</a>
+                                </td>
+                                <td class="sorting_1">
+                                    @Html.DisplayFor(modelItem => item.ConsultingRequest.NoRequest)
+                                </td>
+                                <td class="sorting_1">
+                                    @Html.DisplayFor(modelItem => item.EngagementName)
+                                </td>
+                                <td class="sorting_1">
+                                    @Html.DisplayName(item.StartDate.ToShortDateString()) to @Html.DisplayName(item.EndDate.ToShortDateString())
+                                </td>
+                                <td class="sorting_1">
+                                    @if (item.Status != null)
+                                    {
+
+                                        @Html.DisplayName(item.Status)
+
+                                    }
+                                    else
+                                    {
+                                        @Html.DisplayName("Pending")
+                                    }
+
+                                </td> 
+                                @if (Perm != null && Perm.Any(q => q.IsUpdate == true) || isSuperAdmin)
+                                {
+                                    if (item.Status == "Draft" || item.Status == "Pending for Review by Ketua Tim")
+                                    {
+                                        <td>
+                                            @Html.ActionLink("Edit", "Edit", new { id = item.ConsultingSuratPerintahID }) |
+                                            @Html.ActionLink("Details", "Details", new { id = item.ConsultingSuratPerintahID }) |
+                                            @Html.ActionLink("Delete", "Delete", new { id = item.ConsultingSuratPerintahID }) |
+                                            @Html.ActionLink("Preview", "Preview", new { id=item.ConsultingSuratPerintahID })
+                                        </td>
+                                    } else
+                                    {
+                                        <td>
+                                            @Html.ActionLink("Details", "Details", new { id = item.ConsultingSuratPerintahID }) |
+                                            @Html.ActionLink("Preview", "Preview", new { id=item.ConsultingSuratPerintahID })
+                                        </td>
+                                    }
+                                } else {
+                                    <td>
+                                        @Html.ActionLink("Details", "Details", new { id = item.ConsultingSuratPerintahID }) |
+                                        @Html.ActionLink("Preview", "Preview", new { id=item.ConsultingSuratPerintahID })
+                                    </td>
+                                }
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <!-- END EXAMPLE TABLE PORTLET-->
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        $('#table-cloc').DataTable({
+            dom: 'T<"clear">lfrtip',
+            tableTools: {
+                "sSwfPath": "/Content/assets/global/plugins/datatables/extensions/TableTools/swf/copy_csv_xls_pdf.swf",
+                "aButtons": [
+                {
+                    "sExtends": "xls",
+                    "mColumns": [0, 1, 2, 3, 4],
+                    "sPdfOrientation": "landscape",
+                    "sPdfMessage": "Consulting Letter Of Command",
+                    "sButtonText": "Export to excel",
+                    "sFileName": "ConsultingLetterOfCommand.xls"
+                },
+                ]
+            }
+        });
+    });
+</script>
+
+<!-- MODAL CREATE END -->
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+    @if (ViewBag.message != null)
+    {
+    <script>
+        $(document).ready(function () {
+            toastr.success("@ViewBag.message", "Success");
+        });
+    </script>
+    }
+}
+
+
+
+

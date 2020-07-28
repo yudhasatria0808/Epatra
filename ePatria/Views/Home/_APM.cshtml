@@ -1,0 +1,49 @@
+﻿@model IEnumerable<ePatria.Models.AuditPlanningMemorandum>
+
+@{
+    ViewBag.Title = "Index";
+    Layout = null;
+}
+
+@using Microsoft.AspNet.Identity;
+@{ var Perm = HelperController.getPermission(User.Identity.GetUserId(), "Audit Planning Memorandum");
+    var isSuperAdmin = HelperController.isSuperAdmin(User.Identity.GetUserId());
+}
+@foreach (var item in Model)
+{
+    <li>
+        <div class="col1">
+            <div class="cont">
+                <div class="cont-col1">
+                    <div class="label label-sm label-danger">
+                        <i class="fa fa-bar-chart-o"></i>
+                    </div>
+                </div>
+                <div class="cont-col2">
+                    <div class="desc">
+                        <label><i>APM</i> @item.NomerAPM, Status : <i>@item.Status</i></label>
+                        @if (Perm != null && Perm.Any(q => q.IsUpdate == true) || isSuperAdmin)
+                        {
+                            if (item.Status == "Draft")
+                            {
+                                <label>
+                                    [@Html.ActionLink("Edit", "../AuditPlanningMemorandums/Edit", new { id = item.AuditPlanningMemorandumID }) |
+                                    @Html.ActionLink("Details", "../AuditPlanningMemorandums/Details", new { id = item.AuditPlanningMemorandumID }) |
+                                    @Html.ActionLink("Delete", "../AuditPlanningMemorandums/Delete", new { id = item.AuditPlanningMemorandumID })]
+                                </label>
+                            } else {
+                                <label>
+                                    [@Html.ActionLink("Details", "../AuditPlanningMemorandums/Details", new { id = item.AuditPlanningMemorandumID })]
+                                </label>
+                            }
+                        } else {
+                            <label>
+                                [@Html.ActionLink("Details", "../AuditPlanningMemorandums/Details", new { id = item.AuditPlanningMemorandumID })]
+                            </label>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </li>
+}

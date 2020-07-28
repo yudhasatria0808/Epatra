@@ -1,0 +1,255 @@
+﻿@model IEnumerable<ePatria.Models.AuditTrailsTemp.AuditChange>
+
+@{
+    ViewBag.Title = "Audit Trails List";
+}
+
+<div class="row" style="margin-top:20px;">
+    <div class="col-md-12">
+        <!-- BEGIN EXAMPLE TABLE PORTLET-->
+        <div class="portlet box red-sunglo">
+            <div class="portlet-title">
+                <div class="caption">
+                    <i class="fa fa-user"></i> Audit Trails
+                </div>
+            </div>
+            <div class="portlet-body">
+                <div class="table-toolbar">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="btn-group">
+
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="btn-group pull-right">
+                                <div class="btn-group">
+                                    <button class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                                        Tools <i class="fa fa-angle-down"></i>
+                                    </button>
+                                    <ul class="dropdown-menu pull-right">
+                                        <li>
+                                            <a href="javascript:;">
+                                                Print
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a href="javascript:;">
+                                                Save as PDF
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a href="javascript:;">
+                                                Export to Excel
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <table class="table table-striped table-hover table-bordered" id="table-audittrails">
+                    <thead>
+                        <tr>
+                            <th>
+                                Event Date
+                            </th>
+                            <th>
+                                Action Type
+                            </th>
+                            <th>
+                                Modified By
+                            </th>
+                            <th>
+                                Field Name
+                            </th>
+                            <th>
+                                Before Change
+                            </th>
+                            <th>
+                                After Change
+                            </th>
+                            <th>
+                                Link
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                       @foreach (var item in Model)
+                        {
+                            <tr role="row" class="odd">
+                                <td>
+                                    @Html.DisplayName(item.DateTimeStamp)
+                                </td>
+                                <td>
+                                    @Html.DisplayName(item.AuditActionTypeName)
+                                </td>
+                                <td>
+                                    @Html.DisplayName(item.Username)
+                                </td>
+                                <td>
+                                    @foreach (var change in item.Changes) 
+                                    {   
+                                        <li>@change.FieldName</li>
+                                    }
+                                </td>
+                                <td>
+                                    @foreach (var change in item.Changes) 
+                                    {   
+                                        <li>@change.ValueBefore</li>
+                                    }
+                                </td>
+                                <td>
+                                    @foreach (var change in item.Changes) 
+                                    {   
+                                        <li>@change.ValueAfter</li>
+                                    }
+                                </td>
+                                <td>
+                                    @if (item.AuditActionTypeName.Split(' ')[0] != "Delete")
+                                    {
+                                        if (item.AuditActionTypeName.Split(' ')[1] == "Organization")
+                                        {
+                                            <a href="@Url.Action("Details", @item.AuditActionTypeName.Split(' ')[1] + 's', new { organizationID = @item.ValueId })"> @Html.DisplayFor(modelItem => item.AuditActionTypeName.Split(' ')[1])</a>
+                                        }
+                                        else if (item.AuditActionTypeName.Split(' ')[1] == "AuditUniverse")
+                                        {
+                                            <a href="@Url.Action("Details", @item.AuditActionTypeName.Split(' ')[1] + 's', new { ActivityID = @item.ValueId })"> @Html.DisplayFor(modelItem => item.AuditActionTypeName.Split(' ')[1])</a>
+                                        }
+                                        else if (item.AuditActionTypeName.Split(' ')[1] == "BusinessProces" || item.AuditActionTypeName.Split(' ')[1] == "RiskControlMatrix" || item.AuditActionTypeName.Split(' ')[1] == "RCMDetailRisk" ||
+                                        item.AuditActionTypeName.Split(' ')[1] == "RCMDetailRiskControl" || item.AuditActionTypeName.Split(' ')[1] == "RCMDetailControlAuditStep")
+                                        {
+                                            <a href="@Url.Action("Create", "Walktroughs", new { id = @item.ValueId })"> @Html.DisplayFor(modelItem => item.AuditActionTypeName.Split(' ')[1])</a>
+                                        }
+                                       
+                                        else
+                                        {
+                                            <a href="@Url.Action("Details", @item.AuditActionTypeName.Split(' ')[1]+'s', new { id = @item.ValueId })"> @Html.DisplayFor(modelItem => item.AuditActionTypeName.Split(' ')[1])</a>
+                                        }
+
+                                    }
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <!-- END EXAMPLE TABLE PORTLET-->
+    </div>
+</div>
+<script>
+    $(document).ready(function () {
+        $('#table-audittrails').DataTable({ "aaSorting": [] });
+    });
+</script>
+
+
+<!-- MODAL CREATE END -->
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}
+
+@*@{
+    ViewBag.Title = "Dashboard_Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="row">
+    <div class="col-md-6 col-sm-6">
+        <!-- BEGIN PORTLET-->
+        <div class="portlet light ">
+            <div class="portlet-title">
+                <div class="caption">
+                    <i class="icon-bar-chart font-green-sharp hide"></i>
+                    <span class="caption-subject font-green-sharp bold uppercase">Finding Report per 5 Years</span>
+                </div>
+                <div class="actions">
+                    <div class="btn-group btn-group-devided" data-toggle="buttons">
+                        <label class="btn btn-transparent grey-salsa btn-circle btn-sm active">
+                            <input type="radio" name="options" class="toggle" id="option1">New
+                        </label>
+                        <label class="btn btn-transparent grey-salsa btn-circle btn-sm">
+                            <input type="radio" name="options" class="toggle" id="option2">Returning
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <div class="portlet-body">
+                <div id="site_statistics_loading" style="display: none; ">
+                    <img src="../../assets/admin/layout/img/loading.gif" alt="loading">
+                </div>
+                <div id="site_statistics_content" class="display-none" style="display: block; ">
+                    <div id="site_statistics" class="chart" style="padding-top: 0px; padding-right: 0px; padding-bottom: 0px; padding-left: 0px; position: relative; ">
+                        <canvas class="flot-base" style="direction: ltr; position: absolute; left: 0px; top: 0px; width: 482px; height: 300px; " width="482" height="300"></canvas><div class="flot-text" style="position: absolute; top: 0px; left: 0px; bottom: 0px; right: 0px; font-size: smaller; color: rgb(84, 84, 84); "><div class="flot-x-axis flot-x1-axis xAxis x1Axis" style="position: absolute; top: 0px; left: 0px; bottom: 0px; right: 0px; display: block; "><div style="position: absolute; max-width: 53px; font: normal small-caps 400 11px/14px 'Open Sans', sans-serif; color: rgb(111, 123, 138); top: 285px; left: 10px; text-align: center; ">02/2013</div><div style="position: absolute; max-width: 53px; font: normal small-caps 400 11px/14px 'Open Sans', sans-serif; color: rgb(111, 123, 138); top: 285px; left: 64px; text-align: center; ">03/2013</div><div style="position: absolute; max-width: 53px; font: normal small-caps 400 11px/14px 'Open Sans', sans-serif; color: rgb(111, 123, 138); top: 285px; left: 118px; text-align: center; ">04/2013</div><div style="position: absolute; max-width: 53px; font: normal small-caps 400 11px/14px 'Open Sans', sans-serif; color: rgb(111, 123, 138); top: 285px; left: 172px; text-align: center; ">05/2013</div><div style="position: absolute; max-width: 53px; font: normal small-caps 400 11px/14px 'Open Sans', sans-serif; color: rgb(111, 123, 138); top: 285px; left: 226px; text-align: center; ">06/2013</div><div style="position: absolute; max-width: 53px; font: normal small-caps 400 11px/14px 'Open Sans', sans-serif; color: rgb(111, 123, 138); top: 285px; left: 280px; text-align: center; ">07/2013</div><div style="position: absolute; max-width: 53px; font: normal small-caps 400 11px/14px 'Open Sans', sans-serif; color: rgb(111, 123, 138); top: 285px; left: 334px; text-align: center; ">08/2013</div><div style="position: absolute; max-width: 53px; font: normal small-caps 400 11px/14px 'Open Sans', sans-serif; color: rgb(111, 123, 138); top: 285px; left: 388px; text-align: center; ">09/2013</div><div style="position: absolute; max-width: 53px; font: normal small-caps 400 11px/14px 'Open Sans', sans-serif; color: rgb(111, 123, 138); top: 285px; left: 442px; text-align: center; ">10/2013</div></div><div class="flot-y-axis flot-y1-axis yAxis y1Axis" style="position: absolute; top: 0px; left: 0px; bottom: 0px; right: 0px; display: block; "><div style="position: absolute; font: normal small-caps 400 11px/14px 'Open Sans', sans-serif; color: rgb(111, 123, 138); top: 273px; left: 19px; text-align: right; ">0</div><div style="position: absolute; font: normal small-caps 400 11px/14px 'Open Sans', sans-serif; color: rgb(111, 123, 138); top: 220px; left: 1px; text-align: right; ">1000</div><div style="position: absolute; font: normal small-caps 400 11px/14px 'Open Sans', sans-serif; color: rgb(111, 123, 138); top: 166px; left: 1px; text-align: right; ">2000</div><div style="position: absolute; font: normal small-caps 400 11px/14px 'Open Sans', sans-serif; color: rgb(111, 123, 138); top: 113px; left: 1px; text-align: right; ">3000</div><div style="position: absolute; font: normal small-caps 400 11px/14px 'Open Sans', sans-serif; color: rgb(111, 123, 138); top: 59px; left: 1px; text-align: right; ">4000</div><div style="position: absolute; font: normal small-caps 400 11px/14px 'Open Sans', sans-serif; color: rgb(111, 123, 138); top: 6px; left: 1px; text-align: right; ">5000</div></div></div><canvas class="flot-overlay" style="direction: ltr; position: absolute; left: 0px; top: 0px; width: 482px; height: 300px; " width="482" height="300"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- END PORTLET-->
+    </div>
+    <div class="col-md-6">
+        <div class="portlet box yellow">
+            <div class="portlet-title">
+                <div class="caption">
+                    <i class="fa fa-gift"></i>Finding Type in Year
+                </div>
+                <div class="tools">
+                    <a href="#portlet-config" data-toggle="modal" class="config" data-original-title="" title="">
+                    </a>
+                    <a href="javascript:;" class="reload" data-original-title="" title="">
+                    </a>
+                </div>
+            </div>
+            <div class="portlet-body">
+                <div id="pie_chart_4" class="chart" style="padding-top: 0px; padding-right: 0px; padding-bottom: 0px; padding-left: 0px; position: relative; ">
+                    <canvas class="flot-base" style="direction: ltr; position: absolute; left: 0px; top: 0px; width: 500px; height: 300px; " width="500" height="300"></canvas><canvas class="flot-overlay" style="direction: ltr; position: absolute; left: 0px; top: 0px; width: 500px; height: 300px; " width="500" height="300"></canvas><div class="pieLabelBackground" style="position: absolute; width: 40px; height: 34px; top: 41px; left: 295px; background-color: rgb(0, 0, 0); opacity: 0.5; "></div><span class="pieLabel" id="pieLabel0" style="position: absolute; top: 41px; left: 295px; "><div style="font-size:8pt;text-align:center;padding:2px;color:white;">Series1<br>20%</div></span><div class="pieLabelBackground" style="position: absolute; width: 40px; height: 34px; top: 172px; left: 336px; background-color: rgb(0, 0, 0); opacity: 0.5; "></div><span class="pieLabel" id="pieLabel1" style="position: absolute; top: 172px; left: 336px; "><div style="font-size:8pt;text-align:center;padding:2px;color:white;">Series2<br>22%</div></span><div class="pieLabelBackground" style="position: absolute; width: 40px; height: 34px; top: 244px; left: 211px; background-color: rgb(0, 0, 0); opacity: 0.5; "></div><span class="pieLabel" id="pieLabel2" style="position: absolute; top: 244px; left: 211px; "><div style="font-size:8pt;text-align:center;padding:2px;color:white;">Series3<br>22%</div></span><div class="pieLabelBackground" style="position: absolute; width: 40px; height: 34px; top: 157px; left: 120px; background-color: rgb(0, 0, 0); opacity: 0.5; "></div><span class="pieLabel" id="pieLabel3" style="position: absolute; top: 157px; left: 120px; "><div style="font-size:8pt;text-align:center;padding:2px;color:white;">Series4<br>16%</div></span><div class="pieLabelBackground" style="position: absolute; width: 40px; height: 34px; top: 43px; left: 162px; background-color: rgb(0, 0, 0); opacity: 0.5; "></div><span class="pieLabel" id="pieLabel4" style="position: absolute; top: 43px; left: 162px; "><div style="font-size:8pt;text-align:center;padding:2px;color:white;">Series5<br>21%</div></span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="clearfix"></div>
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="portlet box yellow">
+            <div class="portlet-title">
+                <div class="caption">
+                    <i class="fa fa-gift"></i>Graph8
+                </div>
+                <div class="tools">
+                    <a href="#portlet-config" data-toggle="modal" class="config">
+                    </a>
+                    <a href="javascript:;" class="reload">
+                    </a>
+                </div>
+            </div>
+            <div class="portlet-body">
+                <h4>The radius can also be set to a specific size (even larger than the container itself).</h4>
+                <div id="pie_chart_8" class="chart">
+                </div>
+            </div>
+        </div>
+        <div class="portlet box purple">
+            <div class="portlet-title">
+                <div class="caption">
+                    <i class="fa fa-gift"></i>Graph9
+                </div>
+                <div class="tools">
+                    <a href="#portlet-config" data-toggle="modal" class="config">
+                    </a>
+                    <a href="javascript:;" class="reload">
+                    </a>
+                </div>
+            </div>
+            <div class="portlet-body">
+                <h4>The pie can be tilted at an angle.</h4>
+                <div id="pie_chart_9" class="chart">
+                </div>
+            </div>
+        </div>
+    </div>
+</div>*@

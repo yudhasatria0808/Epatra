@@ -1,0 +1,860 @@
+﻿@model ePatria.Models.Preliminary
+
+@{
+    ViewBag.Title = "Details";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@using Microsoft.AspNet.Identity;
+@{ var Perm = HelperController.getPermission(User.Identity.GetUserId(), "Preliminary Survey"); }
+@{ var checkPerm = HelperController.getPermissionRoleByPerm("Preliminary Survey", User.Identity.GetUserId()); }
+@{ var empName = HelperController.getNameByUserName(User.Identity.Name);
+    var isSuperAdmin = HelperController.isSuperAdmin(User.Identity.GetUserId());
+}
+<h2>Details</h2>
+
+<div>
+    <h4>Preliminary</h4>
+    <hr />
+    <div class="form-horizontal">
+        <div class="form-group">
+            @Html.Label("No Preliminary Survey", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-4">
+                @Html.TextBoxFor(model => model.NomorPreliminarySurvey, new { @class = "form-control input-sm", @readonly = "readonly" })
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.Label("Type", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-4">
+                @Html.TextBoxFor(model => model.Type, new { @class = "form-control input-sm", @readonly = "readonly" })
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.Label("Name Activity", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-4">
+                @Html.TextBoxFor(model => model.Activity.Name, new { @class = "form-control input-sm", @readonly = "readonly" })
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.Label("Engagement Name", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-4">
+                @Html.TextBoxFor(model => model.EngagementActivity.Name, new { @class = "form-control input-sm", @readonly = "readonly" })
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.Label("Status", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-4">
+                @Html.TextBoxFor(model => model.Status, new { @class = "form-control input-sm", @readonly = "readonly" })
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.Label("Responsible Person", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-4">
+                @Html.TextBoxFor(model => model.PICID, new { @class = "form-control input-sm", @readonly = "readonly" })
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.Label("Supervisor", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-4">
+                @Html.TextBoxFor(model => model.SupervisorID, new { @class = "form-control input-sm", @readonly = "readonly" })
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.Label("Team Leader", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-4">
+                @Html.TextBoxFor(model => model.TeamLeaderID, new { @class = "form-control input-sm", @readonly = "readonly" })
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.Label("Member", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-4">
+                @{var y = 0;}
+                @if (Model.MemberID != null)
+                {
+                    foreach (var mem in Model.MemberID.Split(';'))
+                    {
+                        y++;
+                        if (y < Model.MemberID.Split(';').Count())
+                        {
+                            <li>@Html.DisplayName(mem)</li>
+                        }
+                    }
+                }
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.Label("Auditee", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-4">
+                @{var x = 0;}
+                @foreach (var mem in Model.EmployeeID.Split(';'))
+                {
+                    x++;
+                    if (x < Model.EmployeeID.Split(';').Count())
+                    {
+                        <li>@Html.DisplayName(mem)</li>
+                    }
+                }
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.Label("Periode", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-2">
+                @Html.TextBoxFor(model => model.Date_Start, "{0:MM/dd/yyyy}", new { @class = "form-control input-sm", @readonly = "readonly" })
+            </div>
+            <div class="col-md-2">
+                @Html.TextBoxFor(model => model.Date_End, "{0:MM/dd/yyyy}", new { @class = "form-control input-sm", @readonly = "readonly" })
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.Label("File", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-4">
+                @if (ViewBag.paths != null)
+                {
+                    foreach (var path in ViewBag.paths)
+                    {
+                        <div>
+                            @Html.ActionLink("Download", "../" + (string)path, null, new { target = "_blank", @class = "btn btn-xs green" })
+                            @Html.LabelFor(model => model.PreliminaryID, (string)path.Split('/')[3])
+                        </div>
+
+                    }
+                }
+            </div>
+        </div>
+    </div>
+    @*<dl class="dl-horizontal">
+        <dt>
+            No. Preliminary Survey 
+        </dt>
+        <dd>
+            <b>:</b>&nbsp;&nbsp;&nbsp;@Html.DisplayFor(model => model.NomorPreliminarySurvey)
+        </dd>
+        <dt>
+            Type
+        </dt>
+        <dd>
+            <b>:</b>&nbsp;&nbsp;&nbsp;@Html.DisplayFor(model => model.Type)
+        </dd>
+        <dt>
+            Name Activity 
+        </dt>
+        <dd>
+            <b>:</b>&nbsp;&nbsp;&nbsp;@Html.DisplayFor(model => model.Activity.Name)
+        </dd> 
+        <dt>
+            Engagement Name
+        </dt>
+        <dd>
+            <b>:</b>&nbsp;&nbsp;&nbsp;@Html.DisplayFor(model => model.EngagementActivity.Name)
+        </dd>       
+        <dt>
+            Status
+        </dt>
+        <dd>
+            <b>:</b>&nbsp;&nbsp;&nbsp;@Html.DisplayFor(model => model.Status)
+        </dd>
+        <dt>
+            Responsible Person 
+        </dt>
+        <dd>
+            <b>:</b>&nbsp;&nbsp;&nbsp;@Html.DisplayFor(model => model.PICID)
+        </dd>
+        <dt>
+            Supervisor 
+        </dt>
+        <dd>
+            <b>:</b>&nbsp;&nbsp;&nbsp;@Html.DisplayFor(model => model.SupervisorID)
+        </dd>
+        <dt>
+            Team Leader 
+        </dt>
+        <dd>
+            <b>:</b>&nbsp;&nbsp;&nbsp;@Html.DisplayFor(model => model.TeamLeaderID)
+        </dd>
+        <dt>
+            Member 
+        </dt>
+        <dd>
+            @{var y = 0;}
+            @if (Model.MemberID != null)
+            {
+                foreach (var mem in Model.MemberID.Split(';'))
+                {
+                    y++;
+                    if (y < Model.MemberID.Split(';').Count())
+                    {
+                        <li style="margin-left:180px">@Html.DisplayName(mem)</li>
+                    }
+                }
+            }
+        </dd>
+        <dt>
+            Auditee 
+        </dt>
+        <dd>
+            @{var x = 0;}
+            @foreach (var mem in Model.EmployeeID.Split(';')) {
+                x++;
+                if (x < Model.EmployeeID.Split(';').Count()) {
+                    <li style="margin-left:180px">@Html.DisplayName(mem)</li>
+                }
+            }
+        </dd>
+        <dt>
+           Periode 
+        </dt>
+        <dd>
+            <b>:</b>&nbsp;&nbsp;&nbsp;from @Html.DisplayFor(model => model.Date_Start)  to  @Html.DisplayFor(model => model.Date_End)
+        </dd>
+        <dt>
+            @Html.DisplayName("File") 
+        </dt>
+        <dd>
+            @if (ViewBag.paths != null)
+            {
+                if (ViewBag.Extension1 == "image")
+                {
+                    <img src="@ViewBag.subPath1" alt="image" width="20%" height="20%"/>
+                    @Html.ActionLink("View Full Size", "../"+(string)ViewBag.subPath1, null, new { target="_blank" })
+                } else
+                {
+                   @Html.LabelFor(model => model.EmployeeID, (string)ViewBag.newFName1) <br />
+                   @Html.ActionLink("Download File", "../"+(string)ViewBag.subPath1, null, new { target="_blank" })
+                }
+                foreach (var path in ViewBag.paths)
+                {
+                    <div>
+                        @Html.ActionLink("Download", "../" + (string)path, null, new { target = "_blank", @class = "btn btn-xs green" })
+                        @Html.LabelFor(model => model.PreliminaryID, (string)path.Split('/')[3])
+                    </div>
+
+                }
+            }
+        </dd> 
+    </dl>*@
+</div>
+<p>
+@if (Perm != null && Perm.Any(q => q.IsUpdate == true) || isSuperAdmin)
+{
+    if (Model.Status == "Draft" || Model.Status == "Pending for Review by " + checkPerm.Split(':')[1].Split(';')[0])
+    {
+        <a href="@Url.Action("Edit",new { id = Model.PreliminaryID })" class="btn blue">Edit <i class="fa fa-pencil"></i></a>
+        <a href="@Url.Action("Delete",new { id = Model.PreliminaryID })" class="btn red">Delete <i class="fa fa-times"></i></a>
+    }
+}
+<a href="@Url.Action("Index")" class="btn green">Back To list <i class="fa fa-caret-square-o-left"></i></a>
+    
+    
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="btn-group"></div>
+    </div>
+    <div class="col-md-6">
+        <div class="btn-group pull-right">
+            @using (Html.BeginForm("Update", "Preliminaries", FormMethod.Post, new { enctype = "multipart/form-data" }))
+            {
+                @Html.AntiForgeryToken()
+                @Html.ValidationSummary(true)
+                @Html.HiddenFor(model => model.PreliminaryID)
+                @Html.HiddenFor(model => model.Type)
+                @Html.HiddenFor(model => model.NomorPreliminarySurvey)
+                @Html.HiddenFor(model => model.ActivityID)
+                @Html.HiddenFor(model => model.Date_Start)
+                @Html.HiddenFor(model => model.Date_End)
+                @Html.HiddenFor(model => model.EmployeeID)
+                @Html.HiddenFor(model => model.Status)
+                @Html.HiddenFor(model => model.EngagementID)
+                @Html.HiddenFor(model => model.PICID)
+                @Html.HiddenFor(model => model.SupervisorID)
+                @Html.HiddenFor(model => model.TeamLeaderID)
+                @Html.HiddenFor(model => model.MemberID)
+    <div class="hidden">
+        @if (ViewBag.paths != null)
+        {
+
+            int i = 0;
+            List<string> images = new List<string>();
+            foreach (var path in ViewBag.paths)
+            {
+                i++;
+                string imageid = "image" + i.ToString();
+                <div class="image">
+                    <img src="@path" alt="image" width="20%" height="20%" id=@imageid style="display:none" />
+                    <div>
+                        @Html.Label("Delete", null, new { @class = "removeImage btn btn-xs red", @style = "cursor:pointer" })
+                        @Html.ActionLink("Download", "../" + (string)path, null, new { target = "_blank", @class = "btn btn-xs green" })
+                        @Html.LabelFor(model => model.PreliminaryID, (string)path.Split('/')[3])
+                        @{images.Add(Convert.ToString(path));}
+                    </div>
+                </div>
+            }
+            Session["Images"] = images.ToArray();
+        }
+        <input type="file" name="files" id="file1" class="file1" />
+        <div class="preview"></div>
+    </div>
+                if (checkPerm.Contains("IsSubmit1"))
+                {
+                    if ((Perm != null && Perm.Any(q => q.IsSubmit1 == true)) || isSuperAdmin)
+                    {
+                        if (Model.Status == "Pending for Review by " + checkPerm.Split(':')[1].Split(';')[0])
+                        {
+                            if (checkPerm.Split(':')[1].Split(';')[0] == "Member")
+                            {
+                                if (Model.MemberID != null)
+                                {
+                                    if (Model.MemberID.Contains(empName) || isSuperAdmin)
+                                    {
+                                        if (checkPerm.Contains("IsSubmit2"))
+                                        {
+                                            <button class="btn btn-primary" name="submit" type="submit" id="submit" value="Submit For Review By @checkPerm.Split(':')[2].Split(';')[0]">Submit</button>
+                                            @*<input class="btn btn-primary" name="submit" type="submit" id="submit" value="Submit For Review By @checkPerm.Split(':')[2].Split(';')[0]" />*@
+                                            @*<input class="btn btn-primary" name="submit" type="submit" id="submit" value="Send Back" />*@
+                                        }
+                                        else if (checkPerm.Contains("IsApprove"))
+                                        {
+                                            <button class="btn btn-primary" name="submit" type="submit" id="submit" value="Submit For Approve By @checkPerm.Split(':')[3].Split(';')[0]">Submit</button>
+                                            @*<input class="btn btn-primary" name="submit" type="submit" id="submit" value="Submit For Approve By @checkPerm.Split(':')[3].Split(';')[0]" />*@
+                                            @*<input class="btn btn-primary" name="submit" type="submit" id="submit" value="Send Back" />*@
+                                        }
+                                    }
+                                }
+                                else
+                                {
+                                    if (checkPerm.Contains("IsSubmit2"))
+                                    {
+                                        <button class="btn btn-primary" name="submit" type="submit" id="submit" value="Submit For Review By @checkPerm.Split(':')[2].Split(';')[0]">Submit</button>
+                                        @*<input class="btn btn-primary" name="submit" type="submit" id="submit" value="Submit For Review By @checkPerm.Split(':')[2].Split(';')[0]" />*@
+                                        @*<input class="btn btn-primary" name="submit" type="submit" id="submit" value="Send Back" />*@
+                                    }
+                                    else if (checkPerm.Contains("IsApprove"))
+                                    {
+                                        <button class="btn btn-primary" name="submit" type="submit" id="submit" value="Submit For Approve By @checkPerm.Split(':')[3].Split(';')[0]">Submit</button>
+                                        @*<input class="btn btn-primary" name="submit" type="submit" id="submit" value="Submit For Approve By @checkPerm.Split(':')[3].Split(';')[0]" />*@
+                                        @*<input class="btn btn-primary" name="submit" type="submit" id="submit" value="Send Back" />*@
+                                    }
+                                }
+                            }
+                            if (checkPerm.Split(':')[1].Split(';')[0] == "Ketua Tim")
+                            {
+                                if (Model.TeamLeaderID != null)
+                                {
+                                    if (Model.TeamLeaderID == empName || isSuperAdmin)
+                                    {
+                                        if (checkPerm.Contains("IsSubmit2"))
+                                        {
+                                            <button class="btn btn-primary" name="submit" type="submit" id="submit" value="Submit For Review By @checkPerm.Split(':')[2].Split(';')[0]">Submit</button>
+                                            @*<input class="btn btn-primary" name="submit" type="submit" id="submit" value="Submit For Review By @checkPerm.Split(':')[2].Split(';')[0]" />*@
+                                            @*<input class="btn btn-primary" name="submit" type="submit" id="submit" value="Send Back" />*@
+                                        }
+                                        else if (checkPerm.Contains("IsApprove"))
+                                        {
+                                            <button class="btn btn-primary" name="submit" type="submit" id="submit" value="Submit For Approve By @checkPerm.Split(':')[3].Split(';')[0]">Submit</button>
+                                            @*<input class="btn btn-primary" name="submit" type="submit" id="submit" value="Submit For Approve By @checkPerm.Split(':')[3].Split(';')[0]" />*@
+                                            @*<input class="btn btn-primary" name="submit" type="submit" id="submit" value="Send Back" />*@
+                                        }
+                                    }
+                                }
+                                else
+                                {
+                                    if (checkPerm.Contains("IsSubmit2"))
+                                    {
+                                        <button class="btn btn-primary" name="submit" type="submit" id="submit" value="Submit For Review By @checkPerm.Split(':')[2].Split(';')[0]">Submit</button>
+                                        @*<input class="btn btn-primary" name="submit" type="submit" id="submit" value="Submit For Review By @checkPerm.Split(':')[2].Split(';')[0]" />*@
+                                        @*<input class="btn btn-primary" name="submit" type="submit" id="submit" value="Send Back" />*@
+                                    }
+                                    else if (checkPerm.Contains("IsApprove"))
+                                    {
+                                        <button class="btn btn-primary" name="submit" type="submit" id="submit" value="Submit For Approve By @checkPerm.Split(':')[3].Split(';')[0]">Submit</button>
+                                        @*<input class="btn btn-primary" name="submit" type="submit" id="submit" value="Submit For Approve By @checkPerm.Split(':')[3].Split(';')[0]" />*@
+                                        @*<input class="btn btn-primary" name="submit" type="submit" id="submit" value="Send Back" />*@
+                                    }
+                                }
+                            }
+                            if (checkPerm.Split(':')[1].Split(';')[0] == "Pengawas")
+                            {
+                                if (Model.SupervisorID != null)
+                                {
+                                    if (Model.SupervisorID == empName || isSuperAdmin)
+                                    {
+                                        if (checkPerm.Contains("IsSubmit2"))
+                                        {
+                                            <button class="btn btn-primary" name="submit" type="submit" id="submit" value="Submit For Review By @checkPerm.Split(':')[2].Split(';')[0]">Submit</button>
+                                            @*<input class="btn btn-primary" name="submit" type="submit" id="submit" value="Submit For Review By @checkPerm.Split(':')[2].Split(';')[0]" />*@
+                                            <input class="btn btn-primary" name="submit" type="submit" id="submit" value="Send Back" />
+                                        }
+                                        else if (checkPerm.Contains("IsApprove"))
+                                        {
+                                            <button class="btn btn-primary" name="submit" type="submit" id="submit" value="Submit For Approve By @checkPerm.Split(':')[3].Split(';')[0]">Submit</button>
+                                            @*<input class="btn btn-primary" name="submit" type="submit" id="submit" value="Submit For Approve By @checkPerm.Split(':')[3].Split(';')[0]"/>*@
+                                            <input class="btn btn-primary" name="submit" type="submit" id="submit" value="Send Back" />
+                                        }
+                                    }
+                                }
+                                else
+                                {
+                                    if (checkPerm.Contains("IsSubmit2"))
+                                    {
+                                        <button class="btn btn-primary" name="submit" type="submit" id="submit" value="Submit For Approve By @checkPerm.Split(':')[3].Split(';')[0]">Submit</button>
+                                        @*<input class="btn btn-primary" name="submit" type="submit" id="submit" value="Submit For Review By @checkPerm.Split(':')[2].Split(';')[0]" />*@
+                                        <input class="btn btn-primary" name="submit" type="submit" id="submit" value="Send Back" />
+                                    }
+                                    else if (checkPerm.Contains("IsApprove"))
+                                    {
+                                        <button class="btn btn-primary" name="submit" type="submit" id="submit" value="Submit For Approve By @checkPerm.Split(':')[3].Split(';')[0]">Submit</button>
+                                        @*<input class="btn btn-primary" name="submit" type="submit" id="submit" value="Submit For Approve By @checkPerm.Split(':')[3].Split(';')[0]" />*@
+                                        <input class="btn btn-primary" name="submit" type="submit" id="submit" value="Send Back" />
+                                    }
+                                }
+                            }
+                            if (checkPerm.Split(':')[1].Split(';')[0] == "CIA")
+                            {
+                                if (Model.PICID != null)
+                                {
+                                    if (Model.PICID == empName || isSuperAdmin)
+                                    {
+                                        if (checkPerm.Contains("IsSubmit2"))
+                                        {
+                                            <button class="btn btn-primary" name="submit" type="submit" id="submit" value="Submit For Review By @checkPerm.Split(':')[2].Split(';')[0]">Submit</button>
+                                            @*<input class="btn btn-primary" name="submit" type="submit" id="submit" value="Submit For Review By @checkPerm.Split(':')[2].Split(';')[0]" />*@
+                                            @*<input class="btn btn-primary" name="submit" type="submit" id="submit" value="Send Back" />*@
+                                        }
+                                        else if (checkPerm.Contains("IsApprove"))
+                                        {
+                                            <button class="btn btn-primary" name="submit" type="submit" id="submit" value="Submit For Approve By @checkPerm.Split(':')[3].Split(';')[0]">Submit</button>
+                                            @*<input class="btn btn-primary" name="submit" type="submit" id="submit" value="Submit For Approve By @checkPerm.Split(':')[3].Split(';')[0]" />*@
+                                            @*<input class="btn btn-primary" name="submit" type="submit" id="submit" value="Send Back" />*@
+                                        }
+                                    }
+                                }
+                                else
+                                {
+                                    if (checkPerm.Contains("IsSubmit2"))
+                                    {
+                                        <button class="btn btn-primary" name="submit" type="submit" id="submit" value="Submit For Review By @checkPerm.Split(':')[2].Split(';')[0]">Submit</button>
+                                        @*<input class="btn btn-primary" name="submit" type="submit" id="submit" value="Submit For Review By @checkPerm.Split(':')[2].Split(';')[0]" />*@
+                                        @*<input class="btn btn-primary" name="submit" type="submit" id="submit" value="Send Back" />*@
+                                    }
+                                    else if (checkPerm.Contains("IsApprove"))
+                                    {
+                                        <button class="btn btn-primary" name="submit" type="submit" id="submit" value="Submit For Approve By @checkPerm.Split(':')[3].Split(';')[0]">Submit</button>
+                                        @*<input class="btn btn-primary" name="submit" type="submit" id="submit" value="Submit For Approve By @checkPerm.Split(':')[3].Split(';')[0]" />*@
+                                        @*<input class="btn btn-primary" name="submit" type="submit" id="submit" value="Send Back" />*@
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                if (checkPerm.Contains("IsSubmit2"))
+                {
+                    if (Perm != null && Perm.Any(q => q.IsSubmit2 == true) || isSuperAdmin)
+                    {
+                        if (Model.Status == "Pending for Review by " + checkPerm.Split(':')[2].Split(';')[0])
+                        {
+                            if (checkPerm.Split(':')[2].Split(';')[0] == "Member")
+                            {
+                                if (Model.MemberID != null)
+                                {
+                                    if (Model.MemberID.Contains(empName) || isSuperAdmin)
+                                    {
+                                        if (checkPerm.Contains("IsApprove"))
+                                        {
+                                            <button class="btn btn-primary" name="submit" type="submit" id="submit" value="Submit For Approve By @checkPerm.Split(':')[3].Split(';')[0]">Submit</button>
+                                            @*<input class="btn btn-primary" name="submit" type="submit" id="submit" value="Submit For Approve By @checkPerm.Split(':')[3].Split(';')[0]" />*@
+                                            if (checkPerm.Split(':')[1].Split(';')[0] != checkPerm.Split(':')[2].Split(';')[0]) {
+                                                <input class="btn btn-primary" name="submit" type="submit" id="submit" value="Send Back" />
+                                            }
+                                        }
+                                    }
+                                }
+                                else
+                                {
+                                    if (checkPerm.Contains("IsApprove"))
+                                    {
+                                        <button class="btn btn-primary" name="submit" type="submit" id="submit" value="Submit For Approve By @checkPerm.Split(':')[3].Split(';')[0]">Submit</button>
+                                        @*<input class="btn btn-primary" name="submit" type="submit" id="submit" value="Submit For Approve By @checkPerm.Split(':')[3].Split(';')[0]" />*@
+                                        if (checkPerm.Split(':')[1].Split(';')[0] != checkPerm.Split(':')[2].Split(';')[0]) {
+                                            <input class="btn btn-primary" name="submit" type="submit" id="submit" value="Send Back" />
+                                        }
+                                    }
+                                }
+                            }
+                            if (checkPerm.Split(':')[2].Split(';')[0] == "Ketua Tim")
+                            {
+                                if (Model.TeamLeaderID != null)
+                                {
+                                    if (Model.TeamLeaderID == empName || isSuperAdmin)
+                                    {
+                                        if (checkPerm.Contains("IsApprove"))
+                                        {
+                                            <button class="btn btn-primary" name="submit" type="submit" id="submit" value="Submit For Approve By @checkPerm.Split(':')[3].Split(';')[0]">Submit</button>
+                                            @*<input class="btn btn-primary" name="submit" type="submit" id="submit" value="Submit For Approve By @checkPerm.Split(':')[3].Split(';')[0]" />*@
+                                            if (checkPerm.Split(':')[1].Split(';')[0] != checkPerm.Split(':')[2].Split(';')[0]) {
+                                                <input class="btn btn-primary" name="submit" type="submit" id="submit" value="Send Back" />
+                                            }
+                                        }
+                                    }
+                                }
+                                else
+                                {
+                                    if (checkPerm.Contains("IsApprove"))
+                                    {
+                                        <button class="btn btn-primary" name="submit" type="submit" id="submit" value="Submit For Approve By @checkPerm.Split(':')[3].Split(';')[0]">Submit</button>
+                                        @*<input class="btn btn-primary" name="submit" type="submit" id="submit" value="Submit For Approve By @checkPerm.Split(':')[3].Split(';')[0]" />*@
+                                        if (checkPerm.Split(':')[1].Split(';')[0] != checkPerm.Split(':')[2].Split(';')[0]) {
+                                            <input class="btn btn-primary" name="submit" type="submit" id="submit" value="Send Back" />
+                                        }
+                                    }
+                                }
+                            }
+                            if (checkPerm.Split(':')[2].Split(';')[0] == "Pengawas")
+                            {
+                                if (Model.SupervisorID != null)
+                                {
+                                    if (Model.SupervisorID == empName || isSuperAdmin)
+                                    {
+                                        if (checkPerm.Contains("IsApprove"))
+                                        {
+                                            <button class="btn btn-primary" name="submit" type="submit" id="submit" value="Submit For Approve By @checkPerm.Split(':')[3].Split(';')[0]">Submit</button>
+                                            @*<input class="btn btn-primary" name="submit" type="submit" id="submit" value="Submit For Approve By @checkPerm.Split(':')[3].Split(';')[0]" />*@
+                                            if (checkPerm.Split(':')[1].Split(';')[0] != checkPerm.Split(':')[2].Split(';')[0]) {
+                                                <input class="btn btn-primary" name="submit" type="submit" id="submit" value="Send Back" />
+                                            }
+                                        }
+                                    }
+                                }
+                                else
+                                {
+                                    if (checkPerm.Contains("IsApprove"))
+                                    {
+                                        <button class="btn btn-primary" name="submit" type="submit" id="submit" value="Submit For Approve By @checkPerm.Split(':')[3].Split(';')[0]">Submit</button>
+                                        @*<input class="btn btn-primary" name="submit" type="submit" id="submit" value="Submit For Approve By @checkPerm.Split(':')[3].Split(';')[0]" />*@
+                                        if (checkPerm.Split(':')[1].Split(';')[0] != checkPerm.Split(':')[2].Split(';')[0]) {
+                                            <input class="btn btn-primary" name="submit" type="submit" id="submit" value="Send Back" />
+                                        }
+                                    }
+                                }
+                            }
+                            if (checkPerm.Split(':')[2].Split(';')[0] == "CIA")
+                            {
+                                if (Model.PICID != null)
+                                {
+                                    if (Model.PICID == empName || isSuperAdmin)
+                                    {
+                                        if (checkPerm.Contains("IsApprove"))
+                                        {
+                                            <button class="btn btn-primary" name="submit" type="submit" id="submit" value="Submit For Approve By @checkPerm.Split(':')[3].Split(';')[0]">Submit</button>
+                                            @*<input class="btn btn-primary" name="submit" type="submit" id="submit" value="Submit For Approve By @checkPerm.Split(':')[3].Split(';')[0]" />*@
+                                            if (checkPerm.Split(':')[1].Split(';')[0] != checkPerm.Split(':')[2].Split(';')[0]) {
+                                                <input class="btn btn-primary" name="submit" type="submit" id="submit" value="Send Back" />
+                                            }
+                                        }
+                                    }
+                                }
+                                else
+                                {
+                                    if (checkPerm.Contains("IsApprove"))
+                                    {
+                                        <button class="btn btn-primary" name="submit" type="submit" id="submit" value="Submit For Approve By @checkPerm.Split(':')[3].Split(';')[0]">Submit</button>
+                                        @*<input class="btn btn-primary" name="submit" type="submit" id="submit" value="Submit For Approve By @checkPerm.Split(':')[3].Split(';')[0]" />*@
+                                        if (checkPerm.Split(':')[1].Split(';')[0] != checkPerm.Split(':')[2].Split(';')[0]) {
+                                            <input class="btn btn-primary" name="submit" type="submit" id="submit" value="Send Back" />
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                if (checkPerm.Contains("IsApprove"))
+                {
+                    if (Perm != null && Perm.Any(q => q.IsApprove == true) || isSuperAdmin)
+                    {
+                        if (Model.Status == "Pending for Approve by " + checkPerm.Split(':')[3].Split(';')[0])
+                        {
+                            if (checkPerm.Split(':')[3].Split(';')[0] == "Member")
+                            {
+                                if (Model.MemberID != null)
+                                {
+                                    if (Model.MemberID.Contains(empName) || isSuperAdmin)
+                                    {
+                                        <input class="btn btn-primary" name="submit" type="submit" id="submit" value="Approve" />
+                                        <input class="btn btn-primary" name="submit" type="submit" id="submit" value="Send Back" />
+                                    }
+                                }
+                                else
+                                {
+                                    <input class="btn btn-primary" name="submit" type="submit" id="submit" value="Approve" />
+                                    <input class="btn btn-primary" name="submit" type="submit" id="submit" value="Send Back" />
+                                }
+                            }
+                            if (checkPerm.Split(':')[3].Split(';')[0] == "Ketua Tim")
+                            {
+                                if (Model.TeamLeaderID != null)
+                                {
+                                    if (Model.TeamLeaderID == empName || isSuperAdmin)
+                                    {
+                                        <input class="btn btn-primary" name="submit" type="submit" id="submit" value="Approve" />
+                                        <input class="btn btn-primary" name="submit" type="submit" id="submit" value="Send Back" />
+                                    }
+                                }
+                                else
+                                {
+                                    <input class="btn btn-primary" name="submit" type="submit" id="submit" value="Approve" />
+                                    <input class="btn btn-primary" name="submit" type="submit" id="submit" value="Send Back" />
+                                }
+                            }
+                            if (checkPerm.Split(':')[3].Split(';')[0] == "Pengawas")
+                            {
+                                if (Model.SupervisorID != null)
+                                {
+                                    if (Model.SupervisorID == empName || isSuperAdmin)
+                                    {
+                                        <input class="btn btn-primary" name="submit" type="submit" id="submit" value="Approve" />
+                                        <input class="btn btn-primary" name="submit" type="submit" id="submit" value="Send Back" />
+                                    }
+                                } else {
+                                    <input class="btn btn-primary" name="submit" type="submit" id="submit" value="Approve" />
+                                    <input class="btn btn-primary" name="submit" type="submit" id="submit" value="Send Back" />
+                                }
+                            }
+                            if (checkPerm.Split(':')[3].Split(';')[0] == "CIA")
+                            {
+                                if (Model.PICID != null)
+                                {
+                                    if (Model.PICID == empName || isSuperAdmin)
+                                    {
+                                        <input class="btn btn-primary" name="submit" type="submit" id="submit" value="Approve" />
+                                        <input class="btn btn-primary" name="submit" type="submit" id="submit" value="Send Back" />
+                                    }
+                                } else {
+                                    <input class="btn btn-primary" name="submit" type="submit" id="submit" value="Approve" />
+                                    <input class="btn btn-primary" name="submit" type="submit" id="submit" value="Send Back" />
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        </div>
+
+    </div>
+</div>
+
+
+<h2>Review Notes</h2>
+
+@*<div class="col-md-6">
+    <div class="input-group">*@
+<div class="publishContainer">
+    <textarea class="msgTextArea" id="txtMessage" data-bind="value: newMessage, jqAutoresize: {}" style="height:3em;" placeholder="Write your comment..."></textarea>
+    <div class="btn-group ">
+        <button class="btn btn-primary btn-lg" data-url="/Wall/SavePost" value="Comment" id="btnShare" data-bind="click: addPost">Comment</button>
+        <input type="hidden" data-bind="value: apmId" class="apmId" value="@Model.PreliminaryID" />
+        @{
+            int apmId = Model.PreliminaryID;
+        }
+        <script>
+            localStorage.apmId = 'prelim' + '@apmId';
+        </script>
+    </div>
+</div>
+<ul id="msgHolder" data-bind="foreach: posts">
+    <li class="postHolder">
+        <img data-bind="attr: { src: '../../Content/assets/global/img/avatar3_small.jpg' }"><a data-bind="text: PostedByName"></a>: <span data-bind="html: Message"></span>
+        <div class="postFooter">
+            <span class="timeago" data-bind="text: PostedDate"></span>&nbsp;<a class="linkComment" href="#" data-bind="click: toggleComment">Reply</a>
+            <div class="commentSection">
+                <ul data-bind="foreach: PostComments">
+                    <li class="commentHolder">
+                        <img data-bind="attr: { src: '../../Content/assets/global/img/avatar3_small.jpg' }"><a data-bind="text: CommentedByName"></a>: <span data-bind="    html: Message"></span>
+                        <div class="commentFooter"> <span class="timeago" data-bind="text: CommentedDate"></span>&nbsp;</div>
+                    </li>
+                </ul>
+                <div style="display: block" class="publishComment">
+                    <textarea class="commentTextArea" data-bind="value: newCommentMessage, jqAutoresize: {}" placeholder="Write your reply..."></textarea>
+                    <input type="button" value="Reply" class="btn blue" data-bind="click: addComment" />
+                </div>
+            </div>
+        </div>
+    </li>
+</ul>
+@*</div>
+    </div>*@
+
+@section scripts{
+    <script src="~/Scripts/jquery.autosize-min.js"></script>
+    <script src="~/Scripts/jquery.timeago.js"></script>
+    <script src="~/Scripts/knockout-3.4.0.js"></script>
+    <script src="~/Scripts/wallpost.js"></script>
+
+}
+
+<style>
+    .msgTextArea {
+        width: 100%;
+        height: 80px;
+        border-radius: 7px;
+    }
+
+    .commentTextArea {
+        width: 93%;
+        border-radius: 7px;
+        height: 40px;
+    }
+
+    .publishContainer {
+        width: 65%;
+        text-align: right;
+        background-color: #F2F2F2;
+        border-color: #B4BBCD;
+        border-image: none;
+        border-style: solid;
+        border-width: 1px;
+        padding: 1em 1.2em;
+        margin-bottom: 2em;
+    }
+
+    .publishComment {
+        text-align: right;
+        width: 100%;
+        display: none;
+    }
+
+    #msgHolder {
+        width: 65%;
+    }
+
+        #msgHolder img {
+            float: left;
+            margin-right: 7px;
+        }
+
+        #msgHolder a {
+            text-decoration: none;
+            color: #015BA7;
+        }
+
+            #msgHolder a:hover {
+                text-decoration: underline;
+            }
+
+    .postHolder {
+        padding: 5px;
+        border-bottom: solid 1px #E6E6E6;
+        margin: 5px;
+        list-style: none;
+    }
+
+        .postHolder p {
+            margin: 4px auto 7px 50px;
+        }
+
+        .postHolder a {
+            font-weight: bold;
+        }
+
+    .postFooter {
+        font-size: 0.85em;
+        margin-left: 55px;
+    }
+
+        .postFooter span {
+            color: #7D7D84;
+        }
+
+        .postFooter a {
+            font-weight: normal;
+        }
+
+    .commentHolder {
+        clear: both;
+        background-color: #EEF1F6;
+        padding: 5px;
+        border-bottom: 1px solid #DEE5EA;
+        border-top: 1px solid white;
+        list-style: none;
+    }
+
+    #btnShare, .btnComment, .btnRequest {
+        background-color: #5B74A8;
+        border: 0 none;
+        color: #FFFFFF;
+        cursor: pointer;
+        font-size: 13px;
+        font-weight: bold;
+        margin-right: 10px;
+        padding: 5px;
+        text-align: center;
+        
+    }
+
+    aside {
+        float: right;
+        width: 30%;
+        font-size: 0.85em;
+    }
+
+        aside > div, #myConnections {
+            border: solid 2px #3B5998;
+            border-radius: 7px;
+            float: left;
+            width: 99%;
+            margin-bottom: 5px;
+        }
+
+            aside h3, #myConnections h3 {
+                background-color: #3B5998;
+                color: White;
+                margin: 0px;
+                padding: 3px;
+                font-size: 0.95em;
+            }
+
+            aside a, #myConnections a {
+                text-decoration: none;
+                color: #015BA7;
+                font-weight: bold;
+            }
+
+                aside a:hover, #myConnections a:hover {
+                    text-decoration: underline;
+                }
+
+            aside img, #myConnections img {
+                float: left;
+                margin-right: 7px;
+            }
+
+    .useritem {
+        border-bottom: 1px solid #DEE5EA;
+        clear: both;
+        overflow: auto;
+        padding: 3px;
+    }
+
+        .useritem p {
+            margin: 4px auto 7px 55px;
+        }
+
+    .btnRequest, .btn {
+        margin-top: 7px;
+    }
+
+    #myConnections {
+        margin: 15px;
+        width: 60%;
+        font-size: 0.85em;
+    }
+</style>
+<style>
+.dl-horizontal dt{
+    text-align: left;
+    width: 180px;
+}
+
+.dl-horizontal dd{
+    margin-left: 0;
+}
+</style>

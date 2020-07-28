@@ -1,0 +1,843 @@
+@model ePatria.Models.ConsultingLetterOfCommand
+
+@{
+    ViewBag.Title = "Edit";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Edit</h2>
+@using Microsoft.AspNet.Identity;
+@{ 
+    var checkPerm = HelperController.getPermissionRoleByPerm("Consulting Surat Perintah", User.Identity.GetUserId());
+    var userPerm = HelperController.getPermission(User.Identity.GetUserId(), "Consulting Surat Perintah"); 
+}
+@using (Html.BeginForm(null, null, FormMethod.Post, new {id="cspform"})) {
+    @Html.ValidationSummary(true)
+    <div class="form-horizontal">
+        <h4>Consulting Letter Of Command</h4>
+        <hr />
+        <div class="error-container">
+            <ul></ul>
+        </div>
+        @Html.HiddenFor(model => model.ConsultingSuratPerintahID)
+        @Html.HiddenFor(model => model.Status)
+        @Html.HiddenFor(model => model.EngagementID)
+        @Html.Hidden("enggname")
+        <div class="form-group">
+            @Html.LabelFor(model => model.NomorSP, "Nomor SP", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-5">
+                @Html.TextBox("NomorSP", (string)ViewBag.NomorSP, new { @class = "form-control", @readonly = true })
+                @Html.ValidationMessageFor(model => model.NomorSP, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.ConsultingRequestID, "Consulting Request", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-5">
+                @Html.TextBox("ConsultingRequest", null, new { @class = "form-control", @readonly = true })
+                @Html.ValidationMessageFor(model => model.ConsultingRequestID, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.Label("Activity", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-5">
+                @Html.TextBox("ActivityName", null, new { @class = "form-control", @readonly = true })
+                @Html.ValidationMessage("", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.EngagementName, "Engagement Name", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-5">
+                @Html.EditorFor(model => model.EngagementName, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.EngagementName, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Remarks, "Remarks", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-5">
+                @Html.EditorFor(model => model.Remarks, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Remarks, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group input-group-sm">
+            @Html.LabelFor(model => model.StartDate, "Periode", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-2">
+                @Html.TextBoxFor(model => model.StartDate, "{0:dd/MM/yyyy}", new { @class = "form-control datepicker", @readonly = true })
+                @Html.ValidationMessageFor(model => model.StartDate, "", new { @class = "text-danger" })
+            </div>
+            <div class="col-md-2">
+                @Html.TextBoxFor(model => model.EndDate, "{0:dd/MM/yyyy}", new { @class = "form-control datepicker", @readonly = true })
+                @Html.ValidationMessageFor(model => model.EndDate, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.PicID, "Responsible Person", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-5">
+                @Html.EditorFor(model => model.PicID, new { htmlAttributes = new { @class = "form-control", placeholder = "Auto Complete"} })
+                @Html.ValidationMessageFor(model => model.PicID, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.SupervisorID, "Supervisor", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-5">
+                @Html.EditorFor(model => model.SupervisorID, new { htmlAttributes = new { @class = "form-control", placeholder = "Auto Complete"} })
+                @Html.ValidationMessageFor(model => model.SupervisorID, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.TeamLeaderID, "Team Leader", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-5">
+                @Html.EditorFor(model => model.TeamLeaderID, new { htmlAttributes = new { @class = "form-control", placeholder = "Auto Complete"} })
+                @Html.ValidationMessageFor(model => model.TeamLeaderID, "", new { @class = "text-danger" })
+            </div>
+        </div>
+       
+        <div id="MembersGroup">
+            @{var m = 0;}
+                @foreach (var member in ViewBag.Member.Split(';')) {
+                    m++;
+                    string mem = ViewBag.Member;
+                    if (m < mem.Split(';').Count()) {
+                        <div class="form-group" id="memberdiv-@m">
+                            @if (m == 1)
+                            {
+                                @Html.Label("Member ", htmlAttributes: new { @class = "control-label col-md-2", @id = "memberlabel#1" })
+                            }
+                            else
+                            {
+                                @Html.Label(" ", htmlAttributes: new { @class = "control-label col-md-2", @id = "memberlabel#1" })
+                                <a href="#" class="btn btn-sm red" onclick="removeMember(@m);"><i class="fa fa-times"></i></a>
+                            }
+                            <div class="col-md-5">
+                                <input name="member" id="member-@m" class="form-control member" type="text" value="@member" placeholder = "Auto Complete"/>
+                            </div>
+                        </div>
+                    }
+                }
+        </div>
+        <div class="form-group">
+                <div class="col-md-offset-2 col-md-5">
+                    <a href="#" class="btn btn-sm green" id='addButtonmemberconsulting'><i class="fa fa-plus"></i>Add More Member</a>
+                    @*<a href="#" class="btn btn-sm red" id='removeButtonmemberconsulting'><i class="fa fa-times"></i>Remove Member</a>*@
+                </div>
+            </div>
+
+        <div id="DasarsGroup">
+            @{var w = 0;}
+                @foreach (var dasar in ViewBag.Dasar.Split(';')) {
+                    w++;
+                    string ab = ViewBag.Dasar;
+                    if (w < ab.Split(';').Count()) {
+                        <div class="form-group" id="dasardiv-@w">
+                            @if (w == 1)
+                            {
+                                @Html.Label("Dasar", htmlAttributes: new { @class = "control-label col-md-2", @id = "dasarlabel#1" })
+                            }
+                            else
+                            {
+                                @Html.Label(" ", htmlAttributes: new { @class = "control-label col-md-2", @id = "dasarlabel#1" })
+                                <a href="#" class="btn btn-sm red" onclick="removeDasar(@w);"><i class="fa fa-times"></i></a>
+                            }
+                            <div class="col-md-5">
+                                <input name="dasar" id="dasar-@w" class="form-control dasar" type="text" value="@dasar" />
+                            </div>
+                        </div>
+                    }
+                }
+        </div>
+        <div class="form-group">
+                <div class="col-md-offset-2 col-md-5">
+                    <a href="#" class="btn btn-sm green" id='addButtondasarconsulting'><i class="fa fa-plus"></i>Add More Dasar</a>
+                    @*<a href="#" class="btn btn-sm red" id='removeButtondasarconsulting'><i class="fa fa-times"></i>Remove Dasar</a>*@
+                </div>
+            </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Menimbang, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-5">
+                @Html.TextArea("Menimbang", new { @class = "form-control", @rows = "4" })
+                @Html.ValidationMessageFor(model => model.Menimbang, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div id="UntuksGroup">
+                @{var u = 0;}
+                @foreach (var untuk in ViewBag.Untuk.Split(';')) {
+                    u++;
+                    string cd = ViewBag.Untuk;
+                    if (u < cd.Split(';').Count()) {
+                        <div class="form-group" id="untukdiv-@u">
+                            @if (u == 1)
+                            {
+                                @Html.Label("Untuk", htmlAttributes: new { @class = "control-label col-md-2", @id = "untuklabel#1" })
+                            }
+                            else
+                            {
+                                @Html.Label(" ", htmlAttributes: new { @class = "control-label col-md-2", @id = "untuklabel#1" })
+                                <a href="#" class="btn btn-sm red" onclick="removeUntuk(@u);"><i class="fa fa-times"></i></a>
+                            }
+                            <div class="col-md-5">
+                                <input name="untuk" id="untuk-@u" class="form-control untuk" type="text" value="@untuk" />
+                            </div>
+                        </div>
+                    }
+                }
+            </div>
+        <div class="form-group">
+                <div class="col-md-offset-2 col-md-5">
+                    <a href="#" class="btn btn-sm green" id='addButtonuntukconsulting'><i class="fa fa-plus"></i>Add More Untuk</a>
+                    @*<a href="#" class="btn btn-sm red" id='removeButtonuntukconsulting'><i class="fa fa-times"></i>Remove Untuk</a>*@
+                </div>
+            </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Penutup, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-5">
+                @Html.TextArea("Penutup", new { @class = "form-control", @rows = "4" })
+                @Html.ValidationMessageFor(model => model.Penutup, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div id="TembusansGroup">
+                @{var t = 0;}
+                @foreach (var tembusan in ViewBag.Tembusan.Split(';')) {
+                    t++;
+                    string ef = ViewBag.Tembusan;
+                    if (t < ef.Split(';').Count()) {
+                        <div class="form-group" id="tembusandiv-@t">
+                            @if (t == 1)
+                            {
+                                @Html.Label("Tembusan", htmlAttributes: new { @class = "control-label col-md-2", @id = "tembusanlabel#1" })
+                            }
+                            else
+                            {
+                                @Html.Label(" ", htmlAttributes: new { @class = "control-label col-md-2", @id = "tembusanlabel#1" })
+                                <a href="#" class="btn btn-sm red" onclick="removeTembusan(@t);"><i class="fa fa-times"></i></a>
+                            }
+
+                            <div class="col-md-5">
+                                <input name="tembusan" id="tembusan-@t" class="form-control tembusan" type="text" value="@tembusan" />
+                            </div>
+                        </div>
+                    }
+                }
+            </div>
+        <div class="form-group">
+                <div class="col-md-offset-2 col-md-5">
+                    <a href="#" class="btn btn-sm green" id='addButtontembusanconsulting'><i class="fa fa-plus"></i>Add More Tembusan</a>
+                    @*<a href="#" class="btn btn-sm red" id='removeButtontembusanconsulting'><i class="fa fa-times"></i>Remove Tembusan</a>*@
+                </div>
+            </div>
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                @if (userPerm.Any(d => d.IsCreate))
+                {
+                    if (userPerm.Any(d => d.IsSubmit1))
+                    {
+                        if (checkPerm.Contains("IsSubmit2"))
+                        {
+                            <button class="btn btn-primary" name="submit" type="submit" id="submit" value="Submit For Review By @checkPerm.Split(':')[2].Split(';')[0]"> Submit</button>
+                        }
+                        else if (checkPerm.Contains("IsApprove"))
+                        {
+                            <button class="btn btn-primary" name="submit" type="submit" id="submit" value="Submit For Approve By @checkPerm.Split(':')[3].Split(';')[0]"> Submit</button>
+                        }
+                    }
+                    else
+                    {
+                        <button class="btn btn-primary" name="submit" type="submit" id="submit" value="Submit For Review By @checkPerm.Split(':')[1].Split(';')[0]"> Submit</button>
+                    }
+                }
+                else if (userPerm.Any(d => d.IsSubmit1))
+                {
+                    if (checkPerm.Contains("IsSubmit2"))
+                    {
+                        <button class="btn btn-primary" name="submit" type="submit" id="submit" value="Submit For Review By @checkPerm.Split(':')[2].Split(';')[0]"> Submit</button>
+                    }
+                    else if (checkPerm.Contains("IsApprove"))
+                    {
+                        <button class="btn btn-primary" name="submit" type="submit" id="submit" value="Submit For Approve By @checkPerm.Split(':')[3].Split(';')[0]"> Submit</button>
+                    }
+                }
+                else if (userPerm.Any(d => d.IsSubmit2))
+                {
+                    if (checkPerm.Contains("IsApprove"))
+                    {
+                        <button class="btn btn-primary" name="submit" type="submit" id="submit" value="Submit For Approve By @checkPerm.Split(':')[3].Split(';')[0]"> Submit</button>
+                    }
+                }
+                @*@if (checkPerm.Contains("IsSubmit1"))
+                {
+                    <input class="btn btn-primary" name="submit" type="submit" id="submit" value="Submit For Review By @checkPerm.Split(':')[1].Split(';')[0]" />
+                }
+                else if (checkPerm.Contains("IsSubmit2"))
+                {
+                    <input class="btn btn-primary" name="submit" type="submit" id="submit" value="Submit For Review By @checkPerm.Split(':')[2].Split(';')[0]" />
+                }
+                else if (checkPerm.Contains("IsApprove"))
+                {
+                    <input class="btn btn-primary" name="submit" type="submit" id="submit" value="Submit For Approve By @checkPerm.Split(':')[3].Split(';')[0]" />
+                }*@
+                <input class="btn btn-primary" name="submit" type="submit" id="submit" value="Save" />
+            </div>
+        </div>
+    </div>
+}
+
+<div id="Editmember" class="modal fade" tabindex="-1" data-width="760">
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+        <h4 class="modal-title">Edit Personil</h4>
+    </div>
+    <div class="modal-body">
+        <div class="form-horizontal">
+            @Html.Hidden("idletter", @Model.ConsultingSuratPerintahID, new { @class = "form-control" })
+            @Html.Hidden("engname", @Model.EngagementName, new { @class = "form-control" })
+            <div class="form-group">
+                @Html.Label("Responsible Person", htmlAttributes: new { @class = "control-label col-md-4" })
+                <div class="col-md-6">
+                    @Html.TextBox("pic1", null, new { @class = "form-control", placeholder = "Auto Complete" })
+                    @Html.ValidationMessage("PICID", "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.Label("Supervisor", htmlAttributes: new { @class = "control-label col-md-4" })
+                <div class="col-md-6">
+                    @Html.TextBox("supervisor1", null, new { @class = "form-control", placeholder = "Auto Complete" })
+                    @Html.ValidationMessage("SupervisorID", "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.Label("Team Leader", htmlAttributes: new { @class = "control-label col-md-4" })
+                <div class="col-md-6">
+                    @Html.TextBox("leader1", null, new { @class = "form-control", placeholder = "Auto Complete" })
+                    @Html.ValidationMessage("TeamLeaderID", "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div id="MembersGroup">
+                <div class="form-group" id="memberdiv1">
+                    @Html.Label("Member 1", htmlAttributes: new { @class = "control-label col-md-4", @id = "questionlabel#1" })
+                    <div class="col-md-6">
+                        @Html.TextBox("member-1", null, new { @class = "form-control member", placeholder = "Auto Complete" })
+                    </div>
+                </div>
+            </div>
+
+            <script type="text/javascript">
+                $(function () {
+
+                    $('#members').autocomplete({
+                        source: '@Url.Action("AutocompleteMemBer")',
+                        appendTo: $("#Editmember"), change: function (event, ui) {
+                            if (!ui.item) {
+                                $(this).val("");
+                            }
+                        }
+                    });
+                    $('#pic1').autocomplete({
+                        source: '@Url.Action("AutocompleteCIA")',
+                        appendTo: $("#Editmember"), change: function (event, ui) {
+                            if (!ui.item) {
+                                $(this).val("");
+                            }
+                        }
+                    });
+                    $('#leader1').autocomplete({
+                        source: '@Url.Action("AutocompleteKetua")',
+                        appendTo: $("#Editmember"), change: function (event, ui) {
+                            if (!ui.item) {
+                                $(this).val("");
+                            }
+                        }
+                    });
+                    $('#supervisor1').autocomplete({
+                        source: '@Url.Action("AutocompletePengawas")',
+                        appendTo: $("#Editmember"), change: function (event, ui) {
+                            if (!ui.item) {
+                                $(this).val("");
+                            }
+                        }
+                    });
+                });
+            </script>
+
+
+
+            <div class="form-group">
+                <div class="col-md-offset-4 col-md-6">
+                    <a href="#" class="btn btn-sm green" id='addButton'><i class="fa fa-plus"></i>Add More Member</a>
+                    <a href="#" class="btn btn-sm red" id='removeButton'><i class="fa fa-times"></i>Remove Member</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button type="button" data-dismiss="modal" class="btn btn-outline dark">Close</button>
+        <button type="button" class="btn green" onclick="javascript: UpdatePersonil($('#pic1').val(), $('#supervisor1').val(), $('#leader1').val(), $('#engname').val(), $('#idletter').val());">Save</button>
+    </div>
+</div>
+
+
+<div id="Editdasar" class="modal fade" tabindex="-1" data-width="760">
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+        <h4 class="modal-title">Edit Dasar</h4>
+    </div>
+    <div class="modal-body">
+        <div class="form-horizontal">
+            @Html.Hidden("idletter", @Model.ConsultingSuratPerintahID, new { @class = "form-control" })
+            <div id="DasarGroup">
+                <div class="form-group" id="dasardiv1">
+                    @Html.Label("Dasar 1", htmlAttributes: new { @class = "control-label col-md-3", @id = "questionlabel#1" })
+                    <div class="col-md-7">
+                        @Html.TextBox("dasar-1", null, new { @class = "form-control" })
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="form-group">
+                <div class="col-md-offset-4 col-md-6">
+                    <a href="#" class="btn btn-sm green" id='addButtondasar'><i class="fa fa-plus"></i>Add More Dasar</a>
+                    <a href="#" class="btn btn-sm red" id='removeButtondasar'><i class="fa fa-times"></i>Remove Dasar</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button type="button" data-dismiss="modal" class="btn btn-outline dark">Close</button>
+        <button type="button" class="btn green" onclick="javascript: UpdateDasar($('#idletter').val());">Save</button>
+    </div>
+</div>
+
+<div id="Edituntuk" class="modal fade" tabindex="-1" data-width="760">
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+        <h4 class="modal-title">Edit Untuk</h4>
+    </div>
+    <div class="modal-body">
+        <div class="form-horizontal">
+            @Html.Hidden("idletter", @Model.ConsultingSuratPerintahID, new { @class = "form-control" })
+            <div id="UntukGroup">
+                <div class="form-group" id="untukdiv1">
+                    @Html.Label("Untuk 1", htmlAttributes: new { @class = "control-label col-md-3", @id = "questionlabel#1" })
+                    <div class="col-md-7">
+                        @Html.TextBox("untuk-1", null, new { @class = "form-control" })
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="form-group">
+                <div class="col-md-offset-4 col-md-6">
+                    <a href="#" class="btn btn-sm green" id='addButtonuntuk'><i class="fa fa-plus"></i>Add More Untuk</a>
+                    <a href="#" class="btn btn-sm red" id='removeButtonuntuk'><i class="fa fa-times"></i>Remove Untuk</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button type="button" data-dismiss="modal" class="btn btn-outline dark">Close</button>
+        <button type="button" class="btn green" onclick="javascript: UpdateUntuk($('#idletter').val());">Save</button>
+    </div>
+</div>
+
+<div id="Edittembusan" class="modal fade" tabindex="-1" data-width="760">
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+        <h4 class="modal-title">Edit Tembusan</h4>
+    </div>
+    <div class="modal-body">
+        <div class="form-horizontal">
+            @Html.Hidden("idletter", @Model.ConsultingSuratPerintahID, new { @class = "form-control" })
+            <div id="TembusanGroup">
+                <div class="form-group" id="tembusandiv1">
+                    @Html.Label("Tembusan 1", htmlAttributes: new { @class = "control-label col-md-3", @id = "questionlabel#1" })
+                    <div class="col-md-7">
+                        @Html.TextBox("tembusan-1", null, new { @class = "form-control" })
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="form-group">
+                <div class="col-md-offset-4 col-md-6">
+                    <a href="#" class="btn btn-sm green" id='addButtontembusan'><i class="fa fa-plus"></i>Add More Tembusan</a>
+                    <a href="#" class="btn btn-sm red" id='removeButtontembusan'><i class="fa fa-times"></i>Remove Tembusan</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button type="button" data-dismiss="modal" class="btn btn-outline dark">Close</button>
+        <button type="button" class="btn green" onclick="javascript: UpdateTembusan($('#idletter').val());">Save</button>
+    </div>
+</div>
+
+<script>
+    $(function () {
+        $('.member').autocomplete({
+            source: '@Url.Action("AutocompleteMember")', change: function (event, ui) {
+                if (!ui.item) {
+                    $(this).val("");
+                }
+            }
+        });
+        $('#PicID').autocomplete({
+            source: '@Url.Action("AutocompleteCIA")', change: function (event, ui) {
+                if (!ui.item) {
+                    $(this).val("");
+                }
+            }
+        });
+        $('#SupervisorID').autocomplete({
+            source: '@Url.Action("AutocompletePengawas")', change: function (event, ui) {
+                if (!ui.item) {
+                    $(this).val("");
+                }
+            }
+        });
+        $('#TeamLeaderID').autocomplete({
+            source: '@Url.Action("AutocompleteKetua")', change: function (event, ui) {
+                if (!ui.item) {
+                    $(this).val("");
+                }
+            }
+        });
+    })
+    @{ string mmb = ViewBag.Member != null ? ViewBag.Member : "0"; }
+    var counter = 1;
+    counter = @mmb.Split(';').Count();
+    function removeMember(idx) {
+        $("#memberdiv-" + idx).remove();
+    }
+    $(document).ready(function () {
+        $("#addButtonmemberconsulting").click(function () {
+            if (counter > 10) {
+                alert("Maksimal 10 Member");
+                return false;
+            }
+            var newTextBoxDiv = $(document.createElement('div'))
+                  .attr("id", 'memberdiv-' + counter).addClass("form-group");
+            var html = '<label class = "control-label col-md-2"></label>' +
+                '<a href="#" class="btn btn-sm red" onclick="removeMember(' + counter + ');"><i class="fa fa-times"></i></a>' +
+                '<div class="col-md-5"><input name="member" id="member-' + counter +
+                '" value="" class="form-control member" type="text" placeholder = "Auto Complete" >';
+
+
+            newTextBoxDiv.after().html(html);
+            newTextBoxDiv.appendTo("#MembersGroup");
+            counter++;
+            $('.member').autocomplete({
+                source: '@Url.Action("AutocompleteMember")',
+                appendTo: $("#MembersGroup"), change: function (event, ui) {
+                    if (!ui.item) {
+                        $(this).val("");
+                    }
+                }
+            });
+        });
+        $("#removeButtonmemberconsulting").click(function () {
+            if (counter == 1) {
+                alert("No more Member to remove");
+                return false;
+            }
+            counter--;
+            $("#memberdiv-" + counter).remove();
+        });
+    });
+
+    @{ string dsr = ViewBag.Dasar != null ? ViewBag.Dasar : "0"; }
+    var countersdsr = 1;
+    countersdsr = @dsr.Split(';').Count();
+    function removeDasar(idx) {
+        $("#dasardiv-" + idx).remove();
+    }
+    $(document).ready(function () {
+        $("#addButtondasarconsulting").click(function () {
+            if (countersdsr > 10) {
+                alert("Maksimal 10 Dasar");
+                return false;
+            }
+            var newTextBoxDiv = $(document.createElement('div'))
+                  .attr("id", 'dasardiv-' + countersdsr).addClass("form-group");
+            var html = '<label class = "control-label col-md-2"></label>' +
+                '<a href="#" class="btn btn-sm red" onclick="removeDasar(' + countersdsr + ');"><i class="fa fa-times"></i></a>' +
+                '<div class="col-md-5"><input name="dasar" id="dasar-' + countersdsr +
+                '" value="" class="form-control" type="text" >';
+
+            newTextBoxDiv.after().html(html);
+            newTextBoxDiv.appendTo("#DasarsGroup");
+            countersdsr++;
+        });
+        $("#removeButtondasarconsulting").click(function () {
+            if (countersdsr == 1) {
+                alert("No more Dasar to remove");
+                return false;
+            }
+            countersdsr--;
+            $("#dasardiv-" + countersdsr).remove();
+        });
+    });
+
+    @{ string utk = ViewBag.Untuk != null ? ViewBag.Untuk : "0"; }
+    var countersutk = 1;
+    countersutk = @utk.Split(';').Count();
+    function removeUntuk(idx) {
+        $("#untukdiv" + idx).remove();
+    }
+    $(document).ready(function () {
+        $("#addButtonuntukconsulting").click(function () {
+            if (countersutk > 10) {
+                alert("Maksimal 10 Untuk");
+                return false;
+            }
+            var newTextBoxDiv = $(document.createElement('div'))
+                 .attr("id", 'untukdiv' + countersutk).addClass("form-group");
+            var html = '<label class = "control-label col-md-2"></label>' +
+                '<a href="#" class="btn btn-sm red" onclick="removeUntuk(' + countersdsr + ');"><i class="fa fa-times"></i></a>' +
+                '<div class="col-md-5"><input name="untuk" id="untuk-' + countersutk +
+                '" value="" class="form-control" type="text" >';
+
+
+            newTextBoxDiv.after().html(html);
+            newTextBoxDiv.appendTo("#UntuksGroup");
+            countersutk++;
+
+        });
+        $("#removeButtonuntukconsulting").click(function () {
+            if (countersutk == 1) {
+                alert("No more Untuk to remove");
+                return false;
+            }
+            countersutk--;
+            $("#untukdiv-" + countersutk).remove();
+        });
+    });
+
+    @{ string tsn = ViewBag.Tembusan != null ? ViewBag.Tembusan : "0"; }
+    var counterstsn = 1;
+    counterstsn = @tsn.Split(';').Count();
+    function removeTembusan(idx) {
+        $("#tembusandiv" + idx).remove();
+    }
+    $(document).ready(function () {
+        $("#addButtontembusanconsulting").click(function () {
+            if (counterstsn > 10) {
+                alert("Maksimal 10 Tembusan");
+                return false;
+            }
+            var newTextBoxDiv = $(document.createElement('div'))
+                 .attr("id", 'tembusandiv' + counterstsn).addClass("form-group");
+            var html = '<label class = "control-label col-md-2"></label>' +
+                '<a href="#" class="btn btn-sm red" onclick="removeTembusan(' + counterstsn + ');"><i class="fa fa-times"></i></a>' +
+                '<div class="col-md-5"><input name="tembusan" id="tembusan-' + counterstsn +
+                '" value="" class="form-control" type="text" >';
+
+
+            newTextBoxDiv.after().html(html);
+            newTextBoxDiv.appendTo("#TembusansGroup");
+            counterstsn++;
+
+        });
+        $("#removeButtontembusanconsulting").click(function () {
+            if (counterstsn == 1) {
+                alert("No more Tembusan to remove");
+                return false;
+            }
+            counterstsn--;
+            $("#tembusandiv-" + counterstsn).remove();
+        });
+    });
+
+    function UpdatePersonil(_emp_pic, _emp_supervisor, _emp_leader, _engname, _idletter) {
+
+        var _members = ""
+        for (i = 1; i < counter; i++) {
+            if (counter == (i + 1)) {
+                _members += $("#member-" + i).val() 
+            } else {
+                _members += $("#member-" + i).val() + ";"
+            }
+           
+        }
+        //alert(_members)
+        $.ajax({
+            url: "/ConsultingLetterOfCommands/UpdatePersonil/",
+            data: {
+
+                pic: _emp_pic,
+                supervisor: _emp_supervisor,
+                leader: _emp_leader,
+                member: _members,
+                engagementname: _engname,
+                id: _idletter,
+
+            },
+            cache: false,
+            type: "POST",
+            success: function (data) {
+                $('#Editmember').modal('hide');
+                location.reload();
+            },
+            error: function (reponse) {
+                alert("error : " + reponse + "-" + data);
+            }
+        });
+    }
+
+    function UpdateDasar( _idletter) {
+
+        var _dasar = ""
+        for (i = 1; i < countersdsr; i++) {
+            if (countersdsr == (i + 1)) {
+                _dasar += $("#dasar-" + i).val()
+            }
+            else {
+                _dasar += $("#dasar-" + i).val() + ";"
+            }
+        }
+        $.ajax({
+            url: "/ConsultingLetterOfCommands/UpdateDasar/",
+            data: {
+
+                dasar: _dasar,
+                id: _idletter,
+
+            },
+            cache: false,
+            type: "POST",
+            success: function (data) {
+                $('#Editdasar').modal('hide');
+                location.reload();
+            },
+            error: function (reponse) {
+                alert("error : " + reponse + "-" + data);
+            }
+        });
+    }
+
+    function UpdateUntuk(_idletter) {
+
+        var _untuk = ""
+        for (i = 1; i < countersutk; i++) {
+            if (countersutk == (i + 1)) {
+                _untuk += $("#untuk-" + i).val()
+            }
+            else {
+                _untuk += $("#untuk-" + i).val() + ";"
+            }
+        }
+        $.ajax({
+            url: "/ConsultingLetterOfCommands/UpdateUntuk/",
+            data: {
+
+                untuk: _untuk,
+                id: _idletter,
+
+            },
+            cache: false,
+            type: "POST",
+            success: function (data) {
+                $('#Edituntuk').modal('hide');
+                location.reload();
+            },
+            error: function (reponse) {
+                alert("error : " + reponse + "-" + data);
+            }
+        });
+    }
+
+    function UpdateTembusan(_idletter) {
+
+        var _tembusan = ""
+        for (i = 1; i < counterstsn; i++) {
+            if (counterstsn == (i + 1)) {
+                _tembusan += $("#tembusan-" + i).val() 
+            }
+            else {
+                _tembusan += $("#tembusan-" + i).val() + ";"
+            }
+        }
+        $.ajax({
+            url: "/ConsultingLetterOfCommands/UpdateTembusan/",
+            data: {
+
+                tembusan: _tembusan,
+                id: _idletter,
+
+            },
+            cache: false,
+            type: "POST",
+            success: function (data) {
+                $('#Edittembusan').modal('hide');
+                location.reload();
+            },
+            error: function (reponse) {
+                alert("error : " + reponse + "-" + data);
+            }
+        });
+    }
+</script>
+
+
+<div>
+    @Html.ActionLink("Back to List", "Index")
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+<script type="text/javascript">
+    $("#cspform").validate({
+        errorLabelContainer: $("ul", $('div.error-container')),
+        wrapper: 'li',
+        rules: {
+            NomorSP: "required",
+            ConsultingRequest: "required",
+            ActivityName: "required",
+            EngagementName: "required",
+            Remarks: "required",
+            StartDate: "required",
+            EndDate: "required",
+            PicID: "required",
+            SupervisorID: "required",
+            TeamLeaderID: "required",
+            member: "required",
+            dasar: "required",
+            Menimbang: "required",
+            untuk: "required",
+            Penutup: "required",
+            tembusan: "required",
+        },
+        messages: {
+            NomorSP: "Please enter Nomor SP",
+            ConsultingRequest: "Please enter Consulting Request",
+            ActivityName: "Please enter Acitivity",
+            EngagementName: "Please enter Engagement Name",
+            Remarks: "Please enter Remarks",
+            StartDate: "Please enter Start Date",
+            EndDate: "Please enter End Date",
+            PicID: "Please enter Responsible Person",
+            SupervisorID: "Please enter Supervisor",
+            TeamLeaderID: "Please enter Team Leader",
+            member: "Please enter Member",
+            dasar: "Please enter Dasar",
+            Menimbang: "Please enter Menimbang",
+            untuk: "Please enter Untuk",
+            Penutup: "Please enter Penutup",
+            tembusan: "Please enter Tembusan",
+        }
+    });
+</script>
+}

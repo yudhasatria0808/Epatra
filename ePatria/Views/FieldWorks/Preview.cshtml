@@ -1,0 +1,91 @@
+﻿@model ePatria.Models.AuditQuery
+
+@{
+    ViewBag.Title = "About";
+}
+
+@if (ViewBag.WordDocumentMode == null || !ViewBag.WordDocumentMode)
+{
+    <h2>@ViewBag.Title.</h2>
+<h3>@ViewBag.Message</h3>
+}
+<table border="0" style="width: 100%">
+    <tr>
+        <td width="66.5%"><b>AUDIT QUERY</b></td>
+        <td>
+            <img src="http://www.pertaminapatraniaga.com/themes/patra/images/logo_patraniaga.png" alt="ePatria" height="50" width="175"></td>
+    </tr>
+</table>
+<hr />
+
+<table border="0" style="width: 100%">
+    <tr>
+        <td width="15%">Nomor</td>
+        <td>: @Html.DisplayFor(model => model.No)</td>
+    </tr>
+    <tr>
+        <td width="15%">Tanggal</td>
+        <td>: @Html.DisplayFor(model => model.Tanggal)</td>
+    </tr>
+    <tr>
+        <td valign="top" width="15%">Kepada</td>
+        <td>
+            @{var m = 0;}
+                : @foreach (var k in ViewBag.Kepada.Split(';')) {
+                    m++;
+                    string mem = ViewBag.Kepada;
+                    if (m < mem.Split(';').Count()) {
+                    <a>@m.&nbsp;@k</a><br /><a>&nbsp;</a>
+                    }
+                }
+        </td>
+    </tr>
+    <tr>
+        <td width="15%">Dari</td>
+        <td>: @Html.Raw(ViewBag.dari)</td>
+    </tr>
+    <tr>
+        <td width="15%">Perihal</td>
+        <td>: <b>Audit Query</b>&nbsp;@Html.DisplayFor(model => model.Perihal)</td>
+    </tr>
+</table>
+<br />
+<p>Sehubungan dengan penugasan kami Ref. Surat Perintah Chief Audit Executive No.Prin @Html.Raw(ViewBag.spPrint) tanggal @Html.DisplayFor(model => model.Tanggal) perihal @Html.DisplayFor(model => model.Perihal), kami bermaksud untuk meminta klarifikasi atas permasalahan berikut:</p>
+<table border="1" style="width: 100%">
+    <tr>
+        <td style= "border-right-style: none;padding-left:5px" width="30%"><b>Issue Name</b></td>
+        <td style= "padding-left:5px"><b>@Html.DisplayFor(model => model.Perihal)</b></td>
+    </tr>
+    <tr>
+        <td style= "border-right-style: none;padding-left:5px" width="30%"><b>Issue Description</b></td>
+        <td style= "padding-left:5px">@Html.Raw(Model.IssueDesc.Replace("\n","<br />"))</td>
+    </tr>
+    <tr>
+        <td style= "border-right-style: none;padding-left:5px" width="30%"><b>Criteria</b></td>
+        <td style= "padding-left:5px">Seharusnya,&nbsp;@Html.Raw(Model.Criteria.Replace("\n","<br />"))</td>
+    </tr>
+    <tr>
+        <td style= "border-right-style: none;padding-left:5px" width="30%"><b>Impact</b></td>
+        <td style= "padding-left:5px">@Html.Raw(Model.Impact.Replace("\n","<br />"))</td>
+    </tr>
+
+    <tr>
+        <td style= "border-right-style: none;padding-left:5px" width="30%"><b>Auditee Clarification</b></td>
+        <td style= "padding-left:5px">@Html.Raw(Model.AuditeeClarification.Replace("\n","<br />"))</td>
+    </tr>
+</table>
+<p>
+Penjelasan klarifikasi dapat disampaikan melalui <b>memo berikut lampiran bukti pendukung (<i>softcopy</i> bila ada)</b>.  Diharapkan dapat kami terima selambatnya hari @HelperController.convertDay(Convert.ToDateTime(Model.Tanggal).ToString("dddd")) tanggal @Html.DisplayFor(model => model.Tanggal). Demikian disampaikan, atas perhatian dan kerjasamanya, kami mengucapkan terima kasih.
+</p>
+<br />
+<p>Ketua Tim Audit,</p>
+<br />
+<br />
+<br />
+<p>....</p>
+<style>
+    table, th, td
+    {
+        border-collapse: collapse;
+    }
+</style>

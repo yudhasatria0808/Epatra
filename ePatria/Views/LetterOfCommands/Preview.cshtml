@@ -1,0 +1,182 @@
+﻿@model ePatria.Models.LetterOfCommand
+
+@if (ViewBag.WordDocumentMode == null || !ViewBag.WordDocumentMode)
+{
+    <h2>@ViewBag.Title.</h2>
+<h3>@ViewBag.Message</h3>
+}
+<table border="0" style="width: 100%">
+    <tr>
+        <td align="right" width="33.5%">
+            <img src="http://www.pertaminapatraniaga.com/themes/patra/images/logo_patraniaga.png" alt="ePatria" height="50" width="175"></td>
+    </tr>
+</table>
+<br />
+<br />
+<table border="0" style="width: 100%">
+    <tr>
+        <td width="0%">&nbsp;</td>
+        <center>
+            <td><u><b>SURAT PERINTAH</u><br />
+        </center>
+        <center>
+            No. @Html.DisplayFor(model => model.NomorSP)</b></td>
+        </center>
+    </tr>
+</table>
+<br />
+<table border="0" style="width: 100%">
+    <tr>
+       <center>
+        <td><b>TENTANG</b></td>
+       </center>
+    </tr>
+</table>
+<table border="0" style="width: 100%">
+    <tr>
+       <td width="0%">&nbsp;</td>
+        <center>
+        <td><b>@Html.DisplayFor(model => model.Activity.Name)</b></td>
+        </center>
+    </tr>
+</table>
+<br />
+<table border="0" style="width: 100%">
+    <tr>
+        <td width="0%">&nbsp;</td>
+        <center>
+        <td><b>CHIEF INTERNAL AUDIT</b></td>
+        </center>
+    </tr>
+</table>
+<br />
+<table border="0" style="width: 100%">
+    <tr>
+        <b><td valign="top" width="0%">Menimbang:</td></b>
+        <td style="padding-left:28px">
+                @Html.Raw(Model.Menimbang.Replace("\n","<br />"))
+        </td>
+    </tr>
+</table>
+<br />
+<table border="0" style="width: 100%">
+    <tr>
+        <center>
+            <b><td>MEMERINTAHKAN</td></b>
+        </center>
+    </tr>
+</table>
+<br />
+<table border="0" style="width: 100%">
+    <tr>
+        <b><td valign="top" width="18%">Kepada:</td></b>
+        <td>
+                <table border="0">
+                    @{var m = 0; var i = 0;}
+                    @foreach (var member in ViewBag.MemberName.Split(';')) {
+                        m++;
+                        i++;
+                        string mem = ViewBag.MemberName;
+                        if (m < mem.Split(';').Count()) {
+                        <tr>
+                            <td style="padding-left:4px">@i.</td>
+                            <td style="padding-left:8px">@Html.Raw(member)</td>
+                            <td style="padding-left:150px">- @Model.getNoPekEmpByName(member)</td>
+                            <td style="padding-left:10px">@Model.getRoleNameByEmpName(member)</td>
+                        </tr>
+                        
+                        }
+                    }
+                    <tr>
+                        <td style="padding-left:4px">@i.</td>
+                        <td style="padding-left:8px">@Html.DisplayFor(model => model.SupervisorID)</td>
+                        <td style="padding-left:150px">- @Model.getNoPekEmpByName(@Model.SupervisorID)</td>
+                        <td style="padding-left:10px">@Model.getRoleNameByEmpName(@Model.SupervisorID)</td>
+                    </tr>
+                    <tr>
+                        @{i++;}
+                        <td style="padding-left:4px">@i.</td>
+                        <td style="padding-left:8px">@Html.DisplayFor(model => model.TeamLeaderID)</td>
+                        <td style="padding-left:150px">- @Model.getNoPekEmpByName(@Model.TeamLeaderID)</td>
+                        <td style="padding-left:10px">@Model.getRoleNameByEmpName(@Model.TeamLeaderID)</td>
+                </table>
+        </td>
+    </tr>
+</table>
+<br />
+<table border="0" style="width: 100%">
+    <tr>
+        <b><td valign="top" width="15%">Untuk:</td></b>
+        <td>
+            <ol>
+                @{var y = 0;}
+                @foreach (var untuk in ViewBag.Untuk.Split(';')) {
+                    y++;
+                    string uk = ViewBag.Untuk;
+                    if (y < uk.Split(';').Count()) {
+                    <li>@Html.Raw(untuk)</li>
+                    }
+                }
+            </ol>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a>Surat Perintah ini berlaku terhitung mulai tanggal ditetapkan.</a><br />
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a>Agar surat perintah ini dilaksanakan dengan penuh rasa tanggung jawab.</a>
+        </td>
+    </tr>
+</table>
+<br />
+<br />
+
+<table border="0" style="width: 100%">
+    <tr>
+        <center>
+        <td width="0px">Ditetapkan di Jakarta<br /> Pada tanggal  @DateTime.Now.ToShortDateString()<br /></td>
+        </center>
+    </tr>
+</table>
+<hr />
+<table border="0" style="width: 100%">
+    <tr>
+        <center>
+        <td width="0px">Chief Internal Audit,</td>
+        </center>
+    </tr>
+</table>
+<br />
+<br />
+<br />
+<table border="0" style="width: 100%">
+    <tr
+        <center>
+        <b><td width="0px">@Html.DisplayFor(model => model.PICID)</td></b>
+        </center>
+    </tr>
+</table>
+<br />
+<br />
+<br />
+<b><p>Tembusan:</p></b>
+<table border="0" style="width: 100%">
+    <tr>
+        <td><ol>
+                @{var z = 0;}
+                @foreach (var tembusan in ViewBag.Tembusan.Split(';')) {
+                    z++;
+                    string ts = ViewBag.Tembusan;
+                    if (z < ts.Split(';').Count()) {
+                    <li>@Html.Raw(tembusan)</li>
+                    }
+                }        
+            </ol>
+        </td>
+    </tr>
+</table>
+<style>
+    table, th, td
+    {
+        border-collapse: collapse;
+    }
+    .dinosaurs li a {
+  position: absolute;
+  left: 30px;
+}
+</style>

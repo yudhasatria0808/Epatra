@@ -1,0 +1,293 @@
+﻿@model ePatria.Models.ExitMeeting
+
+@{
+    ViewBag.Title = "About";
+}
+
+@if (ViewBag.WordDocumentMode == null || !ViewBag.WordDocumentMode)
+{
+    <h2>@ViewBag.Title.</h2>
+<h3>@ViewBag.Message</h3>
+}
+<table border="0" style="width: 100%">
+    <tr>
+        <td width="66.5%"><b>MATRIX EXIT MEETING</b></td>
+        <div style="text-align: right;">
+            <td><img src="http://www.pertaminapatraniaga.com/themes/patra/images/logo_patraniaga.png" alt="ePatria" height="50" width="175"></td>
+        </div>
+    </tr>
+</table>
+<br />
+<center>
+    <span>Audit Atas @Html.DisplayFor(model => model.Activity.Name)</span><br />
+    <span>Jakarta, tgl @DateTime.Now.ToShortDateString() </span>
+</center>
+<br />
+<br />
+<table border="1" style="width: 100%">
+    <tr>
+        <td style= "padding-left:5px">ACARA</td>
+        <td style= "padding-left:5px" colspan ="2">: Exit Meeting Audit @Html.DisplayFor(model => model.Activity.Name)</td>
+    </tr>
+    <tr>
+        <td style= "padding-left:5px">TANGGAL DAN WAKTU RAPAT</td>
+        <td style= "padding-left:5px" colspan ="2">: @HelperController.convertDay(Convert.ToDateTime(Model.Date_Start).ToString("dddd")), @Convert.ToDateTime(Model.Date_Start).ToString("dd/MM/yyyy / Pukul HH:mm") WIB </td>
+    </tr>
+    <tr>
+        <td style= "padding-left:5px">TEMPAT</td>
+        <td style= "padding-left:5px" colspan= "2">: Ruang Meeting ...</td>
+    </tr>
+    <tr>
+        <td style= "padding-left:5px">TANGGAL PENYUSUNAN</td>
+        <td style= "padding-left:5px" colspan ="2">: @HelperController.convertDay(DateTime.Now.ToString("dddd")), @DateTime.Now.ToShortDateString()</td>
+    </tr>
+    <tr>
+        <td style= "padding-left:5px;vertical-align:top;padding-top:3px">PESERTA RAPAT</td>
+        <td valign="top" width="17.5%" style= "border-right-style: none;padding-left:5px;padding-top:3px">
+            1.CIA <br />
+            2.Pengawas<br />
+            3.Ketua Tim<br />
+            4.Member
+        </td>
+        <td style= "border-left-style: none;padding-left:5px;padding-top:3px">
+            :&nbsp;&nbsp;@Html.DisplayFor(model => model.LetterOfCommand.PICID)<br />
+            :&nbsp;&nbsp;@Html.DisplayFor(model => model.LetterOfCommand.SupervisorID)<br />
+            :&nbsp;&nbsp;@Html.DisplayFor(model => model.LetterOfCommand.TeamLeaderID)<br />
+                @{var mb = 0;}
+                @foreach (var item in Model.LetterOfCommand.MemberID.Split(';')) {
+                mb++;
+                string mems = Model.LetterOfCommand.MemberID;
+                if (mb < mems.Split(';').Count()) {
+                <a>:&nbsp;&nbsp;-&nbsp;&nbsp;@item<br /></a>
+             }
+             }
+        </td>
+    </tr>
+    <tr>
+        <td style= "padding-left:5px">JUMLAH ISSUE</td>
+        <td style= "padding-left:5px" colspan="2">: @Html.Raw(ViewBag.CountAllIssues) Issue</td>
+    </tr>
+    <tr>
+        <td style= "padding-left:5px;vertical-align:top;padding-top:3px">STATUS ISSUE</td>
+        <td style= "padding-left:5px;padding-top:3px" colspan="2">- Selesai = @Html.Raw(ViewBag.CountIssueDone) Issues<br />
+            - Belum Selesai = @Html.Raw(ViewBag.CountIssueNotDone) Issues
+        </td>
+    </tr>
+</table>
+<br />
+
+<table border="1" style="width: 100%">
+    <thead>
+        <tr>
+            <th style= "padding-left:5px">No 
+            </th>
+            <th style= "padding-left:5px">Permasalahan
+            </th>
+            <th style= "padding-left:5px">Rekomendasi
+            </th>
+            <th style= "padding-left:5px">Tanggapan Manajemen & Auditor
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @{ int i = 0; }
+        @foreach (var item in ViewBag.Issues)
+        {
+        i++;
+        <tr>
+            <td style= "padding-left:5px" valign="top">@i.</td>
+            <td style= "padding-left:5px" valign="top">
+                <b>Judul :</b>
+                <a><br />@item.Title</a>
+                @if (item.Signification == "High")
+                {
+                    <br />
+                    <br />
+                        <a><b>Signifikansi : </b></a>
+                    <br />
+                        <a>&#9632; High &nbsp; &#9633 Medium  &nbsp; &#9633 Low </a>
+                    <br />
+                }
+                else if (item.Signification == "Medium") 
+                {
+                    <br />
+                    <br />
+                        <a><b>Signifikansi : </b></a>
+                    <br />
+                        <a>&#9633; High &nbsp; &#9632 Medium  &nbsp; &#9633 Low </a>
+                    <br />
+                }
+                else if (item.Signification == "Low")
+                {
+                    <br />
+                    <br />
+                        <a><b>Signifikansi : </b></a>
+                    <br />
+                        <a>&#9633; High &nbsp; &#9633 Medium  &nbsp; &#9632 Low </a>
+                    <br />
+                }
+                else
+                {
+                    <br />
+                    <br />
+                        <a><b>Signifikansi : </b></a>
+                    <br />
+                        <a>&#9633; High &nbsp; &#9633 Medium  &nbsp; &#9633 Low </a>
+                    <br />
+                }
+                    <br />
+                        <b>Kondisi :</b>
+                        <a>@Html.Raw(item.Fact.Replace("\n","<br />"))</a>
+                    <br />
+                        <b>Kriteria :</b>
+                        <a>@Html.Raw(item.Criteria.Replace("\n","<br />"))</a>
+                    <br />
+                        <b>Sebab :</b>
+                        <a>@Html.Raw(item.Cause.Replace("\n","<br />"))</a>
+                    <br />
+                        <b>Akibat :</b>
+                        <a>@Html.Raw(item.Impact.Replace("\n","<br />"))</a>
+            </td>
+            <td style= "padding-left:5px">
+                <b>Rekomendasi :</b>
+                <a>@Html.Raw(item.Recommendation.Replace("\n","<br />"))</a>
+            </td>
+            <td style= "padding-left:5px">
+            @if (item.Status == "Done")
+                {
+                    <br />
+                    <br />
+                        <a><b>Status : </b></a>
+                    <br />
+                        <a>&#9632; Selesai &nbsp; &#9633 Belum Selesai </a>
+                    <br />
+                }
+                else 
+                {
+                    <br />
+                    <br />
+                        <a><b>Status : </b></a>
+                    <br />
+                        <a>&#9633; Selesai &nbsp; &#9632 Belum Selesai </a>
+                    <br />
+                }
+            <br />
+                <b>Tindak Lanjut Dan Deliverable :</b>
+                <a>@Html.Raw(item.ManagementResponse.Replace("\n","<br />"))</a>
+            <br />
+                <b>End Date:</b> 
+                <a>@Html.Raw(item.Due_Date)</a>
+            <br />
+            <br />
+                <b>PIC :</b> 
+                <a>@Html.Raw(item.PICID)</a>
+            <br />
+            <br />
+                <a>VP ...</a>
+            </td>                    
+        </tr>                
+        }
+    </tbody>
+</table>
+<p>Seluruh Substansi Issue telah dibahas dan disepakati bersama:</p>
+<table border="1" style="width: 100%">
+    <thead>
+        <tr>
+            <center>
+            <td style= "padding-left:5px" colspan="3"><strong>Tim Internal Audit,</strong>
+            </td>
+            </center>
+        </tr>
+        <tr>
+            <center>
+            <td style= "padding-left:5px">Penanggung Jawab</td>
+            <td style= "padding-left:5px">Pengawas Team</td>
+            <td style= "padding-left:5px">Ketua Team</td>
+            </center>
+        </tr>
+        <tr>
+            <td>
+                <br />
+                <br />
+                <br />
+            </td>
+            <td>
+                <br />
+                <br />
+                <br />
+            </td>
+            <td>
+                <br />
+                <br />
+                <br />
+            </td>
+        </tr>
+        <tr>
+            <center>
+            <td style= "padding-left:5px" width="33.3%">@Html.DisplayFor(model => model.LetterOfCommand.PICID)
+            </td>
+            <td style= "padding-left:5px" width="33.3%">@Html.DisplayFor(model => model.LetterOfCommand.SupervisorID)
+            </td>
+            <td style= "padding-left:5px" width="33.3%">@Html.DisplayFor(model => model.LetterOfCommand.TeamLeaderID)
+            </td>
+            </center>
+        </tr>
+    </thead>
+    <tbody></tbody>
+</table>
+<br />
+<table border="1" style="width: 100%">
+@{string mem = Model.LetterOfCommand.AuditPlanningMemorandum.Preliminary.EmployeeID;
+int memCount = mem.Split(';').Count() - 1;}
+        <tr>
+            <center>
+            <td style= "padding-left:5px" colspan="@memCount"><strong>Auditee,</strong>
+            </td>
+            </center>
+        </tr>
+
+        <tr>
+        @{var m = 0; var n = 0; var o = 0;}
+                @foreach (var item in Model.LetterOfCommand.AuditPlanningMemorandum.Preliminary.EmployeeID.Split(';')) {
+                    m++;
+                    if (m < mem.Split(';').Count()) {
+                        <center>
+                        <td style= "padding-left:5px">VP ...</td>
+                        </center>
+                    }
+                }
+        </tr>
+                <tr>
+                @foreach (var item in Model.LetterOfCommand.AuditPlanningMemorandum.Preliminary.EmployeeID.Split(';')) {
+                    n++;
+                    if (n < mem.Split(';').Count()) {
+                        <td>
+                            <br />
+                            <br />
+                            <br />
+                        </td>
+                    }
+                }
+                </tr>
+                <tr>
+                @{int width = 100/(mem.Split(';').Count() - 1);}
+                @foreach (var item in Model.LetterOfCommand.AuditPlanningMemorandum.Preliminary.EmployeeID.Split(';')) {
+                    o++;
+                    if (o < mem.Split(';').Count()) {
+                        <center>
+                        <td style="width:@width%;padding-left:5px">
+                        <label>@item</label>
+                        </td>
+                        </center>
+                    }
+                }
+                </tr>
+</table>
+
+
+<style>
+    table, th, td
+    {
+        border-collapse: collapse;
+    }
+</style>

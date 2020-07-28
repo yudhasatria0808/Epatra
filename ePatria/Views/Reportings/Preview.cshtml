@@ -1,0 +1,201 @@
+﻿@model ePatria.Models.Reporting
+
+@if (ViewBag.WordDocumentMode == null || !ViewBag.WordDocumentMode)
+{
+    <h2>@ViewBag.Title.</h2>
+<h3>@ViewBag.Message</h3>
+}
+
+<table border="0" style="width: 100%">
+    <tr>
+        <td align="right" width="33.5%">
+            <img src="http://www.pertaminapatraniaga.com/themes/patra/images/logo_patraniaga.png" alt="ePatria" height="50" width="175">
+        </td>
+
+    </tr>
+    <tr>
+</table>
+
+<table border="0" style="width: 100%">
+    <center>
+    <td>
+        <span style="margin-left: 280px;"><b>LAPORAN HASIL AUDIT</b></span>
+    </td>
+    </center>
+</table>
+<hr />
+<table border="0" style="width: 100%">
+    <tr>
+        <center>
+        <td><b>BAB I</b><br />
+            <b>HASIL AUDIT</b>
+        </td>
+        </center>
+    </tr>
+</table>
+<br />
+<table border="0" style="width: 100%">
+    <tr>
+        <td>1.</td>
+        <td><b>Dasar Audit</b></td>
+    </tr>
+    <tr>
+        <td></td>
+        <td>Surat Perintah Chief Audit Executive <i>nomor [@Html.Raw(ViewBag.fieldLetterNo)]</i> tanggal  @Html.Raw(ViewBag.dateLetterLHA.ToShortDateString())
+        </td>
+    </tr>
+    <br />
+    <tr>
+        <td>2.</td>
+        <td><b>Tujuan Audit</b></td>
+    </tr>
+    <tr>
+        <td></td>
+        <td>@Html.Raw(ViewBag.auditDestination)
+        </td>
+    </tr>
+    <br />
+    <tr>
+        <td>3.</td>
+        <td><b>Ruang Lingkup</b></td>
+    </tr>
+    <tr>
+        <td></td>
+        <td>@Html.Raw(ViewBag.rlDestination)
+        </td>
+    </tr>
+    <br />
+    <tr>
+        <td>4.</td>
+        <td><b>Informasi Manajemen</b></td>
+    </tr>
+    <tr>
+        <td></td>
+        <td><br /> &nbsp;
+        </td>
+    </tr>
+    <tr>
+        <td>5.</td>
+        <td><b>Kesimpulan</b></td>
+    </tr>
+    <tr>
+        <td></td>
+        <td><br /> &nbsp;
+        </td>
+    </tr>
+</table>
+<br />
+<br style="page-break-before: always">
+<table border="0" style="width: 100%">
+    <tr>
+        <center>
+        <td><b>BAB II</b><br />
+            <b><i>AREA OF IMPROVEMENT</i></b></td>
+        </center>
+    </tr>
+</table>
+<br />
+<table border="1" style="width: 100%">
+    <tr>
+        <center>
+        <td style="padding-left:5px" width="10%"><b>1.</td>
+        </center>
+        <td style="padding-left:5px" colspan="3">@Html.Raw(ViewBag.issueName)</b></td>
+    </tr>
+    <tr>
+        <td style="padding-left:5px" colspan="4">
+            <b>Fakta</b>
+            <a>@Html.Raw(ViewBag.issueDesc.Replace("\n","<br />"))</a>
+        </td>
+    </tr>
+    <tr>
+        <td style="padding-left:5px" colspan="4">
+            <b>Implikasi</b>
+            <a>@Html.Raw(ViewBag.impact.Replace("\n","<br />"))</a>
+        </td>
+    </tr>
+    <tr>
+        <td style="padding-left:5px" colspan="4">
+            <b>Signifikansi</b><br /><br />
+            @if (ViewBag.signifikasi.ToLower() == "high")
+            {
+                <a>&#9632; High &nbsp; &#9633 Medium  &nbsp; &#9633 Low</a>
+                <br />
+            } 
+            else if (ViewBag.signifikasi.ToLower() == "medium")
+            {
+                <a>&#9633; High &nbsp; &#9632 Medium  &nbsp; &#9633 Low</a>
+                <br /><br />
+            }
+            else 
+            {
+                <a>&#9633; High &nbsp; &#9633 Medium  &nbsp; &#9632 Low</a>
+                <br />
+            }
+        </td>
+    </tr>
+    <tr>
+        <td style="padding-left:5px" colspan="4">
+            <b>Rekomendasi</b><br />
+            <a>@Html.Raw(ViewBag.recommend.Replace("\n","<br />"))</a>
+        </td>
+    </tr>
+    <tr>
+        <td style="padding-left:5px;border-bottom:none" colspan="2" width="50%">
+            <b>Tanggapan Manajemen</b><br />
+        </td>
+        <center>
+        <td style="padding-left:5px" colspan="2" width="50%">
+            <b>Diimplementasikan</b>
+        </td>
+        </center> 
+    </tr>
+    <tr>
+        <td style="padding-left:5px;border-top:none" colspan="2">
+        @if (ViewBag.statusManagement.ToLower() != "disagree")
+            {
+                <a>&#9632; Setuju &nbsp; &#9633 Tidak Setuju</a>
+            } else {
+                <a>&#9633; Setuju &nbsp; &#9632 Tidak Setuju</a>
+            }
+            @Html.Raw(ViewBag.responManagement.Replace("\n","<br />"))
+        </td>
+        <td style="padding-left:5px" valign="top" width="25%">
+            <center>
+            <b>Oleh:</b><br /><br />
+            </center>
+        </td>
+        <td style="padding-left:5px" valign="top">
+            <center>
+            <b>Batas waktu:</b><br /><br>
+            <a>@Html.Raw(ViewBag.dueDate)</a>
+            </center>
+        </td>
+    </tr> 
+</table>
+
+<br />
+<table border="0">
+    <tr>
+        <td style="padding-left:5px">Jakarta, @DateTime.Now.ToShortDateString()
+        <br />
+            Penanggung Jawab Tim Audit
+        <br />
+        <br />
+        <br />
+        <br />
+        @Html.Raw(ViewBag.pJ)
+        </td>
+    </tr>
+
+    </td>
+    </tr>
+
+
+</table>
+<style>
+    table, th, td
+    {
+        border-collapse: collapse;
+    }
+</style>

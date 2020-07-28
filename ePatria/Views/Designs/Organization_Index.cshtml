@@ -1,0 +1,158 @@
+﻿
+@{
+    ViewBag.Title = "Organization_Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<style>
+    .padding5 {
+        padding: 5px;
+    }
+</style>
+
+<div class="row" style="margin-top:20px;">
+    <div class="col-md-12">
+        <!-- BEGIN EXAMPLE TABLE PORTLET-->
+        <div class="portlet box red-sunglo">
+            <div class="portlet-title">
+                <div class="caption">
+                    <i class="fa fa-cubes"></i> Organization
+                </div>
+            </div>
+            <div class="portlet-body">
+                <div class="table-toolbar">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="btn-group">
+
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="btn-group pull-right">
+                                <a href="#modal-organization" data-toggle="modal" class="btn btn-pertamina-green">
+                                    Add New <i class="fa fa-plus"></i>
+                                </a>
+                                <button class="btn dropdown-toggle" data-toggle="dropdown">
+                                    Tools <i class="fa fa-angle-down"></i>
+                                </button>
+                                <ul class="dropdown-menu pull-right">
+                                    <li>
+                                        <a href="javascript:;">
+                                            Save as PDF
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="javascript:;">
+                                            Export to Excel
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <table class="table table-striped table-hover table-bordered" id="table-organization">
+                    <thead>
+                        <tr>
+                            <th>
+                                Organization
+                            </th>
+                            <th>
+                                Sub Organizations
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>
+                                <a href="@Url.Action("Organization_Details", "Designs")">Finance and General & Administration Director</a>
+                            </td>
+                            <td>
+                                General Services and Human Capital
+                            </td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td>
+                                Controller
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <!-- END EXAMPLE TABLE PORTLET-->
+    </div>
+</div>
+
+<!-- MODAL CREATE START -->
+<div class="modal fade" id="modal-organization" tabindex="-1" role="basic" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                <h4 class="modal-title"><i class="fa fa-plus-circle"></i> <b>Add New Organization</b></h4>
+            </div>
+            <div class="modal-body">
+                <form id="new-organization" role="form">
+                    <table id="table-new-organization">
+                        <tr class="padding5">
+                            <td class="padding5">
+                                Organization
+                            </td>
+                            <td class="padding5">
+                                :
+                            </td>
+                            <td class="padding5">
+                                <input type="text" name="Organization" value="" class="form-control" style="width:100%;">
+                            </td>
+                        </tr>
+                        <tr class="padding5">
+                            <td class="padding5">
+                                Sub Organization
+                            </td>
+                            <td class="padding5">
+                                :
+                            </td>
+                            <td class="padding5">
+                                <input type="text" name="Sub Organization" value="" class="form-control" style="width:100%;">
+                            </td>
+                            <td>
+                                <button type="button" onclick="AddSubOrganization(this)" class="btn btn-pertamina-green">
+                                    <i class="fa fa-plus"></i> Add
+                                </button>
+                            </td>
+                        </tr>
+                    </table>
+                    <div class="modal-footer" style="margin-top:10px; margin-bottom:-10px;">
+                        <button type="button" class="btn btn-pertamina-red" data-dismiss="modal"><i class="fa fa-times-circle"></i> Close</button>
+                        <button type="submit" class="btn btn-pertamina-blue" data-dismiss="modal"><i class="fa fa-download"></i> Save</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+<!-- MODAL CREATE END -->
+
+<script>
+    function AddSubOrganization() {
+        var table = document.getElementById("table-new-organization");
+        var row = table.insertRow();
+        var cell1 = row.insertCell(0);
+        var cell2 = row.insertCell(1);
+        var cell3 = row.insertCell(2);
+        var cell4 = row.insertCell(3);
+        cell3.className = 'padding5';
+        cell1.innerHTML = '';
+        cell2.innerHTML = '';
+        cell3.innerHTML = '<input type="text" name="Sub Organization" value="" class="form-control" style="width:100%;"/>';
+        cell4.innerHTML = '<button type="button" onclick="deleteRow(this)" class="btn btn-pertamina-red"><i class="fa fa-times-circle"></i> Cancel</button>';
+    }
+    function deleteRow(r) {
+        var i = r.parentNode.parentNode.rowIndex;
+        document.getElementById("table-new-organization").deleteRow(i);
+    }
+</script>

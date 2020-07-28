@@ -1,0 +1,118 @@
+﻿@model ePatria.Models.NotulenEntryMeeting
+
+@{
+    ViewBag.Title = "Details";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Details</h2>
+
+<div>
+    <h4>Notulen Entry Meeting</h4>
+    <hr />
+    <div class="form-horizontal">
+        <div class="form-group">
+            <label class="control-label col-md-2">Nomer SP</label>
+            <div class="col-md-4">
+                <input class="form-control input-sm" readonly value="@ViewBag.letterno" />
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-2">Tujuan</label>
+            <div class="col-md-4">
+                <input class="form-control input-sm" readonly value="@Model.Tujuan" />
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-2">Time Consumable</label>
+            <div class="col-md-2">
+                <input class="form-control input-sm" readonly value="@Model.TimeConsumableStartDate" />
+            </div>
+            <div class="col-md-2">
+                <input class="form-control input-sm" readonly value="@Model.TimeConsumableEndDate" />
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-2">Place</label>
+            <div class="col-md-4">
+                <input class="form-control input-sm" readonly value="@Model.Place" />
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-2">Chairman</label>
+            <div class="col-md-4">
+                <input class="form-control input-sm" readonly value="@ViewBag.Chairman" />
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-2">Moderator</label>
+            <div class="col-md-4">
+                <input class="form-control input-sm" readonly value="@ViewBag.Moderator" />
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-2">Notulis</label>
+            <div class="col-md-4">
+                <input class="form-control input-sm" readonly value="@ViewBag.Reporter" />
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-2">Member</label>
+            <div class="col-md-4">
+                <input class="form-control input-sm" readonly value="@ViewBag.Member" />
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-2">Opening</label>
+            <div class="col-md-4">
+                <input class="form-control input-sm" readonly value="@Model.Opening" />
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-2">Exposure Plan</label>
+            <div class="col-md-4">
+                <input class="form-control input-sm" readonly value="@Model.ExposurePlan" />
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-2">File</label>
+            <div class="col-md-4">
+                @if (ViewBag.paths != null)
+                {
+                    @*if (ViewBag.Extension1 == "image")
+                        {
+                            <img src="@ViewBag.subPath1" alt="image" width="20%" height="20%"/>
+                            @Html.ActionLink("View Full Size", "../"+(string)ViewBag.subPath1, null, new { target="_blank" })
+                        } else
+                        {
+                           @Html.LabelFor(model => model.EmployeeID, (string)ViewBag.newFName1) <br />
+                           @Html.ActionLink("Download File", "../"+(string)ViewBag.subPath1, null, new { target="_blank" })
+                        }*@
+                    foreach (var path in ViewBag.paths)
+                    {
+                        <div>
+                            @Html.ActionLink("Download", "../" + (string)path, null, new { target = "_blank", @class = "btn btn-xs green" })
+                            @Html.LabelFor(model => model.NotulenEntryMeetingID, (string)path.Split('/')[3])
+                        </div>
+
+                    }
+                }
+            </div>
+        </div>
+    </div>
+    </div>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id = Model.NotulenEntryMeetingID }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>
+<style>
+.dl-horizontal dt{
+    text-align: left;
+    width: 150px;
+}
+
+.dl-horizontal dd{
+    margin-left: 0;
+}
+</style>
+

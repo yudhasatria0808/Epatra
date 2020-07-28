@@ -1,0 +1,248 @@
+﻿@model IEnumerable<ePatria.Models.MonitoringTindakLanjut>
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="row" style="margin-top:20px;">
+    <div class="col-md-12">
+        <!-- BEGIN EXAMPLE TABLE PORTLET-->
+        <div class="portlet box red-sunglo">
+            <div class="portlet-title">
+                <div class="caption">
+                    <i class="fa fa-user"></i> Monitoring Tindak Lanjut
+                </div>
+            </div>
+            <div class="portlet-body">
+                <div class="col-md-10 btn-group-justified">
+                    <div class="table-toolbar">
+                        <div class="row">
+                            <div class="portlet box green">
+                                <div class="portlet-title">
+                                    <div class="caption">
+                                        <i class="fa fa-search"></i> Filter
+                                    </div>
+                                </div>
+                                <div class="portlet-body">
+                                    <div class="form-horizontal">
+                                        <div class="form-group">
+                                            <div class="row">
+                                                @Html.Label("No.Ref", "No.Ref", htmlAttributes: new { @class = "control-label col-md-2" })
+                                                <div class="col-md-3">
+                                                    @Html.TextBox("noref", null, new { @class = "form-control" })
+                                                </div>
+                                                @Html.Label("Engagement Name", "Engagement Name", htmlAttributes: new { @class = "control-label col-md-2" })
+                                                <div class="col-md-3">
+                                                    @Html.TextBox("engname", null, new { @class = "form-control", @placeholder = "Auto Complete" })
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <div class="row">
+                                                @Html.Label("FindingType", "Finding Type", htmlAttributes: new { @class = "control-label col-md-2" })
+                                                <div class="col-md-3">
+                                                    @Html.DropDownList("findingtypeddl", new List<SelectListItem>
+                                                    {
+                                                       new SelectListItem{ Text="-Please select-", Value = "" },
+                                                       new SelectListItem{ Text="Operational", Value = "Operational" },
+                                                       new SelectListItem{ Text="Financial", Value = "Financial" },
+                                                       new SelectListItem{ Text="Compliance", Value = "Compliance" }
+                                                    }, htmlAttributes: new { @class = "form-control"})
+                                                </div>
+                                                @Html.Label("No.SP", "No.SP", htmlAttributes: new { @class = "control-label col-md-2" })
+                                                <div class="col-md-3">
+                                                    @Html.TextBox("nosp", null, new { @class = "form-control", @placeholder = "Auto Complete" })
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <div class="row">
+                                                @Html.Label("Due Date", htmlAttributes: new { @class = "control-label col-md-2" })
+                                                <div class="col-md-3">
+                                                    @Html.TextBox("Due_Date", null, new { @class = "form-control datepicker", @readonly = true })
+                                                </div>
+                                                @Html.Label("Status", "Status", htmlAttributes: new { @class = "control-label col-md-2" })
+                                                <div class="col-md-3">
+                                                    @Html.DropDownList("statusddl", new List<SelectListItem>
+                                                    {
+                                                       new SelectListItem{ Text="-Please select-", Value = "" },
+                                                       new SelectListItem{ Text="All", Value = "" },
+                                                       new SelectListItem{ Text="Open", Value = "Open" },
+                                                       new SelectListItem{ Text="Close", Value = "Close" }
+                                                    }, htmlAttributes: new { @class = "form-control"})
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <div class="row">
+                                                @Html.Label("Tahun Audit", htmlAttributes: new { @class = "control-label col-md-2" })
+                                                <div class="col-md-3">
+                                                    @Html.DropDownList("thnauditddl", new List<SelectListItem>
+                                                    {
+                                                       new SelectListItem{ Text="-Please select-", Value = "" },
+                                                       new SelectListItem{ Text=@DateTime.Now.Year.ToString(), Value = @DateTime.Now.Year.ToString() },
+                                                       new SelectListItem{ Text=(@DateTime.Now.Year + 1).ToString(), Value = (@DateTime.Now.Year + 1).ToString() }
+                                                    }, htmlAttributes: new { @class = "form-control"})
+                                                </div>
+                                                @Html.Label("Close Date", htmlAttributes: new { @class = "control-label col-md-2" })
+                                                <div class="col-md-3">
+                                                    @Html.TextBox("Close_Date", null, new { @class = "form-control datepicker", @readonly = true })
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <div class="row">
+                                                <div class="col-md-offset-2 col-md-10">
+                                                    <button type="button" onclick="javascript:getMonitoring($('#noref').val(), $('#findingtypeddl option:selected').val(), $('#Due_Date').val(), $('#engname').val(), $('#nosp').val(), $('#statusddl option:selected').val(), $('#Close_Date').val(), $('#thnauditddl option:selected').val())" class="btn btn-default" >Search</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <table class="table table-striped table-hover table-bordered" id="table-monitoring">
+                    <thead>
+                        <tr>
+                            <th>
+                                No. Ref
+                            </th>
+                            <th>
+                                Title
+                            </th>
+                            <th>
+                                Assurance Type
+                            </th>
+                            <th>
+                                Finding Type
+                            </th>
+                            <th>
+                                No. SP
+                            </th> 
+                            <th>
+                                Engagement Name
+                            </th>
+                            <th>
+                                Due Date
+                            </th>
+                            <th>
+                                Close Date
+                            </th>
+                            <th>
+                                Status
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td>
+                                    <a href="@Url.Action("Edit", "MonitoringTindakLanjut", new { id = item.RCMDetailRiskControlIssueID })"> @Html.DisplayFor(modelItem => item.RCMDetailRiskControlIssue.NoRef)</a>
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.RCMDetailRiskControlIssue.Title)
+                                </td>
+                                <td>
+                                    
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.RCMDetailRiskControlIssue.FindingType)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.LetterOfCommand.NomorSP)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.LetterOfCommand.Preliminary.EngagementActivity.Name)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.RCMDetailRiskControlIssue.Due_Date)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.RCMDetailRiskControlIssue.Close_Date)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Status)
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <!-- END EXAMPLE TABLE PORTLET-->
+    </div>
+</div>
+
+<!-- MODAL CREATE END -->
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}
+
+<script>
+    $(document).ready(function () {
+        $('#table-monitoring').DataTable({
+            dom: 'T<"clear">lfrtip',
+            tableTools: {
+                "sSwfPath": "/Content/assets/global/plugins/datatables/extensions/TableTools/swf/copy_csv_xls_pdf.swf",
+                "aButtons": [
+                {
+                    "sExtends": "xls",
+                    "mColumns": [0, 1, 2, 3, 4, 5,6,7,8],
+                    "sPdfOrientation": "landscape",
+                    "sPdfMessage": "Monitoring Tindak Lanjut",
+                    "sButtonText": "Export to excel",
+                    "sFileName": "MonitoringTindakLanjut.xls"
+                },
+                ]
+            }
+        });
+    });
+</script>
+<script>
+
+    function getMonitoring(_noref, _findingtype, _duedate, _engname, _nosp, _status, _closedate, _thnaudit)
+    {
+        $.ajax({
+            url: "getMonitoring",
+            data: {
+                noref: _noref,
+                finding: _findingtype,
+                duedate: _duedate,
+                engname: _engname,
+                nosp: _nosp,
+                status: _status,
+                closedate: _closedate,
+                thnaudit: _thnaudit
+            },
+            cache: false,
+            type: "POST",
+            success: function (data) {
+                $('#table-monitoring').load("@ViewBag.Monitoring #table-monitoring");
+                $('#table-monitoring').DataTable({ bRetrieve: true });
+            },
+            error: function (reponse) {
+                alert("error : " + reponse);
+            }
+        });
+    }
+    $(function () {
+        $('#nosp').autocomplete({
+            source: '@Url.Action("SPAutocomplete")', change: function (event, ui) {
+                if (!ui.item) {
+                    $(this).val("");
+                }
+            }
+        });
+        $('#engname').autocomplete({
+            source: '@Url.Action("EngAutocomplete")', change: function (event, ui) {
+                if (!ui.item) {
+                    $(this).val("");
+                }
+            }
+        });
+    });
+</script>

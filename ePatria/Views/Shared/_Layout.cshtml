@@ -1,0 +1,583 @@
+﻿@using Microsoft.AspNet.Identity
+
+<!DOCTYPE html>
+<html lang="en" class="no-js">
+<!-- BEGIN HEAD -->
+<head>
+    @*@Scripts.Render("~/Content/css")*@
+    @*<link href="~/Content/Site.css" rel="stylesheet" />*@   
+    @*<link rel="stylesheet" href="@Url.Content("~/Content/Site.css")">*@
+    @*@Styles.Render("~/Content/css") gak mau include ini *@
+    <meta charset="utf-8" />
+    <title>@ViewContext.RouteData.Values["controller"] @ViewContext.RouteData.Values["action"] | ePatria</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta content="width=device-width, initial-scale=1" name="viewport" />
+    <meta content="" name="description" />
+    <meta content="" name="author" />
+
+
+    @Styles.Render("~/Content/toastr-css")
+    @Scripts.Render("~/bundles/modernizr")
+
+    <!-- BEGIN GLOBAL MANDATORY STYLES -->
+    <link href="~/Content/fonts/fonts.css" rel="stylesheet" type="text/css" />
+    <link href="~/Content/assets/global/plugins/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css" />
+    <link href="~/Content/assets/global/plugins/simple-line-icons/simple-line-icons.min.css" rel="stylesheet" type="text/css" />
+    <link href="~/Content/assets/global/plugins/bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
+    <link href="~/Content/assets/global/plugins/uniform/css/uniform.default.css" rel="stylesheet" type="text/css" />
+    <link href="~/Content/assets/global/plugins/bootstrap-switch/css/bootstrap-switch.min.css" rel="stylesheet" type="text/css" />
+    <!-- END GLOBAL MANDATORY STYLES -->
+    <!-- BEGIN PAGE LEVEL PLUGINS -->
+    <link href="~/Content/assets/global/plugins/fullcalendar/fullcalendar.min.css" rel="stylesheet" type="text/css" />
+    <link href="~/Content/assets/global/plugins/bootstrap-datepicker/css/bootstrap-datepicker3.min.css" rel="stylesheet" type="text/css" />
+    <link href="~/Content/assets/global/plugins/bootstrap-modal/css/bootstrap-modal-bs3patch.css" rel="stylesheet" type="text/css" />
+    <link href="~/Content/assets/global/plugins/bootstrap-modal/css/bootstrap-modal.css" rel="stylesheet" type="text/css" />
+    <!-- END PAGE LEVEL PLUGINS -->
+    <link href="~/Content/assets/global/css/components.min.css" rel="stylesheet" id="style_components" type="text/css" />
+    <link href="~/Content/assets/global/css/plugins.min.css" rel="stylesheet" type="text/css" />
+    <!-- END THEME GLOBAL STYLES -->
+    <!-- BEGIN THEME LAYOUT STYLES -->
+    <link href="~/Content/assets/layouts/layout/css/layout.min.css" rel="stylesheet" type="text/css" />
+    <link href="~/Content/assets/layouts/layout/css/themes/light2.min.css" rel="stylesheet" type="text/css" id="style_color" />
+    <link href="~/Content/assets/layouts/layout/css/custom.min.css" rel="stylesheet" type="text/css" />
+    <!-- END THEME LAYOUT STYLES -->
+    <!-- BEGIN CKEDITOR -->
+    <script src="~/ckeditor/ckeditor.js"></script>
+    <!-- END CKEDITOR -->
+</head>
+<!-- END HEAD -->
+<!-- BEGIN BODY -->
+<body class="page-header-fixed page-sidebar-closed-hide-logo page-content-white">
+@Scripts.Render("~/bundles/jquery")
+@Scripts.Render("~/bundles/toastr")
+   
+    <!-- BEGIN HEADER -->
+    <div class="page-header navbar navbar-fixed-top">
+        <!-- BEGIN HEADER INNER -->
+        <div class="page-header-inner">
+            <!-- BEGIN LOGO -->
+            <div class="page-logo">
+                <a href="#">
+                    <img src="~/Content/assets/global/img/logo_patraniaga_layout.png" alt="ePatria" height="45" />
+                </a>
+                <div class="menu-toggler sidebar-toggler hide">
+                </div>
+            </div>
+            <!-- END LOGO -->
+            <!-- BEGIN RESPONSIVE MENU TOGGLER -->
+            <a href="javascript:;" class="menu-toggler responsive-toggler" data-toggle="collapse" data-target=".navbar-collapse">
+            </a>
+            <!-- END RESPONSIVE MENU TOGGLER -->
+            <!-- BEGIN TOP NAVIGATION MENU -->
+            <div class="top-menu">
+                <ul class="nav navbar-nav pull-right">
+                    <!-- BEGIN USER LOGIN DROPDOWN -->
+                    <!-- DOC: Apply "dropdown-dark" class after below "dropdown-extended" to change the dropdown styte -->
+                    @if (Request.IsAuthenticated)
+                    {
+                        using (Html.BeginForm("LogOff", "Account", FormMethod.Post, new { id = "logoutForm", @class = "nav navbar-nav pull-right" }))
+                        {
+                            @Html.AntiForgeryToken()
+                            <li class="dropdown dropdown-user">
+                                <a href="javascript:;" class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown" data-close-others="true">
+                                    <img alt="" class="img-circle" src="~/Content/assets/global/img/avatar3_small.jpg" />
+                                    <span class="username username-hide-on-mobile">
+                                        @User.Identity.GetUserName()
+                                    </span>
+                                    <i class="fa fa-angle-down"></i>
+                                </a>
+                                <ul class="dropdown-menu dropdown-menu-default">
+                                    <li>
+                                        <a href="#">
+                                            <i class="icon-user"></i> My Profile
+                                        </a>
+                                        <ul style="list-style-type:none;" class="sub-menu">
+                                            <li>
+                                                <a href="@Url.Action("EditProfile", "MyProfile")">
+                                                    <i class="fa fa-user"></i>
+                                                    Setting My Profile
+                                                </a>
+                                            </li>
+                                            <li>
+                                                <a href="@Url.Action("ResetPasswordProfile", "MyProfile")">
+                                                    <i class="fa fa-user"></i>
+                                                    Reset Password
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    </li>
+                                    @if (HttpContext.Current.User.IsInRole("Admin") | HttpContext.Current.User.IsInRole("Superadmin"))
+                                    {
+                                    <li>
+                                        <a href="javascript:;">
+                                            <i class="fa fa-gear"></i>
+                                            <span class="title">Setting</span>
+                                            <span class="arrow "></span>
+                                        </a>
+                                       
+                                        <ul style="list-style-type:none;" class="sub-menu">
+                                            <li>
+                                                <a href="@Url.Action("Index", "RolesAdmin")">
+                                                    <i class="fa fa-users"></i>
+                                                    Role Management
+                                                </a>
+                                            </li>
+                                            <li>
+                                                <a href="@Url.Action("Index", "UsersAdmin")">
+                                                    <i class="fa fa-user"></i>
+                                                    User Management
+                                                </a>
+                                            </li>
+                                        </ul>
+                                       
+                                    </li>
+                                    }
+                                    <li>
+                                        <a href="javascript:document.getElementById('logoutForm').submit()">
+                                            <i class="icon-key"></i> Log Out
+                                        </a>
+                                    </li>
+                                </ul>
+                            </li>
+                        }
+                    }
+                    else
+                    {
+                        if (HttpContext.Current.User.IsInRole("Admin"))
+                        {
+                        <li>@Html.ActionLink("Register", "Register", "Account", routeValues: null, htmlAttributes: new { id = "registerLink" })</li>
+                        }
+                        <li>@Html.ActionLink("Log in", "Login", "Account", routeValues: null, htmlAttributes: new { id = "loginLink" })</li>
+                    }
+                    <!-- END USER LOGIN DROPDOWN -->
+                </ul>
+            </div>
+            <!-- END TOP NAVIGATION MENU -->
+        </div>
+        <!-- END HEADER INNER -->
+    </div>
+    <!-- END HEADER -->
+    <div class="clearfix">
+    </div>
+    <!-- BEGIN CONTAINER -->
+    <div class="page-container">
+        @if (Request.IsAuthenticated)
+        {
+        <!-- BEGIN SIDEBAR -->
+        <div class="page-sidebar-wrapper">
+            <!-- DOC: Set data-auto-scroll="false" to disable the sidebar from auto scrolling/focusing -->
+            <!-- DOC: Change data-auto-speed="200" to adjust the sub menu slide up/down speed -->
+            <div class="page-sidebar navbar-collapse collapse">
+                <!-- BEGIN SIDEBAR MENU -->
+                <!-- DOC: Apply "page-sidebar-menu-light" class right after "page-sidebar-menu" to enable light sidebar menu style(without borders) -->
+                <!-- DOC: Apply "page-sidebar-menu-hover-submenu" class right after "page-sidebar-menu" to enable hoverable(hover vs accordion) sub menu mode -->
+                <!-- DOC: Apply "page-sidebar-menu-closed" class right after "page-sidebar-menu" to collapse("page-sidebar-closed" class must be applied to the body element) the sidebar sub menu mode -->
+                <!-- DOC: Set data-auto-scroll="false" to disable the sidebar from auto scrolling/focusing -->
+                <!-- DOC: Set data-keep-expand="true" to keep the submenues expanded -->
+                <!-- DOC: Set data-auto-speed="200" to adjust the sub menu slide up/down speed -->
+                <ul class="page-sidebar-menu page-header-fixed " data-keep-expanded="false" data-auto-scroll="true" data-slide-speed="200" style="padding-top: 20px">
+                    <!-- DOC: To remove the sidebar toggler from the sidebar you just need to completely remove the below "sidebar-toggler-wrapper" LI element -->
+                    <li class="sidebar-toggler-wrapper">
+                        <!-- BEGIN SIDEBAR TOGGLER BUTTON -->
+                        <div class="sidebar-toggler">
+                        </div>
+                        <!-- END SIDEBAR TOGGLER BUTTON -->
+                    </li>
+                    <!-- search bar disini -->
+                    <li class="nav-item start">
+                        <a href="@Url.Action("Index", "Home")">
+                            <i class="icon-home"></i>
+                            <span class="title">Dashboard</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="javascript:;" class="nav-link nav-toggle">
+                            <i class="fa fa-database"></i>
+                            <span class="title">Master Data</span>
+                            <span class="arrow "></span>
+                        </a>
+                        <ul class="sub-menu">
+                            @{ var permission = HelperController.getPermission(User.Identity.GetUserId(), "User/Role Management");
+                                var isSuperAdmins = HelperController.isSuperAdmin(User.Identity.GetUserId());
+                            if (permission != null && permission.Any(q => q.IsRead == true) || isSuperAdmins)
+                            {
+                                <li class="nav-item">
+                                    <a href="@Url.Action("Index", "UsersAdmin")" class="nav-link ">
+                                        <i class="fa fa-user"></i>
+                                        User Management
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="@Url.Action("Index", "RolesAdmin")" class="nav-link ">
+                                        <i class="fa fa-users"></i>
+                                        Role Management
+                                    </a>
+                                </li>
+                            }
+                            }
+                            <li class="nav-item">
+                                <a href="#" class="nav-link nav-toggle">
+                                    <i class="fa fa-cubes"></i>
+                                    <span class="title">Organization Data</span>
+                                    <span class="arrow "></span>
+                                </a>
+                                <ul class="sub-menu">
+                                    <li class="nav-item">
+                                        <a href="@Url.Action("Index", "Organizations")" class="nav-link">
+                                            <i class="fa fa-building-o"></i>
+                                            Organization
+                                        </a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a href="@Url.Action("Index", "Positions")" class="nav-link">
+                                            <i class="fa fa-star"></i>
+                                            Position
+                                        </a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a href="@Url.Action("Index", "Employees")" class="nav-link">
+                                            <i class="fa fa-user"></i>
+                                            Employee
+                                        </a>
+                                    </li>
+                                </ul>
+                            </li>
+                            <li class="nav-item">
+                                <a href="@Url.Action("Index", "AuditUniverses")" class="nav-link">
+                                    <i class="fa fa-list-alt"></i>
+                                    <span class="title">Audit Universe</span>
+                                </a>
+                            </li>
+                            @{ var questPerm = HelperController.getPermission(User.Identity.GetUserId(), "Questioner");
+                                var isSuperAdminq = HelperController.isSuperAdmin(User.Identity.GetUserId());
+                            }
+                            @if (questPerm != null && questPerm.Any(q => q.IsRead == true) || isSuperAdminq)
+                            {
+                                <li class="nav-item">
+                                    <a href="@Url.Action("Index", "Questioners")" class="nav-link">
+                                        <i class="fa fa-folder-open"></i>
+                                        <span class="title">Questioner</span>
+                                    </a>
+                                </li>
+                            }
+                        </ul>
+                    </li>
+                    <li>
+                        <a href="@Url.Action("Index", "AnnualPlannings")">
+                            <i class="fa fa-calendar-o"></i>
+                            <span class="title">Annual Planning</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="javascript:;" class="nav-link nav-toggle">
+                            <i class="fa fa-ambulance"></i>
+                            <span class="title">Assurance</span>
+                            <span class="arrow "></span>
+                        </a>
+                        <ul class="sub-menu">
+                            <li class="nav-item">
+                                <a href="@Url.Action("Index", "Preliminaries")" class="nav-link">
+                                    <i class="fa fa-list"></i>
+                                    Preliminary Survey
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="@Url.Action("Index", "Walktroughs")" class="nav-link">
+                                    <i class="fa fa-spinner"></i>
+                                    Walkthrough
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="@Url.Action("Index", "AuditPlanningMemorandums")" class="nav-link">
+                                    <i class="fa fa-book"></i>
+                                    Audit Planning Memorandum
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="@Url.Action("Index", "LetterOfCommands")" class="nav-link">
+                                    <i class="fa fa-road"></i>
+                                    Surat Perintah
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="@Url.Action("Index", "NotulenEntryMeetings")" class="nav-link">
+                                    <i class="fa fa-book"></i>
+                                    Notulen Entry Meeting
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="@Url.Action("Index", "FieldWorks")" class="nav-link">
+                                    <i class="fa fa-briefcase"></i>
+                                    Field Work
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="@Url.Action("Index", "ExitMeetings")" class="nav-link">
+                                    <i class="fa fa-folder-open"></i>
+                                    <span class="title">Exit Meeting</span>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="@Url.Action("Index", "Reportings")" class="nav-link">
+                                    <i class="fa fa-laptop"></i>
+                                    Reporting
+                                </a>
+                            </li>
+                            @{ var fbPerm = HelperController.getPermission(User.Identity.GetUserId(), "Feedback");
+                                var isSuperAdminf = HelperController.isSuperAdmin(User.Identity.GetUserId());
+                            }
+                            @if (fbPerm != null && fbPerm.Any(q => q.IsRead == true) || isSuperAdminf)
+                            {
+                                <li class="nav-item">
+                                    <a href="@Url.Action("Index", "Feedbacks")" class="nav-link">
+                                        <i class="fa fa-share-square"></i>
+                                        Feedback
+                                    </a>
+                                </li>
+                            }
+                        </ul>
+                    </li>
+                    <li class="nav-item">
+                        <a href="javascript:;" class="nav-link nav-toggle">
+                            <i class="fa fa-wechat"></i>
+                            <span class="title">Consulting</span>
+                            <span class="arrow "></span>
+                        </a>
+                        <ul class="sub-menu">
+                            <li class="nav-item">
+                                <a href="@Url.Action("Index", "ConsultingRequests")" class="nav-link">
+                                    <i class="fa fa-list-alt"></i>
+                                    Request
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="@Url.Action("Index", "ConsultingDraftAgreements")" class="nav-link">
+                                    <i class="fa fa-book"></i>
+                                    Consulting Draft Agreement
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="@Url.Action("Index", "ConsultingLetterOfCommands")" class="nav-link">
+                                    <i class="fa fa-list-ul"></i>
+                                    Surat Perintah
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="@Url.Action("Index", "ConsultingFieldWorks")" class="nav-link">
+                                    <i class="fa fa-briefcase"></i>
+                                    Field Work
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="@Url.Action("Index", "ConsultingReportings")" class="nav-link">
+                                    <i class="fa fa-laptop"></i>
+                                    Reporting
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="@Url.Action("Index", "ConsultingFeedbacks")" class="nav-link">
+                                    <i class="fa fa-share-square"></i>
+                                    Feedback
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                    <li>
+                        <a href="@Url.Action("Index", "MonitoringTindakLanjut")">
+                            <i class="fa fa-forward"></i>
+                            <span class="title">Advanced Monitoring</span>
+                        </a>
+                    </li>
+                    @{ var perm = HelperController.getPermission(User.Identity.GetUserId(), "Permission");
+                            var isSuperAdminp = HelperController.isSuperAdmin(User.Identity.GetUserId());
+                    if (perm != null && perm.Any(q => q.IsRead == true) || isSuperAdminp)
+                    {
+                        <li>
+                            <a href="@Url.Action("Index", "PermissionRoles")">
+                                <i class="icon-wrench"></i>
+                                <span class="title">Permission</span>
+                            </a>
+                        </li>
+                    }
+                    }
+                    <li>
+                        <a href="@Url.Action("Index", "AuditTrails")">
+                            <i class="fa fa-user"></i>
+                            <span class="title">Audit Trails</span>
+                        </a>
+                    </li>
+                </ul>
+                <!-- END SIDEBAR MENU -->
+            </div>
+        </div>
+        <!-- END SIDEBAR -->
+        }
+        <!-- BEGIN CONTENT -->
+        <div class="page-content-wrapper">
+            <div class="page-content">
+                <!-- BEGIN SAMPLE PORTLET CONFIGURATION MODAL FORM-->
+                <div class="modal fade" id="portlet-config" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                                <h4 class="modal-title">Modal title</h4>
+                            </div>
+                            <div class="modal-body">
+                                Widget settings form goes here
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn blue">Save changes</button>
+                                <button type="button" class="btn default" data-dismiss="modal">Close</button>
+                            </div>
+                        </div>
+                        <!-- /.modal-content -->
+                    </div>
+                    <!-- /.modal-dialog -->
+                </div>
+                <!-- /.modal -->
+                <!-- END SAMPLE PORTLET CONFIGURATION MODAL FORM-->
+                <!-- BEGIN PAGE HEADER-->
+                <div class="page-bar" style="margin-bottom: 25px;">
+                    <div class="pull-right">
+                        <label><small>Welcome, <b>@User.Identity.Name</b></small></label>
+                    </div>
+                    <ul class="page-breadcrumb">
+                        @Html.MvcSiteMap().SiteMapPath()
+                    </ul>
+                </div>
+                <!-- END PAGE HEADER-->
+                <!-- PAGE CONTENT START -->
+                @RenderBody()
+                <!-- PAGE CONTENT END -->
+            </div>
+        </div>
+        <!-- END CONTENT -->
+    </div>
+    <!-- END CONTAINER -->
+    <!-- BEGIN FOOTER -->
+    <div class="page-footer">
+        <div class="page-footer-inner">
+            2016 &copy; ePatria.
+        </div>
+        <div class="scroll-to-top">
+            <i class="icon-arrow-up"></i>
+        </div>
+    </div>
+    <!-- END FOOTER -->
+    <!-- BEGIN JAVASCRIPTS(Load javascripts at bottom, this will reduce page load time) -->
+    <!-- BEGIN CORE PLUGINS -->
+    <!--[if lt IE 9]>
+    <script src="~/Content/assets/global/plugins/respond.min.js"></script>
+    <script src="~/Content/assets/global/plugins/excanvas.min.js"></script>
+    <![endif]-->
+    <script type="text/javascript" charset="utf8" src="~/Content/assets/global/plugins/datatables/media/js/jquery.js"></script>
+    <script src="~/Content/assets/global/plugins/bootstrap/js/bootstrap.min.js" type="text/javascript"></script>
+    <script src="~/Content/assets/global/plugins/js.cookie.min.js" type="text/javascript"></script>
+    <script src="~/Content/assets/global/plugins/bootstrap-hover-dropdown/bootstrap-hover-dropdown.min.js" type="text/javascript"></script>
+    <script src="~/Content/assets/global/plugins/jquery-slimscroll/jquery.slimscroll.min.js" type="text/javascript"></script>
+    <script src="~/Content/assets/global/plugins/jquery.blockui.min.js" type="text/javascript"></script>
+    <script src="~/Content/assets/global/plugins/uniform/jquery.uniform.min.js" type="text/javascript"></script>
+    <script src="~/Content/assets/global/plugins/bootstrap-switch/js/bootstrap-switch.min.js" type="text/javascript"></script>
+    <!-- END CORE PLUGINS -->
+    <!-- BEGIN PAGE LEVEL PLUGINS -->
+    <script src="~/Content/assets/global/plugins/counterup/jquery.waypoints.min.js" type="text/javascript"></script>
+    <script src="~/Content/assets/global/plugins/counterup/jquery.counterup.min.js" type="text/javascript"></script>
+    <script src="~/Content/assets/global/plugins/morris/morris.min.js" type="text/javascript"></script>
+    <script src="~/Content/assets/global/plugins/morris/raphael-min.js" type="text/javascript"></script>
+    <script src="~/Content/assets/global/plugins/moment.min.js" type="text/javascript"></script>
+    <script src="~/Content/assets/global/plugins/fullcalendar/fullcalendar.min.js" type="text/javascript"></script>
+    <script src="~/Content/assets/global/plugins/bootstrap-datepicker/js/bootstrap-datepicker.min.js" type="text/javascript"></script>
+    <script src="~/Content/assets/global/plugins/bootstrap-confirmation/bootstrap-confirmation.min.js" type="text/javascript"></script>
+    <script src="~/Content/assets/global/plugins/bootstrap-modal/js/bootstrap-modalmanager.js" type="text/javascript"></script>
+    <script src="~/Content/assets/global/plugins/bootstrap-modal/js/bootstrap-modal.js" type="text/javascript"></script>
+    <!-- END PAGE LEVEL PLUGINS -->
+    <!-- BEGIN THEME GLOBAL SCRIPTS -->
+    <script src="~/Content/assets/global/scripts/app.min.js" type="text/javascript"></script>
+    <!-- END THEME GLOBAL SCRIPTS -->
+    <!-- BEGIN PAGE LEVEL SCRIPTS -->
+    <script src="~/Content/assets/apps/scripts/calendar.min.js" type="text/javascript"></script>
+    <script src="~/Content/assets/pages/scripts/components-date-time-pickers.min.js" type="text/javascript"></script>
+    <script src="~/Content/assets/pages/scripts/ui-extended-modals.min.js" type="text/javascript"></script>
+    <script src="~/Content/assets/pages/scripts/ui-blockui.min.js" type="text/javascript"></script>
+    <script src="~/Content/assets/pages/scripts/ui-confirmations.min.js" type="text/javascript"></script>
+    <!-- END PAGE LEVEL SCRIPTS -->
+    <!-- BEGIN THEME LAYOUT SCRIPTS -->
+    <script src="~/Content/assets/layouts/layout/scripts/layout.min.js" type="text/javascript"></script>
+    <script src="~/Content/assets/layouts/layout/scripts/demo.min.js" type="text/javascript"></script>
+    <script src="~/Content/assets/layouts/global/scripts/quick-sidebar.min.js" type="text/javascript"></script>
+    <!-- END THEME LAYOUT SCRIPTS -->
+    <script src="~/Scripts/menusettings.js"></script>
+    <!-- BEGIN PAGE LEVEL SCRIPTS -->
+    <script src="~/Content/assets/pages/scripts/dashboard.js" type="text/javascript"></script>
+    <!-- END PAGE LEVEL SCRIPTS -->
+    <link rel="stylesheet" type="text/css" href="~/Content/bootstrap-datetimepicker.min.css">
+    <!-- BEGIN AUTOCOMPLETE -->
+    <link rel="stylesheet" type="text/css" href="~/Content/assets/global/plugins/jquery-ui/jquery-ui.min.css">
+    <script src="~/Content/assets/global/plugins/jquery-ui/jquery-ui.min.js" type="text/javascript"></script>
+    <!-- END AUTOCOMPLETE -->
+    <!-- BEGIN DATA TABLES -->
+    <!-- DataTables CSS -->
+    <link rel="stylesheet" type="text/css" href="~/Content/assets/global/plugins/datatables/media/css/jquery.dataTables.css">
+<link rel="stylesheet" type="text/css" href="~/Content/assets/global/plugins/datatables/extensions/TableTools/css/dataTables.tableTools.css">
+        
+<!-- DataTables JS-->
+    <script type="text/javascript" charset="utf8" src="~/Content/assets/global/plugins/datatables/media/js/jquery.dataTables.min.js"></script>
+    <script type="text/javascript" charset="utf8" src="~/Content/assets/global/plugins/datatables/extensions/TableTools/js/dataTables.tableTools.js"></script>
+
+    
+<!-- END DATA TABLES -->
+    <script src="~/Scripts/preview.image.min.js"></script>
+    <script>
+        //jQuery(document).ready(function () {
+        //    Metronic.init(); // init metronic core componets
+        //    Layout.init(); // init layout
+        //    QuickSidebar.init(); // init quick sidebar
+        //    Demo.init(); // init demo features
+        //    Index.init();
+        //    Index.initDashboardDaterange();
+        //    Index.initJQVMAP(); // init index page's custom scripts
+        //    Index.initCalendar(); // init index page's custom scripts
+        //    Index.initCharts(); // init index page's custom scripts
+        //    Index.initChat();
+        //    Index.initMiniCharts();
+        //    Tasks.initDashboardWidget();
+        //    ChartsFlotcharts.init();
+        //    ChartsFlotcharts.initCharts();
+        //    ChartsFlotcharts.initPieCharts();
+        //    ChartsFlotcharts.initBarCharts();
+        //    ComponentsPickers.init();
+        //    TableRoleManagement.init();
+        //    TableEmployee.init();
+        //    TableUserManagement.init();
+        //    TablePreparation.init();
+        //    TableAnnualPlanning.init();
+        //    TableEditable.init();
+        //});
+        
+        var isUserAuthenticated = '@User.Identity.IsAuthenticated';
+
+        if (isUserAuthenticated) {
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("UpdateLastActivityDate", "Account")',
+                data: { userName: '@User.Identity.Name' },
+                cache: false
+            });
+        }
+        function noBack() { window.history.forward() }
+        noBack();
+        window.onload = noBack;
+        window.onpageshow = function (evt) { if (evt.persisted) noBack() }
+        window.onunload = function () { void (0) }
+    </script>
+    <!-- END JAVASCRIPTS -->
+    @RenderSection("featured", required: false)
+</body>
+<!-- END BODY -->
+@*@Scripts.Render("~/bundles/bootstrap")*@
+@Scripts.Render("~/bundles/datetime")
+
+
+@RenderSection("scripts", required: false)
+</html>

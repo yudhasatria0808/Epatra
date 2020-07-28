@@ -1,0 +1,84 @@
+﻿<style>
+    .padding5 {
+        padding: 5px;
+    }
+</style>
+
+<div class="modal-dialog">
+    <div class="modal-content">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+            <h4 class="modal-title"><b><i class="fa fa-plus-circle"></i> Add New User</b></h4>
+        </div>
+        <div class="modal-body">
+            <form id="new-user" role="form">
+                <table id="new-user-table">
+                    <tr class="padding5">
+                        <td class="padding5">
+                            Name
+                        </td>
+                        <td class="padding5">
+                            :
+                        </td>
+                        <td class="padding5">
+                            <input type="text" name="Name" value="" placeholder="autocomplete" disabled/>
+                        </td>
+                    </tr>
+                    <tr class="padding5">
+                        <td class="padding5">
+                            No. PEK
+                        </td>
+                        <td class="padding5">
+                            :
+                        </td>
+                        <td class="padding5">
+                            <input type="text" name="No. PEK" value="" placeholder="automatic" disabled />
+                        </td>
+                    </tr>
+                    <tr class="padding5">
+                        <td class="padding5">
+                            Username
+                        </td>
+                        <td class="padding5">
+                            :
+                        </td>
+                        <td class="padding5">
+                            <input type="text" name="Name" value="" />
+                        </td>
+                    </tr>
+                    <tr class="padding5">
+                        <td class="padding5">
+                            Password
+                        </td>
+                        <td class="padding5">
+                            :
+                        </td>
+                        <td class="padding5">
+                            <input type="password" name="Password" value="" placeholder="generate" disabled />
+                        </td>
+                    </tr>
+                    <tr class="padding5">
+                        <td class="padding5">
+                            Role
+                        </td>
+                        <td class="padding5">
+                            :
+                        </td>
+                        <td class="padding5">
+                            <select name="Role">
+                                <option value="">Select...</option>
+                                <option value="Admin">Admin</option>
+                                <option value="User">User</option>
+                            </select>
+                        </td>
+                    </tr>
+                </table>
+                <div class="modal-footer" style="margin-top:10px; margin-bottom:-10px;">
+                    <button type="button" class="btn btn-pertamina-red" data-dismiss="modal"><i class="fa fa-times-circle"></i> Close</button>
+                    <button type="submit" class="btn btn-pertamina-blue" data-dismiss="modal"><i class="fa fa-download"></i> Save</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    <!-- /.modal-content -->
+</div>

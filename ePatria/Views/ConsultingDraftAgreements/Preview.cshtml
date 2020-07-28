@@ -1,0 +1,95 @@
+﻿@model ePatria.Models.ConsultingDraftAgreement
+
+@if (ViewBag.WordDocumentMode == null || !ViewBag.WordDocumentMode)
+{
+    <h2>@ViewBag.Title.</h2>
+<h3>@ViewBag.Message</h3>
+}
+<table border="1" style="width: 100%">
+    <tr>
+        <center>
+        <td width="33.5%"><img src="http://www.pertaminapatraniaga.com/themes/patra/images/logo_patraniaga.png" alt="ePatria" height="50" width="175"></td>
+        <td style="background-color:#c6c4c4"><b>BERITA ACARA KESEPAKATAN</b></td>
+        </center>
+        
+ </tr>
+</table>
+
+<table border="1" style="width: 100%">
+    <tr>
+        <td style= "padding-left:5px" width="33.5%"><b>Judul</b></td>
+        <td style= "padding-left:5px">@Html.DisplayFor(model => model.Activity.Name)</td>
+    </tr>
+    <tr>
+        <td style= "padding-left:5px" width="33.5%"><b>Tanggal dan Waktu</b></td>
+        <td style= "padding-left:5px">@Html.DisplayName(Model.Date_Start.ToString("dd/MM/yyyy HH:mm")) WIB To @Html.DisplayName(Model.Date_End.ToString("dd/MM/yyyy HH:mm")) WIB</td>
+    </tr>
+    <tr>
+        <td style= "padding-left:5px" width="33.5%"><b>Tempat</b></td>
+        <td style= "padding-left:5px">Ruang Rapat</td>
+    </tr>
+    <tr>
+        <td style= "padding-left:5px" width="33.5%"><b>Daftar Hadir</b></td>
+        <td style= "padding-left:5px">Terlampir</td>
+    </tr>
+</table>
+<br />
+<br />
+
+<table border="1" style="width: 100%">
+    <tr>
+        <td style= "padding-left:5px" width="5%"><b>No</b></td>
+        <center>
+        <td style= "padding-left:5px"><b>Pokok/ Uraian Pembahasan</b></td>
+        </center>
+    </tr>
+    <tr>
+        <td style= "padding-left:5px" width="5%">1.</td>
+        <td style= "padding-left:5px"><b>Dasar Pelaksanaan :</b> @Html.Raw(Model.Tujuan.Replace("\n","<br />")) </td>
+    </tr>
+    <tr>
+        <td style= "padding-left:5px" width="5%">2.</td>
+        <td style= "padding-left:5px"><b>Pembahasan Masalah : </b>Dari hasil pembahasan antara Fungsi ... dengan Fungsi Internal Audit disepakati hal-hal terkait pelaksanaan konsultasi, sebagai berikut :<br />
+        <table style="width: 100%">
+            <tr>
+                <td style= "padding-left:5px" valign="top" width ="2%">a.</td>
+                <td style= "padding-left:5px">Ruang Lingkup : <br />@Html.Raw(Model.RuangLingkup.Replace("\n","<br />"))</td>
+            </tr>
+            <tr>
+                <td style= "padding-left:5px" valign="top" width ="2%">b.</td>
+                <td style= "padding-left:5px">Tujuan : <br />@Html.Raw(Model.Tujuan.Replace("\n","<br />"))</td>
+            </tr>
+            <tr>
+                <td style= "padding-left:5px" valign="top" width ="2%">c.</td> 
+                <td style= "padding-left:5px">Waktu Pelaksanaan Konsultasi : <br />@Html.DisplayName(Model.Date_Start.ToString("dd/MM/yyyy HH:mm")) WIB To @Html.DisplayName(Model.Date_End.ToString("dd/MM/yyyy HH:mm")) WIB</td>
+            </tr>
+        </table>
+    </tr>
+    <tr>
+        <td style= "padding-left:5px"width="5%">3.</td>
+        <td style= "padding-left:5px"><b>Tindak Lanjut :</b><br />@Html.Raw(Model.Peran.Replace("\n","<br />"))</td>
+    </tr>
+</table>
+<br />
+<p align="right">Jakarta, @DateTime.Now.ToShortDateString()</p><br />
+<p align="center">Pihak-Pihak yang bersepakat,</p><br />
+
+<table border="0" style="width: 100%">
+    <tr>
+        <center>
+        <td width="50%">Chief Internal Audit</td>
+        <td width="50%">VP ...</td>
+        </center>
+    </tr>
+     <tr>
+        <td style="padding-left:90px"><br /><br /><br /><br />...</td>
+        <td style="padding-left:139px"><br /><br /><br /><br />...</td>
+    </tr>
+</table>
+
+<style>
+    table, th, td
+    {
+        border-collapse: collapse;
+    }
+</style>

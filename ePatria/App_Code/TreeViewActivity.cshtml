@@ -1,0 +1,69 @@
+﻿@using System.Web.Mvc;
+@using System.Web.Mvc.Routing;
+@using System.Web.Mvc.Html;
+@using System.Web.Mvc.Razor;
+@using ePatria.Controllers;
+@using Microsoft.AspNet.Identity;
+
+@helper GetTreeView(System.Web.Mvc.HtmlHelper h, List<ePatria.Models.Activity> audituniverese, int? orgParentID)
+{
+    foreach (var i in audituniverese.Where(a => a.ActivityParentID.Equals(orgParentID)))
+    {
+        <li>
+            @{var submenu = audituniverese.Where(a => a.ActivityParentID.Equals(i.ActivityID)).Count();}
+
+            @if (i.ActivityParentID == null) //buat parent AuditUniverse
+            {
+                //to, di bawah ini itu mewakili satu baris ya, kan ada icon, trus link dengan label nama orgnz, lalu button <a href> yg saya modif, itu khusus untuk master
+
+                <span class="collapsed collapsible">&nbsp;</span>
+                @h.Raw(@h.ActionLink(i.Name, "Details", "AuditUniverses", new { activityID = i.ActivityID }, new { @class = "" }).ToHtmlString().Replace(i.Name, i.Name + "&nbsp;&nbsp;"))
+                @h.Raw(" | Status : ") @i.Status
+                @h.Raw(" | Used on Year : ") @i.Tahun
+                var permission = HelperController.getPermission(User.Identity.GetUserId(), "Audit Universe");
+                var isSuperAdmin = HelperController.isSuperAdmin(User.Identity.GetUserId());
+                if (permission != null && permission.Any(q => q.IsCreate == true) || isSuperAdmin)
+                {
+                    @h.Raw(@h.ActionLink("create_replace", "CreateAuditUniverse", "AuditUniverses", new { activityparentid = i.ActivityID }, new { @class = "btn default btn-xs grey" }).ToHtmlString().Replace("create_replace", "<i class=\"fa fa-plus\"></i>"))
+                    if (i.Status != "Approve")
+                    {
+                        @h.Raw(@h.ActionLink("delete_replace", "DeleteAuditUniverse", "AuditUniverses", new { ActivityID = i.ActivityID }, new { @class = "btn default btn-xs red", }).ToHtmlString().Replace("delete_replace", "<i class=\"fa fa-trash-o\"></i>"))
+                    }
+                }
+           }
+
+            @if (i.ActivityParentID > 0) //buat sub AuditUniverse
+            {
+                //kalo yang ini buat sub, subsub, subsubsubdst, cuman ditambah button delete, harusnya sih nanti di tambah logic buat ngecek sub ini punya child ga, kan ga boleh dalam hirarki kita hapus parent nya sementara child nya masih ada, nanti saya yg nambahin, tugas toto mah view nya jadi kyk contoh saya di skype dulu aja,
+                <span class="collapsed collapsible">&nbsp;</span>
+                @h.Raw(@h.ActionLink(i.Name, "Details", "AuditUniverses", new { ActivityID = i.ActivityID }, new { @class = "" }).ToHtmlString().Replace(i.Name, i.Name + "&nbsp;&nbsp;"))
+                    @h.Raw(" | Status : ") @i.Status
+                    @h.Raw(" | Used on Year : ") @i.Tahun
+                var permission = HelperController.getPermission(User.Identity.GetUserId(), "Audit Universe");
+                var isSuperAdmin = HelperController.isSuperAdmin(User.Identity.GetUserId());
+                if (permission != null && permission.Any(q => q.IsCreate == true) || isSuperAdmin)
+                {
+                    @h.Raw(@h.ActionLink("create_replace", "CreateSubAuditUniverse", "AuditUniverses", new { activityparentid = i.ActivityID }, new { @class = "btn default btn-xs grey" }).ToHtmlString().Replace("create_replace", "<i class=\"fa fa-plus\"></i>"))
+
+                    if (i.Status != "Approve")
+                    {
+                        @h.Raw(@h.ActionLink("delete_replace", "DeleteAuditUniverse", "AuditUniverses", new { ActivityID = i.ActivityID }, new { @class = "btn default btn-xs red", }).ToHtmlString().Replace("delete_replace", "<i class=\"fa fa-trash-o\"></i>"))
+                    }
+
+                }
+            }
+
+            @h.Raw("<p>")
+
+            @if (submenu > 0)
+            {
+                <ul>
+                    @TreeViewActivity.GetTreeView(h, audituniverese, i.ActivityID) @* recursive nya disini *@
+                </ul>
+            }
+        </li>
+
+
+
+    }
+}

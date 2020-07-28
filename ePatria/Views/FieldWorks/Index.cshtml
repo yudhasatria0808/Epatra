@@ -1,0 +1,149 @@
+﻿@model IEnumerable<ePatria.Models.FieldWork>
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@using Microsoft.AspNet.Identity;
+@{ var Perm = HelperController.getPermission(User.Identity.GetUserId(), "FieldWork");
+    var isSuperAdmin = HelperController.isSuperAdmin(User.Identity.GetUserId());
+}
+<div class="row" style="margin-top:20px;">
+    <div class="col-md-12">
+        <!-- BEGIN EXAMPLE TABLE PORTLET-->
+        <div class="portlet box red-sunglo">
+            <div class="portlet-title">
+                <div class="caption">
+                    <i class="fa fa-user"></i> Assurance FieldWork
+                </div>
+            </div>
+            <div class="portlet-body">
+                <div class="table-toolbar">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="btn-group">
+
+                            </div>
+                        </div>
+                        @if (Perm != null && Perm.Any(q => q.IsCreate == true) || isSuperAdmin)
+                        {
+                            <div class="col-md-6">
+                                <div class="btn-group pull-right">
+                                    <a href="@Url.Action("Create")" class="btn green">Add New <i class="fa fa-plus"></i></a>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+                <table class="table table-striped table-hover table-bordered" id="table-employee">
+                    <thead>
+                        <tr>
+                            <th>
+                                No SP
+                            </th>
+                            <th>
+                                Activity Name
+                            </th>
+                            <th>
+                                Engagement Name
+                            </th>
+                            <th>
+                                Periode
+                            </th>
+                            <th>
+                                Remarks
+                            </th>
+                            <th>
+                                Status
+                            </th>
+                            <th>
+                                Action
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.LetterOfCommand.NomorSP)
+                                </td>
+                                <td>
+                                    @Html.DisplayName(item.LetterOfCommand.Activity.Name)
+                                </td>
+                                <td>
+                                    @Html.DisplayName(item.LetterOfCommand.AuditPlanningMemorandum.Preliminary.EngagementActivity.Name)
+                                </td>
+                                <td>
+                                    @Html.DisplayName(item.LetterOfCommand.Date_Start.ToShortDateString()) - @Html.DisplayName(item.LetterOfCommand.Date_End.ToShortDateString())
+                                </td>
+                                <td>
+                                    @if (item.RiskControlMatrix.Walktrough.Remarks != null) {
+                                        @Html.DisplayName(item.RiskControlMatrix.Walktrough.Remarks)
+                                    }
+                                </td>
+                                <td>
+                                    @Html.DisplayName(item.Status)
+                                </td>
+                                @if (Perm != null && Perm.Any(q => q.IsUpdate == true) || isSuperAdmin)
+                                {
+                                    if (item.Status == "Draft")
+                                    {
+                                        <td>
+                                            @Html.ActionLink("Edit", "Edit", new { id = item.FieldWorkID }) |
+                                            @Html.ActionLink("Delete", "Delete", new { id = item.FieldWorkID })
+                                        </td>
+                                    } else {
+                                    <td>@Html.ActionLink("Detail", "Edit", new { id = item.FieldWorkID })</td> }
+                                } else {
+                                    <td>@Html.ActionLink("Detail", "Edit", new { id = item.FieldWorkID })</td> }
+                                
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <!-- END EXAMPLE TABLE PORTLET-->
+    </div>
+</div>
+<script>
+    $(document).ready(function () {
+        $('#table-employee').DataTable({
+            dom: 'T<"clear">lfrtip',
+            tableTools: {
+                "sSwfPath": "/Content/assets/global/plugins/datatables/extensions/TableTools/swf/copy_csv_xls_pdf.swf",
+                "aButtons": [
+                {
+                    "sExtends": "xls",
+                    "mColumns": [0, 1, 2,3,4,5],
+                    "sPdfOrientation": "landscape",
+                    "sPdfMessage": "Assurance FieldWork",
+                    "sButtonText": "Export to excel",
+                    "sFileName": "AssuranceFieldWork.xls"
+                },
+                ]
+            }
+        });
+    });
+</script>
+
+<!-- MODAL CREATE END -->
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+    @if (ViewBag.message != null)
+    {
+    <script>
+        $(document).ready(function () {
+            toastr.success("@ViewBag.message", "Success");
+        });
+    </script>
+    } else if (ViewBag.messageerror != null)
+    {
+        <script>
+            $(document).ready(function () {
+                toastr.error("@ViewBag.messageerror", "Error");
+            });
+        </script>
+    } 
+}

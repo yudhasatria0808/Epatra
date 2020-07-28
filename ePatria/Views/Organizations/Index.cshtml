@@ -1,0 +1,274 @@
+﻿.@model  List<ePatria.Models.Organization>
+@{
+    ViewBag.Title = "Index";
+}
+
+@using Microsoft.AspNet.Identity;
+@{ var perm = HelperController.getPermission(User.Identity.GetUserId(), "Master Data");
+ var isSuperAdmin = HelperController.isSuperAdmin(User.Identity.GetUserId());
+}
+<style>
+    .collapsed {
+        width: 15px;
+        background-image: url('../Content/themes/base/images/ui-icons_454545_256x240.png');
+        background-repeat: no-repeat;
+        background-position: -36px -17px;
+        display: inline-block;
+        cursor: pointer;
+    }
+
+    .expands {
+        width: 15px;
+        background-image: url('../Content/themes/base/images/ui-icons_454545_256x240.png');
+        background-repeat: no-repeat;
+        background-position: -50px -17px;
+        display: inline-block;
+        cursor: pointer;
+    }
+
+    .treeview ul {
+        font: 14px Arial, Sans-Serif;
+        margin: 0px;
+        padding-left: 20px;
+        padding-right: 5px;
+        list-style: none;
+    }
+
+    .treeview > li > a {
+        font-weight: bold;
+    }
+
+    .treeview li {
+    }
+
+        .treeview li a {
+            padding: 0px;
+            font-size: 12px;
+            display: inline-block;
+            text-decoration: none;
+            width: auto;
+        }
+
+
+
+
+    table {
+        border-collapse: separate !important;
+    }
+
+    .google-visualization-orgchart-node {
+        background: #FBF4AE !important;
+        border: 1px solid #DDDAB9 !important;
+        border-radius: 4px 4px 4px 4px;
+        box-shadow: 0 0 5px #F2F2F2, 0 -1px 1px #FFFFFF inset;
+        padding-bottom: 15px !important;
+        padding-top: 15px !important;
+        width: 165px !important;
+    }
+
+    .google-visualization-orgchart-lineleft {
+        border-left: 1px solid #CFCDCE !important;
+    }
+
+    .google-visualization-orgchart-linebottom {
+        border-bottom: 1px solid #CFCDCE !important;
+    }
+
+    .google-visualization-orgchart-node {
+        color: #3a3a38;
+    }
+
+    .google-visualization-orgchart-lineright {
+        border-right: 1px solid #CFCDCE !important;
+    }
+
+    .plus {
+        position: relative;
+        top: 0px;
+        height: 0px;
+        cursor: pointer;
+    }
+</style>
+
+<script src="~/Content/ChartPdf/jquery.min.js"></script>
+<script type="text/javascript" src="~/Content/ChartPdf/loader.js"></script>
+<script type="text/javascript" src="~/Content/ChartPdf/jspdf.min.js"></script>
+<script type="text/javascript" src="~/Content/ChartPdf/canvg.js"></script>
+<script type="text/javascript" src="~/Content/ChartPdf/html2canvas.js"></script>
+<script type="text/javascript" src="~/Content/ChartPdf/canvas2image.js"></script>
+
+<script>
+    //http://jsfiddle.net/w8Ytq/2/
+    google.charts.load('current', { packages: ["orgchart"] });
+    google.charts.setOnLoadCallback(drawChart);
+
+    var doc = new jsPDF('p', 'mm', [297, 210]);
+
+    function drawChart() {
+        var data = new google.visualization.DataTable();
+
+        data.addColumn('string', 'Name');
+        data.addColumn('string', 'OrganizationParentID');
+        data.addColumn('string', 'ToolTip');
+
+        @foreach (var item in Model)
+        {
+            <text>
+        data.addRows([
+
+        [{ v: '@(item.OrganizationID)', f: '@(item.Name)<div style="color:red; font-style:italic"></div>' },
+        '@(item.OrganizationParentID)',
+        '@(item.Name)'
+        ]
+        ]);
+        </text>
+        }
+
+        var chart = new google.visualization.OrgChart(document.getElementById('chart_div'));
+        chart.draw(data, { allowHtml: true });
+
+        google.visualization.events.addListener(chart, 'select', selectHandler);
+        function selectHandler(e) {
+            alert('Selected!');
+        }
+    }
+    $(document).ready(function () {
+        $('#pdfBtn').click(function () {
+            var chartContainer = document.getElementById('chart_div');
+            getImgData(chartContainer)
+        });
+    });
+    function getImgData(chartContainer) {
+        html2canvas($(chartContainer), {
+            onrendered: function (canvas) {
+                'use strict';
+                var width = 150;
+                document.body.appendChild(canvas);
+                Canvas2Image.saveAsPNG(canvas);
+                $("#img-out").html(canvas);
+                var canvas = $("#img-out").find("canvas")[0]
+                canvas.backgroundColor = "white";
+
+                var context = canvas.getContext('2d');
+                var imgData = canvas.toDataURL("image/png", 1.0);
+
+                doc.addImage(imgData, 'PNG', 30, 10, width, canvas.height * width / canvas.width);
+                doc.save('Organization.pdf');
+            }
+        });
+    }
+    $(document).ready(function () {
+        $(".treeview li>ul").css('display', 'none'); // Hide all 2-level ul
+        $(".collapsible").click(function (e) {
+            e.preventDefault();
+            $(this).toggleClass("collapsed expands");
+            $(this).closest('li').children('ul').slideToggle();
+        });
+    });
+</script>
+<div class="row" style="margin-top:20px;">
+    <div class="col-md-12">
+        <div class="portlet box red-sunglo">
+            <div class="portlet-title">
+                <div class="caption">
+                    <i class="fa fa-user"></i> Organization
+                </div>
+            </div>
+            <div class="portlet-body">
+                <div class="table-toolbar">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="btn-group">
+
+                            </div>
+                        </div>
+                        @if (perm != null && perm.Any(q => q.IsCreate == true) || isSuperAdmin)
+                        {
+                            <div class="col-md-6">
+                                <div class="btn-group pull-right">
+
+                                    <a href="@Url.Action("CreateOrganization")" class="btn green">Add New <i class="fa fa-plus"></i></a>
+                                    <button class="btn dropdown-toggle" data-toggle="dropdown">
+                                        Tools <i class="fa fa-angle-down"></i>
+                                    </button>
+                                    <ul class="dropdown-menu pull-right">
+                                        <li>
+                                            <a href="javascript:;" id="pdfBtn">
+                                                Save as PDF
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+
+                <!-- table here -->
+                @*                <div class="treeview">*@
+                <div class="row">
+                    <div class="col-xs-4">
+                        <div class="treeview">
+                            @if (Model != null && Model.Count() > 0)
+                            {
+                                <ul>
+                                    @TreeViewOrganization.GetTreeView(this.Html, Model, Model.FirstOrDefault().OrganizationParentID)
+                                </ul>
+                            }
+
+                        </div>
+                    </div>
+                    <div class="col-xs-8" style="overflow:scroll">
+                        <div id="chart_div"></div>
+                        <div id="img-out" style="display:none"></div>
+                    </div>
+                </div>
+
+                @*<div class=" divScroll">
+
+                    
+                </div>*@
+            </div>
+        </div>
+        <!-- END EXAMPLE TABLE PORTLET-->
+    </div>
+</div>
+@*<div class="modal fade " id="CreateSubOrganization" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content" style="color:#000;">
+
+            </div>
+        </div>
+    </div>*@
+
+<script src="~/Content/assets/global/plugins/jquery-validation/js/jquery.validate.min.js" type="text/javascript"></script>
+
+<!-- END EXAMPLE TABLE PORTLET-->
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+    @if (ViewBag.message != null)
+    {
+        <script>
+            $(document).ready(function () {
+                toastr.success("@ViewBag.message", "Success");
+            });
+        </script>
+    }
+    else if (ViewBag.messageerror != null)
+    {
+        <script>
+            $(document).ready(function () {
+                toastr.error("@ViewBag.messageerror", "Error");
+            });
+        </script>
+    }
+}
+
+
+<style>
+    .divScroll {
+        overflow: scroll;
+        height: 380px;
+        width: 1057px;
+    }
+</style>

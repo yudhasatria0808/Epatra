@@ -1,0 +1,69 @@
+﻿@model ePatria.Models.ConsultingRequest
+
+@{
+    ViewBag.Title = "About";
+}
+
+@if (ViewBag.WordDocumentMode == null || !ViewBag.WordDocumentMode)
+{
+    <h2>@ViewBag.Title.</h2>
+<h3>@ViewBag.Message</h3>
+}
+<table border="0" style="width: 100%">
+    <tr>
+        <td width="66.5%"><b>MEMORANDUM</b></td>
+        <td style="text-align: right"><img src="http://www.pertaminapatraniaga.com/themes/patra/images/logo_patraniaga.png" alt="ePatria" height="50" width="175"></td>
+    </tr>
+</table>
+<br />
+<p>Jakarta, @DateTime.Now.ToShortDateString()</p>
+<br />
+<table border="0" style="width: 70%">
+    <tr>
+        <td width ="20%">Kepada</td>
+        <td>:</td>
+        <td>Direktur Utama</td>
+    </tr>
+    <tr>
+        <td width ="20%">Dari</td>
+        <td>:</td>
+        <td>@ViewBag.requester</td>
+    </tr>
+    <tr>
+        <td width ="20%">Nomor</td>
+        <td>:</td>
+        <td>@Html.DisplayFor(model => model.NoSurat) </td>
+    </tr>
+    <tr>
+        <br />
+        <td width ="20%">Perihal</td>
+        <br />
+        <td>:</td>
+        <br />
+        <td><b><i>@Html.DisplayFor(model => model.Activity.Name)</i></b></td>
+    </tr>
+    <tr>
+        <td width ="20%">Lampiran</td>
+        <td>:</td>
+        <td>1 (satu) berkas</td>
+    </tr>
+</table>
+<br />
+<p>@Html.Raw(Model.EvaluationResult.Replace("\n","<br />"))</p>
+<br />
+<br />
+<br />
+<p>Demikian disampaikan, atas perhatiannya diucapkan terima kasih. </p>
+<br />
+<strong>Chief Internal Audit,</strong>
+<br />
+<br />
+<br />
+<br />
+<p>...</p>
+<style>
+    table, th, td
+    {
+        border-collapse: collapse;
+    }
+</style>

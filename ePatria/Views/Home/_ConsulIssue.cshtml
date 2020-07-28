@@ -1,0 +1,30 @@
+﻿@model IEnumerable<ePatria.Models.ConsultingRCMDetailRiskControlIssue>
+@{
+    ViewBag.Title = "Index";
+    Layout = null;
+}
+
+@using Microsoft.AspNet.Identity;
+@{ var Perm = HelperController.getPermission(User.Identity.GetUserId(), "Consulting Control Issue"); 
+    var isSuperAdmin = HelperController.isSuperAdmin(User.Identity.GetUserId());
+}
+@foreach (var item in Model)
+{
+    <li>
+        <div class="col1">
+            <div class="cont">
+                <div class="cont-col1">
+                    <div class="label label-sm label-danger">
+                        <i class="fa fa-user"></i>
+                    </div>
+                </div>
+                <div class="cont-col2">
+                    <div class="desc">
+                        <label><i>Consulting Control Issue</i> @item.NoRef, Status : <i>@item.Status_App</i></label>
+                        <label>[@Html.ActionLink("Details", "../ConsultingFieldWorks/Details", new { id = item.ConsultingRCMDetailRiskControlIssueID })] </label>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </li>
+}   

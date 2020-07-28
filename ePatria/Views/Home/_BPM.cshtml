@@ -1,0 +1,28 @@
+﻿@model IEnumerable<ePatria.Models.BPM>
+
+@{
+    ViewBag.Title = "Index";
+    Layout = null;
+}
+
+@using Microsoft.AspNet.Identity;
+@{ var Perm = HelperController.getPermission(User.Identity.GetUserId(), "BPM"); }
+@foreach (var item in Model)
+{
+    <li>
+        <div class="col1">
+            <div class="cont">
+                <div class="cont-col1">
+                    <div class="label label-sm label-info">
+                        <i class="fa fa-briefcase"></i>
+                    </div>
+                </div>
+                <div class="cont-col2">
+                    <div class="desc">
+                        <label><i>BPM</i> <a href="@Url.Action("CreateBusiness", "Walktroughs", new { id = item.BPMID, walkid = item.WalktroughID })"> @Html.DisplayFor(model => item.Name)</a>, Status : <i>@item.Status</i></label>                        
+                    </div>
+                </div>
+            </div>
+        </div>
+    </li>
+}

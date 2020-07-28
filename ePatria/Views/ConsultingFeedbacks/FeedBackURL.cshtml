@@ -1,0 +1,62 @@
+﻿@model ePatria.Models.ConsultingQuestionerAnswersViewModel
+
+@{
+    ViewBag.Title = "Auditee Feedback";
+    Layout = null;
+}
+
+<h2>Auditee Feedback for @ViewBag.EmpName</h2>
+
+
+@using (Html.BeginForm("FeedBackURL", "ConsultingFeedbacks", "POST"))
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-horizontal">
+        @{
+    var idDetailFeedback = ViewContext.RouteData.Values["id"];
+    var empId = Request.QueryString["empId"];
+    @Html.Hidden("EmployeeID", empId.ToString())
+            @Html.Hidden("ConsultingFeedBackQuestionDetailID", idDetailFeedback.ToString())
+        }
+        <hr />
+        <table>
+            <tbody>
+                @for (int i = 0; i < Model.ConsultingQuestioners.Count; i++)
+                {
+                    <tr>
+                        <td>@Html.DisplayFor(modelItem => Model.ConsultingQuestioners[i].Name)</td>
+                        <td>
+                            @if (Model.ConsultingQuestioners[i].Type == "TextBox")
+                            {
+                                @Html.HiddenFor(model => Model.ConsultingQuestioners[i].QuestionerID, new { @id = "QuestionerID", @Name = "QuestionerID" })
+                                @Html.TextBox("answer", null, new { @class = "form-control", @placeholder = Model.ConsultingQuestioners[i].Name })
+                            }
+                            else if (Model.ConsultingQuestioners[i].Type == "TextArea")
+                            {
+                                @Html.HiddenFor(model => Model.ConsultingQuestioners[i].QuestionerID, new { @id = "QuestionerID", @Name = "QuestionerID" })
+                                @Html.TextArea("answer", null, new { @class = "form-control", @placeholder = Model.ConsultingQuestioners[i].Name, @rows = 5 })
+                            }
+                            else if (Model.ConsultingQuestioners[i].Type == "Rating")
+                            {
+                                @Html.HiddenFor(model => Model.ConsultingQuestioners[i].QuestionerID, new { @id = "QuestionerID", @Name = "QuestionerID" })
+                                @Html.DropDownList("Rating", new SelectList(new int[] { 1, 2, 3, 4, 5 }))
+                            }
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+        <br /><br />
+        <div class="form-group">
+            <div>
+                <input type="submit" value="Submit" id="submitquestion" />
+            </div>
+        </div>
+    </div>
+}
+<style>
+    td {
+        padding-bottom: 10px;
+    }
+</style>

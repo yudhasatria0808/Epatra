@@ -1,0 +1,230 @@
+﻿@model ePatria.Models.Walktrough
+
+@{
+    ViewBag.Title = "About";
+}
+
+@if (ViewBag.WordDocumentMode == null || !ViewBag.WordDocumentMode)
+{
+    <h2>@ViewBag.Title.</h2>
+<h3>@ViewBag.Message</h3>
+}
+<table border="0" style="width: 100%">
+    <tr>
+        <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></td><td style= "vertical-align:middle;text-align:center;" colspan="3" width="3%"><b>RISK & CONTROL MATRIX</b></td><td></td>
+    </tr>
+    <tr>
+        <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td style= "vertical-align:middle;text-align:center;" colspan="3" width="3%"><b>ASSURANCE ATAS PANJAR KERJA</b></td><td></td>
+    </tr>
+</table>
+
+<br />
+
+<table border="1" style="width: 100%">
+    <tr>
+        <td rowspan="2" width="1%" style="vertical-align:middle;text-align:center;">No </td>
+        <td rowspan="2" width="7%" style="vertical-align:middle;text-align:center;">Desc. Process</td>
+        <td rowspan="2" width="7%" style="vertical-align:middle;text-align:center;">Desc. Sub Process</td>
+        <td rowspan="2" width="7%" style="vertical-align:middle;text-align:center;">Obj. Process</td>
+                @*<td style= "border-bottom-style: none">*@
+                  <td>
+                    <table border="1" style="width: 100%">
+                    <tr>
+                        <td colspan="2" style= "border-left-style: none;text-align:center;">Risk</td>
+                        <td>
+                            <table border="1" style="width: 100%">
+                            <tr>
+                                <td colspan="2" style= "border-left-style: none;vertical-align:middle;text-align:center;">Control</td>
+                                <td style= "border-bottom-style: none;vertical-align:middle;text-align:center;">Audit</td>
+                                <td style= "border-bottom-style: none;vertical-align:middle;text-align:center;">Work Done</td>
+                                <td style= "border-bottom-style: none;vertical-align:middle;text-align:center;">Work Done</td>
+                                <td style= "border-bottom-style: none;vertical-align:middle;text-align:center;">Issue</td>
+                                <td style= "border-bottom-style: none;vertical-align:middle;text-align:center;">Audit Result</td>
+                                <td style= "border-bottom-style: none;vertical-align:middle;text-align:center;">Auditor</td>
+                            </tr>
+                            </table>
+                        </td>
+                    </tr>
+                    </table>
+                </td>
+    </tr>
+    <tr>
+        <td style= "border-top-style: none;border-right: 1px solid #000;">
+            <table border="1" style="width: 100%">
+            <tr>
+                <td style= "border-top: 1px solid #000;vertical-align:middle;text-align:center;">No</td>
+                <td style= "vertical-align:middle;text-align:center;">Desc. Risk</td>
+                <td>
+                    <table border="1" style="width: 100%">
+                    <tr>
+                        <td style= "vertical-align:middle;text-align:center;">No</td>
+                        <td style= "vertical-align:middle;text-align:center;">Desc. Control</td>
+                        <td style= "border-top-style: none;vertical-align:middle;text-align:center;">Step</td>
+                        <td style= "border-top-style: none;vertical-align:middle;text-align:center;">Description</td>
+                        <td style= "border-top-style: none;vertical-align:middle;text-align:center;">Result</td>
+                        <td style= "border-top-style: none;vertical-align:middle;text-align:center;">Name</td>
+                        <td style= "border-top-style: none;vertical-align:middle;text-align:center;">(Passed/Failed)</td>
+                        <td style= "border-top-style: none"></td>
+                    </tr>
+                    </table>
+                </td>
+            </tr>
+            </table>
+        </td>
+    </tr>
+  
+@{int j = 0;}  
+ @foreach (var item in ViewBag.busProses)
+ {
+ int i = 0;
+ <tr>
+    <td style="vertical-align:top;text-align:center;" valign="top">
+            @{j++;
+            @j}<br />
+    
+    </td>
+    <td valign="top">
+            @item.getBPMName(item.BusinessProcesID)
+    </td>
+    <td valign="top">
+            @item.SubBusinessProcess
+    </td>
+    <td valign="top">
+            @item.Objectives<br />
+    </td>
+    <td valign="top">
+            @if (item.getRiskByRCMId(item.RiskControlMatrixID).Count > 0)
+            {
+                foreach (var risk in item.getRiskByRCMId(item.RiskControlMatrixID))
+                {
+                    int k = 0;
+                    <table border="1" width="100%">
+                    <tr>
+                        <td style="vertical-align:top;text-align:center;" border="1" valign="top" width="3%">
+                            @{i++;}
+                            <a>R</a>@i<br />
+                        </td>
+                        <td border="1" valign="top" width="10%">
+                            @risk.RiskName
+                        </td>
+                        <td border="1" valign="top" width="100%">
+                            @if (item.getControlByRiskId(risk.RCMDetailRiskID).Count > 0)
+                            {
+                                foreach(var control in item.getControlByRiskId(risk.RCMDetailRiskID))
+                                {
+                                    <table border="1" width="100%">
+                                        <tr>
+                                            <td style="vertical-align:top;text-align:center;" valign="top" width="3%">
+                                                @{k++;}
+                                                <a>C</a>@k<br />
+                                            </td>
+                                            <td valign="top" width="10%">
+                                                @control.ControlName<br />
+                                            </td>
+                                            <td valign="top" width="10%">
+                                                @foreach(var audit in item.getAuditStepByControlId(control.RCMDetailRiskControlID))
+                                                {
+                                                    @Html.Raw(@audit.AuditStepName.Replace("\n","<br />"))<br />
+                                                }
+                                            </td>
+                                            <td valign="top" width="10%">
+                                                @foreach(var wdd in item.getWorkDoneDescriptionByControlId(control.RCMDetailRiskControlID))
+                                                {
+                                                    @wdd.WorkDoneDescription<br />
+                                                }
+                                            </td>
+                                            <td valign="top" width="10%">
+                                                @foreach(var wdr in item.getWorkDoneResultByControlId(control.RCMDetailRiskControlID))
+                                                {
+                                                    @wdr.WorkDoneResult<br />
+                                                }
+                                            </td>
+                                            <td valign="top" width="10%">
+                                                @foreach(var title in item.getIssueTitleByControlId(control.RCMDetailRiskControlID))
+                                                {
+                                                    @title.Title<br />
+                                                }
+                                            </td>
+                                            <td valign="top" width="10%">
+                                                @control.Status<br />
+                                            </td>
+                                            <td valign="top" width="10%">
+                                                @foreach(var auditor in item.getIssuePICIDByControlId(control.RCMDetailRiskControlID))
+                                                {
+                                                    @auditor.PICID<br />
+                                                }
+                                            </td>
+                                        </tr>
+                                    </table>
+                                }
+                            } else
+                            {
+                                <table border="1" width="100%">
+                                        <tr>
+                                            <td style="vertical-align:top;text-align:center;" valign="top" width="3%">
+                                            </td>
+                                            <td valign="top" width="10%">
+                                            </td>
+                                            <td valign="top" width="10%">
+                                            </td>
+                                            <td valign="top" width="10%">
+                                            </td>
+                                            <td valign="top" width="10%">
+                                            </td>
+                                            <td valign="top" width="10%">
+                                            </td>
+                                            <td valign="top" width="10%">
+                                            </td>
+                                            <td valign="top" width="10%">
+                                            </td>
+                                        </tr>
+                                    </table>
+                            }
+                        </td>   
+                    </tr>
+                    </table>
+                }
+            }
+            else {
+                <table border="1" width="100%">
+                    <tr>
+                        <td style="vertical-align:top;text-align:center;" border="1" valign="top" width="3%">
+                        </td>
+                        <td border="1" valign="top" width="10%">
+                        </td>
+                        <td border="1" valign="top" width="100%">
+                            <table border="1" width="100%">
+                                <tr>
+                                    <td style="vertical-align:top;text-align:center;" valign="top" width="3%">
+                                    </td>
+                                    <td valign="top" width="10%">
+                                    </td>
+                                    <td valign="top" width="10%">
+                                    </td>
+                                    <td valign="top" width="10%">
+                                    </td>
+                                    <td valign="top" width="10%">
+                                    </td>
+                                    <td valign="top" width="10%">
+                                    </td>
+                                    <td valign="top" width="10%">
+                                    </td>
+                                    <td valign="top" width="10%">
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                </table>
+            }
+    </td>
+ </tr>
+  }
+</table>
+
+<style>
+    table, th, td
+    {
+        border-collapse: collapse;
+    }
+</style>

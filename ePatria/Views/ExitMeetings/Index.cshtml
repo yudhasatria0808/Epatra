@@ -1,0 +1,143 @@
+﻿@model IEnumerable<ePatria.Models.ExitMeeting>
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@using Microsoft.AspNet.Identity;
+@{ var Perm = HelperController.getPermission(User.Identity.GetUserId(), "Exit Meeting");
+    var isSuperAdmin = HelperController.isSuperAdmin(User.Identity.GetUserId());
+}
+<div class="row" style="margin-top:20px;">
+    <div class="col-md-12">
+        <!-- BEGIN EXAMPLE TABLE PORTLET-->
+        <div class="portlet box red-sunglo">
+            <div class="portlet-title">
+                <div class="caption">
+                    <i class="fa fa-user"></i> Exit Meeting
+                </div>
+            </div>
+            <div class="portlet-body">
+                <div class="table-toolbar">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="btn-group">
+
+                            </div>
+                        </div>
+                        @if (Perm != null && Perm.Any(q => q.IsCreate == true) || isSuperAdmin)
+                        {
+                            <div class="col-md-6">
+                                <div class="btn-group pull-right">
+                                    <a href="@Url.Action("Create")" class="btn green">Add New <i class="fa fa-plus"></i></a>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+                <table class="table table-striped table-hover table-bordered" id="table-employee">
+                    <thead>
+                        <tr>
+                            <th>
+                                No. SP
+                            </th>
+                            <th>
+                                Activity Name
+                            </th>
+                            <th>
+                                Engagement Name
+                            </th>
+                            <th>
+                                Periode
+                            </th>
+                            <th>
+                                Status
+                            </th>
+                            <th>
+                                Status Tanggapan
+                            </th>  
+<th>
+                                Actions
+                            </th>                      
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td>
+                                    <a href="@Url.Action("Edit", "ExitMeetings", new { id = item.ExitMeetingID })"> @Html.DisplayFor(modelItem => item.LetterOfCommand.NomorSP)</a>
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Activity.Name)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.EngagementActivity.Name)
+                                </td>
+                                <td>
+                                    @Html.DisplayName(item.Date_Start.HasValue ? item.Date_Start.Value.ToString("dd/MM/yyyy HH:mm") : "-") - @Html.DisplayName(item.Date_End.HasValue ? item.Date_End.Value.ToString("dd/MM/yyyy HH:mm") : "-")
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Status)
+                                </td>
+                                <td>
+                                    @if (item.StatusTanggapan != null)
+                                    {
+
+                                        @Html.DisplayName(item.StatusTanggapan)
+
+                                    }
+                                    else
+                                    {
+                                        @Html.DisplayName("-")
+                                    }
+
+                                </td>
+<td>
+ @Html.ActionLink("Preview", "Preview", new { id = item.ExitMeetingID }) 
+                                   
+</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <!-- END EXAMPLE TABLE PORTLET-->
+    </div>
+</div>
+
+
+<!-- MODAL CREATE END -->
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+    @if (ViewBag.message != null)
+    {
+    <script>
+        $(document).ready(function () {
+            toastr.success("@ViewBag.message", "Success");
+        });
+    </script>
+    }
+}
+<script>
+    $(document).ready(function () {
+        $('#table-employee').DataTable({
+            dom: 'T<"clear">lfrtip',
+            tableTools: {
+                "sSwfPath": "/Content/assets/global/plugins/datatables/extensions/TableTools/swf/copy_csv_xls_pdf.swf",
+                "aButtons": [
+                {
+                    "sExtends": "xls",
+                    "mColumns": [0, 1, 2, 3, 4, 5],
+                    "sPdfOrientation": "landscape",
+                    "sPdfMessage": "Exit Meeting",
+                    "sButtonText": "Export to excel",
+                    "sFileName": "ExitMeeting.xls"
+                },
+                ]
+            }
+        });
+    });
+</script>

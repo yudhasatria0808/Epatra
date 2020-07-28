@@ -1,0 +1,246 @@
+@model ePatria.Models.ConsultingLetterOfCommand
+
+@{
+    ViewBag.Title = "Delete";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Delete</h2>
+
+<h3>Are you sure you want to delete this?</h3>
+<div class="row" style="margin-top:20px;">
+    <div class="col-md-12">
+        <!-- BEGIN EXAMPLE TABLE PORTLET-->
+        <div class="portlet box red-sunglo">
+            <div class="portlet-title">
+                <div class="caption">
+                    <i class="fa fa-eye"></i> Consulting Letter Of Command
+                </div>
+            </div>
+            <div class="portlet-body">
+                <div class="table-toolbar">
+                    <table>
+                        <tr>
+                            <td class="padding5">
+                                <b>Nomer SP </b>
+                            </td>
+                            <td class="padding5">
+                                &nbsp;  : &nbsp;
+                            </td>
+                            <td class="padding5">
+                                @Html.DisplayFor(model => model.NomorSP)
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td class="padding5">
+                                <b>Nomer Request  </b>
+                            </td>
+                            <td class="padding5">
+                                &nbsp; :
+                            </td>
+                            <td class="padding5">
+                                @Html.DisplayFor(model => model.ConsultingRequest.NoRequest)
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="padding5">
+                                <b>Periode </b>
+                            </td>
+                            <td class="padding5">
+                                &nbsp; :
+                            </td>
+                            <td class="padding5">
+                                @Html.DisplayName(Model.StartDate.ToShortDateString()) - @Html.DisplayName(Model.EndDate.ToShortDateString())
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="padding5">
+                                <b>Activity </b>
+                            </td>
+                            <td class="padding5">
+                                &nbsp; :
+                            </td>
+                            <td class="padding5">
+                                @Html.Raw(ViewBag.ActivityName)
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="padding5">
+                                <b>Engagement Name </b>
+                            </td>
+                            <td class="padding5">
+                                &nbsp; :
+                            </td>
+                            <td class="padding5">
+                                @Html.DisplayFor(model => model.EngagementName)
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="padding5">
+                                <b>Responsible Person </b>
+                            </td>
+                            <td class="padding5">
+                                &nbsp; :
+                            </td>
+                            <td class="padding5">
+                                @Html.DisplayFor(model => model.PicID)
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="padding5">
+                                <b>Supervisor </b>
+                            </td>
+                            <td class="padding5">
+                                &nbsp; :
+                            </td>
+                            <td class="padding5">
+                                @Html.DisplayFor(model => model.SupervisorID)
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="padding5">
+                                <b>Member </b>
+                            </td>
+                            <td class="padding5">
+                                &nbsp; :
+                            </td>
+                            <td class="padding5">
+                                @{var m = 0;}
+                @foreach (var member in ViewBag.member.Split(';')) {
+                    m++;
+                    string mem = ViewBag.member;
+                    if (m < mem.Split(';').Count()) {
+                    <li>@Html.Raw(member)</li>
+                    }
+                }
+
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td class="padding5">
+                                <b>Team Leader </b>
+                            </td>
+                            <td class="padding5">
+                                &nbsp;  :
+                            </td>
+                            <td class="padding5">
+                                @Html.DisplayFor(model => model.TeamLeaderID)
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td class="padding5">
+                                <b>Dasar </b>
+                            </td>
+                            <td class="padding5">
+                                &nbsp; :
+                            </td>
+                            <td class="padding5">
+                            @{var x = 0;}
+                @foreach (var dasar in ViewBag.Dasar.Split(';')) {
+                    x++;
+                    string ds = ViewBag.Dasar;
+                    if (x < ds.Split(';').Count()) {
+                    <li>@Html.Raw(dasar)</li>
+                    }
+                }
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td class="padding5">
+                                <b>Menimbang </b>
+                            </td>
+                            <td class="padding5">
+                                &nbsp;  :
+                            </td>
+                            <td class="padding5">
+                                @Html.DisplayFor(model => model.Menimbang)
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td class="padding5">
+                                <b>Untuk </b>
+                            </td>
+                            <td class="padding5">
+                                &nbsp; :
+                            </td>
+                            <td class="padding5">
+                           @{var y = 0;}
+                @foreach (var untuk in ViewBag.Untuk.Split(';')) {
+                    y++;
+                    string uk = ViewBag.Untuk;
+                    if (y < uk.Split(';').Count()) {
+                    <li>@Html.Raw(untuk)</li>
+                    }
+                }
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td class="padding5">
+                                <b>Penutup </b>
+                            </td>
+                            <td class="padding5">
+                                &nbsp;  :
+                            </td>
+                            <td class="padding5">
+                                @Html.DisplayFor(model => model.Penutup)
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td class="padding5">
+                                <b>Tembusan </b>
+                            </td>
+                            <td class="padding5">
+                                &nbsp; :
+                            </td>
+                            <td class="padding5">
+                            @{var z = 0;}
+                @foreach (var tembusan in ViewBag.Tembusan.Split(';')) {
+                    z++;
+                    string ts = ViewBag.Tembusan;
+                    if (z < ts.Split(';').Count()) {
+                    <li>@Html.Raw(tembusan)</li>
+                    }
+                }
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td class="padding5">
+                                <b>Status </b>
+                            </td>
+                            <td class="padding5">
+                                &nbsp;  :
+                            </td>
+                            <td class="padding5">
+                                @if (Model.Status == null)
+                                {
+                                    @Html.DisplayName("Pending")
+                                }
+                                else
+                                {
+                                    @Html.DisplayFor(model => model.Status)
+                                }
+
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div>
+@using (Html.BeginForm()) {
+    <div class="form-actions no-color">
+        <input type="submit" value="Delete" class="btn red" /> |
+        @Html.ActionLink("Back to List", "Index")
+    </div>
+}
+</div>

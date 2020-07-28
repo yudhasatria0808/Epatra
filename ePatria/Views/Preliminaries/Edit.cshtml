@@ -1,0 +1,509 @@
+﻿@model ePatria.Models.Preliminary
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@using Microsoft.AspNet.Identity;
+@{
+    var checkPerm = HelperController.getPermissionRoleByPerm("Preliminary Survey", User.Identity.GetUserId());
+    var userPerm = HelperController.getPermission(User.Identity.GetUserId(), "Preliminary Survey");
+}
+<h2>Edit</h2>
+@using (Html.BeginForm("Edit", "Preliminaries", FormMethod.Post, new { enctype = "multipart/form-data", id = "preform" }))
+{
+    @Html.AntiForgeryToken()
+    <div class="form-horizontal">
+        <h4>Preliminary</h4>
+        <hr />
+        <div class="error-container">
+            <ul></ul>
+        </div>
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        @Html.HiddenFor(model => model.PreliminaryID, new { htmlAttributes = new { @class = "form-control" } })
+        @Html.HiddenFor(model => model.Status, new { htmlAttributes = new { @class = "form-control" } })
+        <div class="form-group">
+            @Html.LabelFor(model => model.Type, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-5 ">
+                <div class="col-md-6">
+                    @Html.RadioButtonFor(model => model.Type, "Planned", true) Planned &nbsp;
+                    <br />
+                    @Html.RadioButtonFor(model => model.Type, "UnPlanned", false) UnPlanned
+                </div>
+                @Html.ValidationMessageFor(model => model.Type, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.NomorPreliminarySurvey, "No. Preliminary Survey", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-5">
+                @Html.EditorFor(model => model.NomorPreliminarySurvey, new { htmlAttributes = new { @class = "form-control", @readonly = true } })
+                @Html.ValidationMessageFor(model => model.NomorPreliminarySurvey, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+
+        @if (Model.Type == "Planned")
+        {
+            <div id="Planned">
+                <div class="form-group disabled">
+                    @Html.LabelFor(model => model.ActivityID, "Activity", htmlAttributes: new { @class = "control-label col-md-2" })
+                    <div class="col-md-5">
+                        @Html.DropDownListFor(model => model.ActivityID, null, new { @onchange = "javascript:GetEng(this.value);", @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.ActivityID, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.Label("Engagement Name", htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-5">
+
+
+                    @*<select id="audid" name="audid" class=" form-control"></select>*@
+
+                    @Html.DropDownListFor(model => model.EngagementID, null, new { @class = "form-control" })
+                    @*@Html.DropDownList("EngagementID", null, new { @id = "auditid", @name = "auditid", @class = " form-control" })*@
+                    @Html.ValidationMessageFor(model => model.ActivityID, "", new { @class = "text-danger" })
+                </div>
+            </div>
+        }
+        @if (Model.Type == "UnPlanned")
+        {
+            <div id="UnPlanned">
+                <div class="form-group">
+                    @Html.LabelFor(model => model.ActivityID, "Activity", htmlAttributes: new { @class = "control-label col-md-2" })
+                    <div class="col-md-5">
+
+                        @Html.DropDownList("UnActivityID", null, new { @class = "form-control " })
+
+                        @Html.ValidationMessageFor(model => model.ActivityID, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                @Html.Hidden("EnggaID")
+                <div class="form-group">
+                    @Html.LabelFor(model => model.ActivityID, "Engagement Name", htmlAttributes: new { @class = "control-label col-md-2" })
+                    <div class="col-md-5">
+                        @*<select id="auditid" name="auditid" class=" form-control"></select>*@
+                        @Html.Editor("EngagementName", new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.ActivityID, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+            </div>
+        }
+        <div class="form-group input-group-sm">
+            @Html.LabelFor(model => model.Date_Start, "Periode", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-2">
+                @Html.TextBoxFor(model => model.Date_Start, "{0:dd/MM/yyyy}", new { @class = "form-control datepicker", @readonly = true })
+                @Html.ValidationMessageFor(model => model.Date_Start, "", new { @class = "text-danger" })
+            </div>
+            <div class="col-md-2">
+                @Html.TextBoxFor(model => model.Date_End, "{0:dd/MM/yyyy}", new { @class = "form-control datepicker", @readonly = true })
+                @Html.ValidationMessageFor(model => model.Date_End, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.PICID, "Responsible Person", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-5">
+                @Html.TextBoxFor(model => model.PICID, null, new { @class = "form-control", placeholder = "Auto Complete" })
+                @Html.ValidationMessageFor(model => model.PICID, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.SupervisorID, "Supervisor", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-5">
+                @Html.TextBoxFor(model => model.SupervisorID, null, new { @class = "form-control", placeholder = "Auto Complete" })
+                @Html.ValidationMessageFor(model => model.SupervisorID, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.TeamLeaderID, "Team Leader", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-5">
+                @Html.TextBoxFor(model => model.TeamLeaderID, null, new { @class = "form-control", placeholder = "Auto Complete" })
+                @Html.ValidationMessageFor(model => model.TeamLeaderID, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div id="MemberGroup">
+            @{var y = 0;}
+            @foreach (var mem in Model.MemberID.Split(';'))
+            {
+                y++;
+                if (y < Model.MemberID.Split(';').Count())
+                {
+                    <div class="form-group" id="membersdiv-@y">
+                        @if (y == 1)
+                        {
+                            @Html.Label("Member", htmlAttributes: new { @class = "control-label col-md-2", @id = "memberlabel#1" })
+                        }
+                        else
+                        {
+                            @Html.Label(" ", htmlAttributes: new { @class = "control-label col-md-2", @id = "memberlabel#1" })
+                        }
+                        <div class="col-md-5">
+                            <input name="members" id="members-@y" class="form-control members" type="text" placeholder="Auto Complete" value="@mem" />
+                        </div>
+                        @if (y != 1)
+                        {
+                            <div class="col-md-2"><a href="#" class="btn btn-sm red" onclick="removeMember(@y);"><i class="fa fa-times"></i></a></div>
+                        }
+                    </div>
+                }
+            }
+        </div>
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-5">
+                <a href="#" class="btn btn-sm green" id='addButtonMember'><i class="fa fa-plus"></i>Add More Member</a>
+                @*<a href="#" class="btn btn-sm red" id='removeButtonMember'><i class="fa fa-times"></i>Remove Member</a>*@
+            </div>
+        </div>
+
+        <div id="MembersGroup">
+            @{var x = 0;}
+            @foreach (var mem in Model.EmployeeID.Split(';'))
+            {
+                x++;
+                if (x < Model.EmployeeID.Split(';').Count())
+                {
+                    <div class="form-group" id="memberdiv-@x">
+                        @if (x == 1)
+                        {
+                            @Html.Label("Auditee", htmlAttributes: new { @class = "control-label col-md-2", @id = "auditeelabel#1" })
+                        }
+                        else
+                        {
+                            @Html.Label(" ", htmlAttributes: new { @class = "control-label col-md-2", @id = "auditeelabel#1" })
+                        }
+
+                        <div class="col-md-5">
+                            <input name="member" id="member-@x" class="form-control member" type="text" placeholder="Auto Complete" value="@mem" />
+                        </div>
+                        @if (x != 1)
+                        {
+                            <div class="col-md-2"><a href="#" class="btn btn-sm red" onclick="removeAuditee(@y);"><i class="fa fa-times"></i></a></div>
+                        }
+                    </div>
+                }
+            }
+        </div>
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-5">
+                <a href="#" class="btn btn-sm green" id='addButton'><i class="fa fa-plus"></i>Add More Auditee</a>
+                @*<a href="#" class="btn btn-sm red" id='removeButton'><i class="fa fa-times"></i>Remove Auditee</a>*@
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.Label("File : ", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @if (ViewBag.paths != null)
+                {
+
+                    int i = 0;
+                    List<string> images = new List<string>();
+                    foreach (var path in ViewBag.paths)
+                    {
+                        i++;
+                        string imageid = "image" + i.ToString();
+                        <div class="image">
+                            <img src="@path" alt="image" width="20%" height="20%" id=@imageid style="display:none" />
+                            <div>
+                                @Html.Label("Delete", null, new { @class = "removeImage btn btn-xs red", @style = "cursor:pointer" })
+                                @Html.ActionLink("Download", "../" + (string)path, null, new { target = "_blank", @class = "btn btn-xs green" })
+                                @Html.LabelFor(model => model.PreliminaryID, (string)path.Split('/')[3])
+                                @{images.Add(Convert.ToString(path));}
+                            </div>
+                        </div>
+                    }
+                    Session["Images"] = images.ToArray();
+                }
+                <input type="file" name="files" id="file1" class="file1" />
+                <div class="preview"></div>
+            </div>
+        </div>
+        <script>
+            $('.removeImage').click(function () {
+                $(this).parent().parent().remove();
+                var images = [];
+                if ($('.image').length > 0) {
+                    $('.image').each(function (index) {
+                        images.push($(this).find('img').attr('src'));
+                    });
+                } else
+                    images = "deleteall";
+                $.ajax({
+                    type: "POST",
+                    traditional: true,
+                    url: "../getImages",
+                    data: { images: images }
+                });
+            });
+            $(function () {
+                $("input[name=files]").previewimage({
+                    div: ".preview"
+                });
+            });
+        </script>
+        <style type="text/css">
+            input[type='file'] {
+                color: transparent;
+            }
+        </style>
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-5">
+                @if (userPerm.Any(d => d.IsCreate))
+                {
+                    if (userPerm.Any(d => d.IsSubmit1))
+                    {
+                        if (checkPerm.Contains("IsSubmit2"))
+                        {
+                            <button class="btn btn-primary" name="submit" type="submit" id="submit" value="Submit For Review By @checkPerm.Split(':')[2].Split(';')[0]"> Submit</button>
+                        }
+                        else if (checkPerm.Contains("IsApprove"))
+                        {
+                            <button class="btn btn-primary" name="submit" type="submit" id="submit" value="Submit For Approve By @checkPerm.Split(':')[3].Split(';')[0]"> Submit</button>
+                        }
+                    }
+                    else
+                    {
+                        <button class="btn btn-primary" name="submit" type="submit" id="submit" value="Submit For Review By @checkPerm.Split(':')[1].Split(';')[0]"> Submit</button>
+                    }
+                }
+                else if (userPerm.Any(d => d.IsSubmit1))
+                {
+                    if (checkPerm.Contains("IsSubmit2"))
+                    {
+                        <button class="btn btn-primary" name="submit" type="submit" id="submit" value="Submit For Review By @checkPerm.Split(':')[2].Split(';')[0]"> Submit</button>
+                    }
+                    else if (checkPerm.Contains("IsApprove"))
+                    {
+                        <button class="btn btn-primary" name="submit" type="submit" id="submit" value="Submit For Approve By @checkPerm.Split(':')[3].Split(';')[0]"> Submit</button>
+                    }
+                }
+                else if (userPerm.Any(d => d.IsSubmit2))
+                {
+                    if (checkPerm.Contains("IsApprove"))
+                    {
+                        <button class="btn btn-primary" name="submit" type="submit" id="submit" value="Submit For Approve By @checkPerm.Split(':')[3].Split(';')[0]"> Submit</button>
+                    }
+                }
+                <input class="btn btn-primary" name="submit" type="submit" id="submit" value="Save" />
+            </div>
+        </div>
+    </div>
+}
+
+
+
+
+
+<div>
+    @Html.ActionLink("Back to List", "Index")
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+    <script type="text/javascript">
+    $("#preform").validate({
+        errorLabelContainer: $("ul", $('div.error-container')),
+        wrapper: 'li',
+        rules: {
+            ActivityID: "required",
+            EngagementID: "required",
+            UnActivityID: "required",
+            EngagementName: "required",
+            Date_Start: "required",
+            Date_End: "required",
+            PICID: "required",
+            SupervisorID: "required",
+            TeamLeaderID: "required",
+            members: "required"
+        },
+        messages: {
+            ActivityID: "Please select Activity",
+            EngagementID: "Please select Engagement",
+            UnActivityID: "Please select Activity",
+            EngagementName: "Please enter Engagement name",
+            Date_Start: "Please enter Date Start",
+            Date_End: "Please enter Date End",
+            PICID: "Please enter Responsible Person name",
+            SupervisorID: "Please enter Supervisor name",
+            TeamLeaderID: "Please enter Team Leader name",
+            members: "Please enter Member name"
+        }
+    });
+    $(function () {
+        $('#TeamLeaderID').autocomplete({
+            source: '@Url.Action("AutocompleteKetua")', change: function (event, ui) {
+                if (!ui.item) {
+                    $(this).val("");
+                }
+            }
+        });
+        $('#SupervisorID').autocomplete({
+            source: '@Url.Action("AutocompletePengawas")', change: function (event, ui) {
+                if (!ui.item) {
+                    $(this).val("");
+                }
+            }
+        });
+        $('#PICID').autocomplete({
+            source: '@Url.Action("AutocompleteCIA")', change: function (event, ui) {
+                if (!ui.item) {
+                    $(this).val("");
+                }
+            }
+        });
+        $('.members').autocomplete({
+            source: '@Url.Action("AutocompleteMember")', change: function (event, ui) {
+                if (!ui.item) {
+                    $(this).val("");
+                }
+            }
+        });
+        $('.member').autocomplete({
+            source: '@Url.Action("AutocompleteAll")', change: function (event, ui) {
+                if (!ui.item) {
+                    $(this).val("");
+                }
+            }
+        });
+    })
+    var counter = @Model.EmployeeID.Split(';').Count();
+        function removeAuditee(idx) {
+            $("#memberdiv-" + idx).remove();
+        }
+        $(document).ready(function () {
+            $("#addButton").click(function () {
+                if (counter > 10) {
+                    alert("Maksimal 10 Member");
+                    return false;
+                }
+                var newTextBoxDiv = $(document.createElement('div'))
+                     .attr("id", 'memberdiv-' + counter).addClass("form-group");
+                var html = '<label class = "control-label col-md-2"></label>' +
+                    '<div class="col-md-5"><input name="member" id="member-' + counter +
+                    '" value="" class="form-control member" type="text" placeholder = "Auto Complete" ></div>' +
+                    '<div class="col-md-2"><a href="#" class="btn btn-sm red" onclick="removeAuditee(' + counter + ');"><i class="fa fa-times"></i></a></div>';
+                //for (var i = 0; i < questionArr.length; i++) {
+                //    html += "<option value=" + questionArr[i].Value +">" + questionArr[i].Text + "</option>"
+                //}
+                //html += '</select></div>';
+
+                newTextBoxDiv.after().html(html);
+                newTextBoxDiv.appendTo("#MembersGroup");
+                counter++;
+                $('.member').autocomplete({
+                    source: '@Url.Action("AutocompleteAll")',
+                appendTo: $("#addEng"), change: function (event, ui) {
+                    if (!ui.item) {
+                        $(this).val("");
+                    }
+                }
+            });
+        });
+        $("#removeButton").click(function () {
+            if (counter == 1) {
+                alert("No more Auditee to remove");
+                return false;
+            }
+            counter--;
+            $("#memberdiv-" + counter).remove();
+        });
+    });
+
+    var count = @Model.MemberID.Split(';').Count();
+    function removeMember(idx) {
+        $("#membersdiv-" + idx).remove();
+    }
+    $(document).ready(function () {
+        $("#addButtonMember").click(function () {
+            if (count > 10) {
+                alert("Maksimal 10 Member");
+                return false;
+            }
+            var newTextBoxDiv = $(document.createElement('div'))
+                 .attr("id", 'membersdiv-' + count).addClass("form-group");
+            var html = '<label class = "control-label col-md-2"></label>' +
+                '<div class="col-md-5"><input name="members" id="members-' + count +
+                '" value="" class="form-control members" type="text" placeholder = "Auto Complete" ></div>' +
+                '<div class="col-md-2"><a href="#" class="btn btn-sm red" onclick="removeMember(' + count + ');"><i class="fa fa-times"></i></a></div>';
+
+            //for (var i = 0; i < questionArr.length; i++) {
+            //    html += "<option value=" + questionArr[i].Value +">" + questionArr[i].Text + "</option>"
+            //}
+            //html += '</select></div>';
+
+            newTextBoxDiv.after().html(html);
+            newTextBoxDiv.appendTo("#MemberGroup");
+            count++;
+            $('.members').autocomplete({
+                source: '@Url.Action("AutocompleteMember")', change: function (event, ui) {
+                    if (!ui.item) {
+                        $(this).val("");
+                    }
+                }
+            });
+        });
+        $("#removeButtonMember").click(function () {
+            if (count == 1) {
+                alert("No more Member to remove");
+                return false;
+            }
+            count--;
+            $("#membersdiv-" + count).remove();
+        });
+    });
+    </script>
+}
+
+
+@*<script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/jquery-ui.min.js"></script>*@
+<script language="javascript" type="text/javascript">
+
+
+    function GetEng(_activId) {
+        var procemessage = "<option value='0'> Please wait...</option>";
+        $("#audid").html(procemessage).show();
+        var url = "/Preliminaries/GetEng/";
+
+        $.ajax({
+            url: url,
+            data: { activId: _activId },
+            cache: false,
+            type: "POST",
+            success: function (data) {
+                var markup = "<option value='0'>Please Select Engagement</option>";
+                for (var x = 0; x < data.length; x++) {
+                    markup += "<option value=" + data[x].Value + ">" + data[x].Text + "</option>";
+                }
+                $("#audid").html(markup).show();
+            },
+            error: function (reponse) {
+                alert("error : " + reponse);
+            }
+        });
+
+    }
+
+
+</script>
+
+@*<script>
+        $("#Planned").show();
+        $("#UnPlanned").hide();
+        $("input[name='Type']").on("change", function () {
+            if ($(this).val() == "UnPlanned") {
+                $("#Planned").hide();
+                $("#UnPlanned").show();
+            }
+            if ($(this).val() == "Planned") {
+                $("#Planned").show();
+                $("#UnPlanned").hide();
+            }
+        });
+    </script>*@
+

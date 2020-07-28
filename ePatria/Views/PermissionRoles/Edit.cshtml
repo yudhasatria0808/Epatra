@@ -1,0 +1,108 @@
+﻿@model ePatria.Models.PermissionRoles
+
+@{
+    ViewBag.Title = "Edit";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Edit</h2>
+
+
+@using (Html.BeginForm("Edit", "PermissionRoles", FormMethod.Post, new { enctype = "multipart/form-data" }))
+{
+    @Html.AntiForgeryToken()
+    
+    <div class="form-horizontal">
+        <h4>Permission</h4>
+        <hr />
+        <span id="validationMessage"></span>
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        @Html.HiddenFor(model => model.PermissionRoleID)
+        @Html.HiddenFor(model => model.permissionID)
+        @Html.HiddenFor(model => model.roleID)
+
+        <div class="form-group">
+            @Html.Label("Permission Name", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-5">
+                @Html.EditorFor(model => model.Permissions.PermissionName, new { htmlAttributes = new { @class = "form-control", @readonly = true} })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.Label("Role", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-5">
+                @Html.Editor("rolename", new { htmlAttributes = new { @class = "form-control", @readonly = true, @Value = HelperController.getRoleName(Model.roleID)} })
+            </div>
+        </div>
+        
+        <div class="form-group">
+            @Html.Label("Is Create", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-5">
+                @Html.CheckBoxFor(model => model.IsCreate, new { @checked = "checked", @class = "form-control" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.Label("Is Read", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-5">
+                @Html.CheckBoxFor(model => model.IsRead, new { @checked = "checked", @class = "form-control" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.Label("Is Update", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-5">
+                @Html.CheckBoxFor(model => model.IsUpdate, new { @checked = "checked", @class = "form-control" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.Label("Is Delete", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-5">
+                @Html.CheckBoxFor(model => model.IsDelete, new { @checked = "checked", @class = "form-control" })
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.Label("Is First Submit", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-5">
+                @Html.CheckBoxFor(model => model.IsSubmit1, new { @checked = "checked", @class = "form-control" })
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.Label("Is Second Submit", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-5">
+                @Html.CheckBoxFor(model => model.IsSubmit2, new { @checked = "checked", @class = "form-control" })
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.Label("Is Approve", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-5">
+                @Html.CheckBoxFor(model => model.IsApprove, new { @checked = "checked", @class = "form-control" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Save" class="btn blue" onclick="return submitWith();"/>
+            </div>
+        </div>
+    </div>
+}
+
+<div>
+    @Html.ActionLink("Back to List", "Index")
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+    <script>
+        function submitWith() {
+            var checkedCount = $("input:checked").length;
+            var valid = checkedCount > 0;
+            if (!valid) {
+                $('#validationMessage').html('<li>You Must Select At Least One Option.</li>').css('color', '#ed6b75');
+            }
+            return valid;
+        }
+    </script>
+}

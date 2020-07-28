@@ -1,0 +1,158 @@
+﻿@model ePatria.Models.Reporting
+
+@{
+    ViewBag.Title = "Details";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Details</h2>
+
+<div>
+    <h4>Reporting</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            Nomor SP
+        </dt>
+
+        <dd>
+            <b>:</b>&nbsp;&nbsp;&nbsp;@Html.DisplayFor(model => model.LetterOfCommand.NomorSP)
+        </dd>
+
+        <dt>
+            Activity
+        </dt>
+
+        <dd>
+            <b>:</b>&nbsp;&nbsp;&nbsp;@Html.DisplayFor(model => model.LetterOfCommand.Activity.Name)
+        </dd>
+
+        <dt>
+            Engagement
+        </dt>
+
+        <dd>
+            <b>:</b>&nbsp;&nbsp;&nbsp;@Html.DisplayFor(model => model.LetterOfCommand.AuditPlanningMemorandum.Preliminary.EngagementActivity.Name)
+        </dd>
+
+        <dt>
+            @Html.DisplayName("Nomor Laporan")
+        </dt>
+
+        <dd>
+            <b>:</b>&nbsp;&nbsp;&nbsp;@Html.DisplayFor(model => model.NomorLaporan)
+        </dd>
+        <br />
+        <dt>
+            @Html.DisplayName("Memo Description")
+        </dt>
+
+        <dd>
+            @Html.Raw(Model.MemoDescription)
+        </dd>
+
+        <dt>
+            @Html.DisplayName("Summary Description")
+        </dt>
+
+        <dd>
+            @Html.Raw(Model.SummaryDescription)
+        </dd>
+
+        <dt>
+            @Html.DisplayName("BAB 1 Title")
+        </dt>
+
+        <dd>
+            <b>:</b>&nbsp;&nbsp;&nbsp;@Html.DisplayFor(model => model.Bab01Title)
+        </dd>
+
+        <dt>
+            @Html.DisplayName("BAB 1 Sub Title")
+        </dt>
+        
+        <dd>
+            <b>:</b>&nbsp;&nbsp;&nbsp;@Html.DisplayFor(model => model.Bab01SubTitle)
+        </dd>
+        <br />
+        <dt>
+            @Html.DisplayName("BAB 1 Description")
+        </dt>
+
+        <dd>
+            @Html.Raw(Model.Bab01Description)
+        </dd>
+
+        <dt>
+            @Html.DisplayName("BAB 2 Title")
+        </dt>
+
+        <dd>
+            <b>:</b>&nbsp;&nbsp;&nbsp;@Html.DisplayFor(model => model.Bab02Title)
+        </dd>
+        <br />
+        <dt>
+            @Html.DisplayName("Fact")
+        </dt>
+
+        <dd>
+            @Html.Raw(Model.Fact)
+        </dd>
+
+        <dt>
+            @Html.DisplayName("Criteria")
+        </dt>
+
+        <dd>
+            @Html.Raw(Model.Criteria)
+        </dd>
+        
+        <dt>
+            @Html.DisplayName("Impact")
+        </dt>
+
+        <dd>
+            @Html.Raw(Model.Impact)
+        </dd>
+    
+        <dt>
+            @Html.DisplayName("Impact Value")
+        </dt>
+
+        <dd>
+            @Html.Raw(Model.impactValue)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Cause)
+        </dt>
+
+        <dd>
+            @Html.Raw(Model.Cause)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Recommendation)
+        </dt>
+
+        <dd>
+            @Html.Raw(Model.Recommendation)
+        </dd>
+
+    </dl>
+</div>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id = Model.ReportingID }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>
+
+<style>
+.dl-horizontal dt{
+    text-align: left;
+    width: 170px;
+}
+
+.dl-horizontal dd{
+    margin-left: 0;
+}
+</style>

@@ -1,0 +1,105 @@
+﻿
+@{
+    ViewBag.Title = "UserManagement_Details";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<style>
+    .padding5 {
+        padding: 5px;
+    }
+</style>
+
+<div class="portlet box red-sunglo">
+    <div class="portlet-title">
+        <div class="caption">
+            <i class="fa fa-eye"></i> User Management Details
+        </div>
+    </div>
+    <div class="portlet-body">
+        <div class="table-toolbar">
+            <table>
+                <tr>
+                    <td class="padding5">
+                        <b>Name</b>
+                    </td>
+                    <td class="padding5">
+                        :
+                    </td>
+                    <td class="padding5">
+                        Yayan Ruhian
+                    </td>
+                </tr>
+                <tr>
+                    <td class="padding5">
+                        <b>No. PEK</b>
+                    </td>
+                    <td class="padding5">
+                        :
+                    </td>
+                    <td class="padding5">
+                        1234567890
+                    </td>
+                </tr>
+                <tr>
+                    <td class="padding5">
+                        <b>Username</b>
+                    </td>
+                    <td class="padding5">
+                        :
+                    </td>
+                    <td class="padding5">
+                        yayan_ruhian
+                    </td>
+                </tr>
+                <tr>
+                    <td class="padding5">
+                        <b>Password</b>
+                    </td>
+                    <td class="padding5">
+                        :
+                    </td>
+                    <td class="padding5">
+                        098765
+                    </td>
+                </tr>
+                <tr>
+                    <td class="padding5">
+                        <b>Role</b>
+                    </td>
+                    <td class="padding5">
+                        :
+                    </td>
+                    <td class="padding5">
+                        User
+                    </td>
+                </tr>
+            </table>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="btn-group"></div>
+                </div>
+                <div class="col-md-6">
+                    <div class="btn-group pull-right">
+                        <a href="#modal-edit" data-toggle="modal" class="btn btn-pertamina-black">
+                            <i class="fa fa-edit"> Edit</i>
+                        </a>
+                        <a href="@Url.Action("UserManagement_Index", "Designs")" class="btn btn-default">
+                            <i class="fa fa-arrow-circle-left"> Back</i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+<!-- END EXAMPLE TABLE PORTLET-->
+				</div>
+			</div>
+<!-- MODAL EDIT START -->
+<div class="modal fade" id="modal-edit" tabindex="-1" role="basic" aria-hidden="true">
+    @Html.Partial("UserManagement_Edit")
+    <!-- /.modal-dialog -->
+</div>
+<!-- MODAL EDIT END -->

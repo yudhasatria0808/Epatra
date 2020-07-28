@@ -1,0 +1,89 @@
+﻿@model ePatria.Models.ConsultingReporting
+
+@{
+    ViewBag.Title = "Delete";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Delete</h2>
+
+<h3>Are you sure you want to delete this?</h3>
+<div>
+    <h4>ConsultingReporting</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.ConsultingLetterOfCommand.NomorSP)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.ConsultingLetterOfCommand.NomorSP)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.ActivityID)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.ActivityID)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.NoLaporan)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.NoLaporan)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Kepada)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Kepada)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Dari)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Dari)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Lampiran)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Lampiran)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Perihal)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Perihal)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Hasil)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Hasil)
+        </dd>
+
+    </dl>
+
+    @using (Html.BeginForm()) {
+        @Html.AntiForgeryToken()
+
+        <div class="form-actions no-color">
+            <input type="submit" value="Delete" class="btn btn-default" /> |
+            @Html.ActionLink("Back to List", "Index")
+        </div>
+    }
+</div>

@@ -1,0 +1,327 @@
+﻿@model ePatria.Models.ExitMeeting
+
+@{
+    ViewBag.Title = "Create";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Create</h2>
+
+@using Microsoft.AspNet.Identity;
+@{ var checkPerm = HelperController.getPermissionRoleByPerm("Exit Meeting", User.Identity.GetUserId()); }
+@{ 
+    var Perm = HelperController.getPermission(User.Identity.GetUserId(), "Exit Meeting");
+    var userPerm = HelperController.getPermission(User.Identity.GetUserId(), "Exit Meeting"); 
+    }
+@{ var empName = HelperController.getNameByUserName(User.Identity.Name);
+    var isSuperAdmin = HelperController.isSuperAdmin(User.Identity.GetUserId());
+}
+@using (Html.BeginForm(null, null, FormMethod.Post, new {id="emform"}))
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-horizontal">
+        <h4>Exit Meeting</h4>
+        <hr />
+        <div class="error-container">
+            <ul></ul>
+        </div>
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        <div class="form-group">
+            <label class="control-label col-md-2">SP / Field Work</label>
+            @*@Html.Label( "No.SP", htmlAttributes: new { @class = "control-label col-md-2" })*@
+            <div class="col-md-5">
+               @Html.TextBox("nomersp", null, new { @class = "form-control", placeholder = "Auto Complete" })
+                @Html.ValidationMessageFor(model => model.LetterOfCommandID, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.ActivityID, "Activity", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-5">
+                @*@Html.DropDownList("ActivityID", null, htmlAttributes: new { @class = "form-control" })*@
+                @Html.TextBox("activname", null, new { @class = "form-control", @readonly = true })
+                @Html.ValidationMessageFor(model => model.ActivityID, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.ActivityID, "Engagement Name", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-5">
+                @*@Html.DropDownList("ActivityID", null, htmlAttributes: new { @class = "form-control" })*@
+                @Html.TextBox("enggname", null, new { @class = "form-control", @readonly = true })
+                @Html.ValidationMessageFor(model => model.ActivityID, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.Label("Organization", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-5">
+                @Html.TextBox("organame", null, new { @class = "form-control", @readonly = true })
+                @Html.ValidationMessageFor(model => model.OrganizationID, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group input-group-sm">
+                @Html.Label("Periode", htmlAttributes: new { @class = "control-label col-md-2" })
+                    
+                <div class="col-md-2">
+                    <input name='period1' input type='text' class="form-control datetimepicker" />
+                </div>
+
+                <div class="col-md-2">
+                    <input name='period2' input type='text' class="form-control datetimepicker" />
+                </div>
+          </div>
+
+        @*<div class="form-group">
+            @Html.Label("Reviewer 1", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-5">
+                @Html.DropDownList("Reviewer1", new List<SelectListItem>
+                     {
+                        new SelectListItem{ Text="Responsible Person", Value = "Responsible Person" },
+                        new SelectListItem{ Text="Supervisor", Value = "Supervisor" },
+                        new SelectListItem{ Text="Team Leader", Value = "Team Leader" },
+                        new SelectListItem{ Text="Member", Value = "Member" }
+                     }, htmlAttributes: new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.Reviewer1, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.Label("Reviewer 2", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-5">
+                @Html.DropDownList("Reviewer2", new List<SelectListItem>
+                     {
+                        new SelectListItem{ Text="Responsible Person", Value = "Responsible Person" },
+                        new SelectListItem{ Text="Supervisor", Value = "Supervisor" },
+                        new SelectListItem{ Text="Team Leader", Value = "Team Leader" },
+                        new SelectListItem{ Text="Member", Value = "Member" }
+                     }, htmlAttributes: new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.Reviewer1, "", new { @class = "text-danger" })
+            </div>
+        </div>*@
+        <table class="table table-striped table-hover table-bordered" id="table-issue">
+            <thead>
+                <tr>
+                    <th>
+                        No Ref
+                    </th>
+                    <th>
+                        Issue
+                    </th>
+                    <th>
+                        Recommendation
+                    </th>
+                    <th>
+                        Management Response
+                    </th>
+                    <th>
+                        Signification
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-5">
+
+                
+                @*@if (checkPerm.Contains("IsSubmit1"))
+                        {
+                            <input class="btn btn-primary" name="submit" type="submit" id="submit" value="Submit For Review By @checkPerm.Split(':')[1].Split(';')[0]" />
+                        }
+                        else if (checkPerm.Contains("IsSubmit2"))
+                        {
+                            <input class="btn btn-primary" name="submit" type="submit" id="submit" value="Submit For Review By @checkPerm.Split(':')[2].Split(';')[0]" />
+                        }
+                        else if (checkPerm.Contains("IsApprove"))
+                        {
+                            <input class="btn btn-primary" name="submit" type="submit" id="submit" value="Submit For Approve By @checkPerm.Split(':')[3].Split(';')[0]" />
+                        }*@
+                <input class="btn btn-primary" name="submit" type="submit" id="submit" value="Save" />
+                @*<input class="btn btn-primary" name="submit" type="submit" id="submit" value="Submit for Review" />*@
+            </div>
+        </div>
+    </div>
+}
+
+<div>
+    @Html.ActionLink("Back to List", "Index")
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+    <script type="text/javascript">
+    $(function () {
+        $('#nomersp').autocomplete({
+            source: '@Url.Action("Autocomplete")', change: function (event, ui) {
+                if (!ui.item) {
+                    $(this).val("");
+                }
+            }
+        });
+    });
+    </script>
+    <script language="javascript" type="text/javascript">
+        function GetPrelim(_nopre) {
+        var procemessage = "<option value='0'> Please wait...</option>";
+        $("#activid").html(procemessage).show();
+        var url = "/AuditPlanningMemorandums/GetPrelim/";
+
+        $.ajax({
+            url: url,
+            data: { nopre: _nopre },
+            cache: false,
+            type: "POST",
+            success: function (data) {
+                var markup = "";
+                for (var x = 0; x < data.length; x++) {
+                    markup += "<option value=" + data[x].Value + ">" + data[x].Text + "</option>";
+                }
+
+                $("#activid").html(markup).show();
+
+            },
+            error: function (reponse) {
+                alert("error : " + reponse);
+            }
+        });
+        }
+
+        function GetEngName(_nopre) {
+
+            var procemessage = "<option value='0'> Please wait...</option>";
+            $("#enggname").html(procemessage).show();
+            var url = "/AuditPlanningMemorandums/GetEngPrelim/";
+
+            $.ajax({
+                url: url,
+                data: { nopre: _nopre },
+                cache: false,
+                type: "POST",
+                success: function (data) {
+                    var markup = "";
+                    for (var x = 0; x < data.length; x++) {
+                        markup += "<option value=" + data[x].Value + ">" + data[x].Text + "</option>";
+                    }
+
+                    $("#enggname").html(markup).show();
+
+                },
+                error: function (reponse) {
+                    alert("error : " + reponse);
+                }
+            });
+        }
+        function GetData(_nosp) {
+            var url = "/ExitMeetings/GetData/";
+
+            $.ajax({
+                url: url,
+                data: { nomer : _nosp },
+                cache: false,
+                type: "POST",
+                success: function (data) {
+                    $('#activname').val(data.split(',')[0]);
+                    $('#enggname').val(data.split(',')[1]);
+                    $('#organame').val(data.split(',')[2]);
+                    
+                },
+                error: function (reponse) {
+                    alert("error : " + reponse);
+                }
+            });
+        }
+
+        function GetIssue(_nosp) {
+            var url = "/ExitMeetings/GetIssue/";
+            $.ajax({
+                url: url,
+                data: { nomer: _nosp },
+                cache: false,
+                type: "GET",
+                datatype: "json",
+                contentType: "application/json;charset=utf-8",
+                success: function (data) {
+                    var markup = "";
+                    $.each(data, function (index, element) {
+                        for (var x = 0; x < element.length; x++) {
+                            markup += "<tr role='row' class='odd'><td>" + element[x].NoRef + "</td><td>" + element[x].Title + "</td><td>" + element[x].Recommendation + "</td><td>" + element[x].ManagementResponse +
+                                      "</td><td><select id='issuesign' class='form-control' onchange='javascript:issueSign($(this));'><option value='0'>-Please select-</option><option value='High'>High</option><option value='Medium'>Medium</option><option value='Low'>Low</option></select></td></tr>";
+                        }
+                        $("#table-issue tbody").html(markup).show();
+                    });
+                },
+                error: function (reponse) {
+                    alert("error : " + reponse);
+                }
+            });
+        }
+        $("#emform").validate({
+            errorLabelContainer: $("ul", $('div.error-container')),
+            wrapper: 'li',
+            rules: {
+                nomersp: "required",
+                activname: "required",
+                enggname: "required",
+                organame: "required",
+                period1: "required",
+                period2: "required"
+            },
+            messages: {
+                nomersp: "Please enter nomor SP",
+                activname: "Please enter Activity name",
+                enggname: "Please enter Engagement name",
+                organame: "Please enter Organization name",
+                period1: "Please enter Periode 1",
+                period2: "Please enter Periode 2"
+            }
+        });
+    </script>
+
+
+<script language="javascript">
+    function issueSign(data) {
+        var _issueNo = data.parent().parent().find("td:first").text();
+        $.ajax({
+            url: "/ExitMeetings/UpdateIssueSign/",
+            data: { issueNo: _issueNo, signification: data.val() },
+            cache: false,
+            type: "POST",
+            success: function (data) {
+
+            },
+            error: function (reponse) {
+                alert("error : " + reponse);
+            }
+        });
+    }
+    $(document).ready(function () {
+        $("#nomersp").keyup(function (event) {
+            if (event.keyCode == 13) {
+                GetData($(this).val());
+                GetIssue($(this).val());
+            }
+        });
+        $("#nomersp").keydown(function (event) {
+            if (event.keyCode == 9) {
+                GetData($(this).val());
+                GetIssue($(this).val());
+            }
+        });
+    });
+
+    $(function () {
+        $("#submit").click(function () {
+            if (confirm("Are You Sure Want To Submit?")) {
+                $('#submit').submit();
+            } else {
+                event.preventDefault();
+            }
+        });
+    });
+</script>
+
+}

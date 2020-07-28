@@ -1,0 +1,133 @@
+﻿@{
+    ViewBag.Title = "Employee_Details";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="row" style="margin-top:20px;">
+    <div class="col-md-12">
+        <!-- BEGIN EXAMPLE TABLE PORTLET-->
+        <div class="portlet box red-sunglo">
+            <div class="portlet-title">
+                <div class="caption">
+                    <i class="fa fa-eye"></i> Employee Details
+                </div>
+            </div>
+            <div class="portlet-body">
+                <div class="table-toolbar">
+                    <table>
+                        <tr>
+                            <td class="padding5">
+                                <b>Employee Type</b>
+                            </td>
+                            <td class="padding5">
+                                :
+                            </td>
+                            <td class="padding5">
+                                Internal Audit
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="padding5">
+                                <b>Employee Name</b>
+                            </td>
+                            <td class="padding5">
+                                :
+                            </td>
+                            <td class="padding5">
+                                John Doe
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="padding5">
+                                <b>No. PEK</b>
+                            </td>
+                            <td class="padding5">
+                                :
+                            </td>
+                            <td class="padding5">
+                                1234567890
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="padding5">
+                                <b>Email</b>
+                            </td>
+                            <td class="padding5">
+                                :
+                            </td>
+                            <td class="padding5">
+                                john_doe@greget.com
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="padding5">
+                                <b>Telephone</b>
+                            </td>
+                            <td class="padding5">
+                                :
+                            </td>
+                            <td class="padding5">
+                                0987654321
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="padding5">
+                                <b>Status</b>
+                            </td>
+                            <td class="padding5">
+                                :
+                            </td>
+                            <td class="padding5">
+                                PWT
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="padding5">
+                                <b>Organization</b>
+                            </td>
+                            <td class="padding5">
+                                :
+                            </td>
+                            <td class="padding5">
+                                ABCDE
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="padding5">
+                                <b>Position</b>
+                            </td>
+                            <td class="padding5">
+                                :
+                            </td>
+                            <td class="padding5">
+                                ABCDE
+                            </td>
+                        </tr>
+                    </table>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="btn-group"></div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="btn-group pull-right">
+                                <a href="#modal-edit" data-toggle="modal" class="btn btn-pertamina-black">
+                                    <i class="fa fa-edit"> Edit</i>
+                                </a>
+                                <a href="@Url.Action("Employee_Index", "Designs")" class="btn btn-default">
+                                    <i class="fa fa-arrow-circle-left"> Back</i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        <!-- END EXAMPLE TABLE PORTLET-->
+    </div>
+</div>
+<!-- MODAL EDIT START -->
+<div class="modal fade" id="modal-edit" tabindex="-1" role="basic" aria-hidden="true">
+    @Html.Partial("Employee_Edit")
+</div>
+<!-- MODAL EDIT END -->

@@ -1,0 +1,626 @@
+﻿@model ePatria.Models.AuditQuery
+
+@{
+    Layout = null;
+}
+@using Microsoft.AspNet.Identity;
+@{ var checkPerm = HelperController.getPermissionRoleByPerm("Audit Query", User.Identity.GetUserId()); }
+@{ var permission = HelperController.getPermission(User.Identity.GetUserId(), "Audit Query"); }
+@{ var empName = HelperController.getNameByUserName(User.Identity.Name);
+ var isSuperAdmin = HelperController.isSuperAdmin(User.Identity.GetUserId());
+}
+@{ if (@Model != null)
+ {
+    <div class="form-horizontal">
+        <div class="form-group">
+            @Html.Label("No", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-5">
+                @Html.TextBoxFor(model => model.No, new { @class = "form-control", @readonly = true })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.Label("Tanggal", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-5">
+                @Html.TextBoxFor(model => model.Tanggal, new { @class = "form-control datepicker", @readonly = true })
+            </div>
+        </div>
+        <div id="editMembersGroup">
+            @{var x = 0;}
+            @foreach (var mem in Model.Kepada.Split(';'))
+            {
+                x++;
+                if (x < Model.Kepada.Split(';').Count())
+                {
+                    <div class="form-group" id="editmemberdiv-@x">
+                        @Html.Label("Kepada " + @x, htmlAttributes: new { @class = "control-label col-md-2", @id = "kepadalabel#1" })
+                        <div class="col-md-5">
+                            @if (Model.Status == "Draft")
+                            {
+                                <input name="editmember" id="editmember-@x" class="form-control editmember" type="text" placeholder="Auto Complete" value="@mem" />
+                            }
+                            else
+                            {
+                                <input name="editmember" id="editmember-@x" class="form-control editmember" type="text" placeholder="Auto Complete" readonly="true" value="@mem" />
+                            }
+                        </div>
+                    </div>
+                }
+            }
+        </div>
+        @if (Model.Status == "Draft")
+        {
+            <div class="form-group">
+                <div class="col-md-offset-2 col-md-5">
+                    <a href="#" class="btn btn-sm green" id='editaddButton'><i class="fa fa-plus"></i>Add More Kepada</a>
+                    <a href="#" class="btn btn-sm red" id='editremoveButton'><i class="fa fa-times"></i>Remove Kepada</a>
+                </div>
+            </div>
+        }
+        <div class="form-group">
+            @Html.Label("Dari", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-5">
+                @if (Model.Status == "Draft")
+                {
+                    @Html.TextBox("editdari", (string)ViewBag.empName, new { @class = "form-control", @placeholder = "Auto Complete" })
+                }
+                else
+                {
+                    @Html.TextBox("editdari", (string)ViewBag.empName, new { @class = "form-control", @placeholder = "Auto Complete", @readonly = true })
+                }
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.Label("Lampiran", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-9">
+                @if (Model.Status == "Draft")
+                {
+                    @Html.TextArea("Lampiran", new { @class = "form-control" })
+                    <script>
+                        CKEDITOR.replace('Lampiran');
+                        CKEDITOR.config.readOnly = false;
+                    </script>
+                }
+                else
+                {
+                    @Html.TextArea("Lampiran", new { @class = "form-control", @readonly = true })
+                    <script>
+                        CKEDITOR.replace('Lampiran');
+                        CKEDITOR.config.readOnly = true;
+                    </script>
+                }
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.Label("Perihal", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-5">
+                @if (Model.Status == "Draft")
+                {
+                    @Html.TextBoxFor(model => model.Perihal, new { @class = "form-control" })
+                }
+                else
+                {
+                    @Html.TextBoxFor(model => model.Perihal, new { @class = "form-control", @readonly = true })
+                }
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.Label("Pembuka", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-5">
+                @if (Model.Status == "Draft")
+                {
+                    @Html.TextAreaFor(model => model.Pembuka, new { @class = "form-control" })
+                }
+                else
+                {
+                    @Html.TextAreaFor(model => model.Pembuka, new { @class = "form-control", @readonly = true })
+                }
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.Label("Issue Desc", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-5">
+                @if (Model.Status == "Draft")
+                {
+                    @Html.TextAreaFor(model => model.IssueDesc, new { @class = "form-control" })
+                }
+                else
+                {
+                    @Html.TextAreaFor(model => model.IssueDesc, new { @class = "form-control", @readonly = true })
+                }
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.Label("Criteria", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-5">
+                @if (Model.Status == "Draft")
+                {
+                    @Html.TextAreaFor(model => model.Criteria, new { @class = "form-control" })
+                }
+                else
+                {
+                    @Html.TextAreaFor(model => model.Criteria, new { @class = "form-control", @readonly = true })
+                }
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.Label("Impact", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-5">
+                @if (Model.Status == "Draft")
+                {
+                    @Html.TextAreaFor(model => model.Impact, new { @class = "form-control" })
+                }
+                else
+                {
+                    @Html.TextAreaFor(model => model.Impact, new { @class = "form-control", @readonly = true })
+                }
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.Label("Auditee Clarification", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-5">
+                @if (Model.Status == "Draft")
+                {
+                    @Html.TextAreaFor(model => model.AuditeeClarification, new { @class = "form-control" })
+                }
+                else
+                {
+                    @Html.TextAreaFor(model => model.AuditeeClarification, new { @class = "form-control", @readonly = true })
+                }
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.Label("Penutup", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-5">
+                @if (Model.Status == "Draft")
+                {
+                    @Html.TextAreaFor(model => model.Penutup, new { @class = "form-control" })
+                }
+                else
+                {
+                    @Html.TextAreaFor(model => model.Penutup, new { @class = "form-control", @readonly = true })
+                }
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.Label("Folder", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-5">
+                @if (Model.Status == "Draft")
+                {
+                    @Html.DropDownList("Folder", new List<SelectListItem>
+                            {
+                            new SelectListItem{ Text="Preparation", Value = "Preparation" },
+                            new SelectListItem{ Text="Field Work", Value = "Field Work" },
+                            new SelectListItem{ Text="Issue", Value = "Issue" },
+                            new SelectListItem{ Text="Followup", Value = "Followup" }
+                            }, htmlAttributes: new { @class = "form-control" })
+                    @Html.ValidationMessage("Folder", "", new { @class = "text-danger" })
+                }
+                else
+                {
+                    @Html.DropDownList("Folder", new List<SelectListItem>
+                            {
+                            new SelectListItem{ Text="Preparation", Value = "Preparation" },
+                            new SelectListItem{ Text="Field Work", Value = "Field Work" },
+                            new SelectListItem{ Text="Issue", Value = "Issue" },
+                            new SelectListItem{ Text="Followup", Value = "Followup" }
+                            }, htmlAttributes: new { @class = "form-control", @readonly = true, @disabled = true })
+                }
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.Label("File", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @if (ViewBag.paths != null)
+                {
+
+                    int i = 0;
+                    List<string> images = new List<string>();
+                    foreach (var path in ViewBag.paths)
+                    {
+                        i++;
+                        string imageid = "image" + i.ToString();
+                        <div class="image">
+                            <img src="@path" alt="image" width="20%" height="20%" id=@imageid style="display:none" />
+                            <div>
+                                @Html.Label("Delete", null, new { @class = "removeImage btn btn-xs red", @style = "cursor:pointer" })
+                                @Html.ActionLink("Download", "../" + (string)path, null, new { target = "_blank", @class = "btn btn-xs green" })
+                                @Html.LabelFor(model => model.AuditQueryID, (string)path.Split('/')[3])
+                                @{images.Add(Convert.ToString(path));}
+                            </div>
+                        </div>
+                    }
+                    Session["Images"] = images.ToArray();
+                }
+                <input type="file" name="files" id="updatefile1" class="file1" multiple />
+                <label><small>*maksimal 4 Mb</small></label>
+                @*<div class="preview"></div>*@
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.Label("Keterangan", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-5">
+                @if (Model.Status == "Draft")
+                {
+                    @Html.TextAreaFor(model => model.KeterangnAuditQuery, new { @class = "form-control" })
+                }
+                else
+                {
+                    @Html.TextAreaFor(model => model.KeterangnAuditQuery, new { @class = "form-control", @readonly = true })
+                }
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer">
+        @if (HelperController.IsMemberSp(ViewBag.idSp, User.Identity.Name) || isSuperAdmin)
+        {
+            <button class="btn btn-primary" name="submit" type="submit" id="submit" value="Submit For Review By Ketua Tim">Submit</button>
+            <input class="btn btn-primary" name="submit" type="submit" id="submitSave" value="Save" />
+        }
+        else if (HelperController.IsLeaderSp(ViewBag.idSp, User.Identity.Name) || isSuperAdmin)
+        {
+            <button class="btn btn-primary" name="submit" type="submit" id="submit" value="Submit For Approve By Pengawas">Submit</button>
+            <input class="btn btn-primary" name="submit" type="submit" id="submit" value="Send Back" />
+        }
+        else if (HelperController.IsSupervisorSp(ViewBag.idSp, User.Identity.Name) || isSuperAdmin)
+        {
+            <input class="btn btn-primary" name="submit" type="submit" id="submit" value="Approve" />
+            <input class="btn btn-primary" name="submit" type="submit" id="submit" value="Send Back" />
+        }
+        
+        @if (checkPerm.Contains("IsSubmit1"))
+        {
+            if (permission != null && permission.Any(q => q.IsSubmit1 == true) || isSuperAdmin)
+            {
+                if (Model.Status == "Pending for Review by " + checkPerm.Split(':')[1].Split(';')[0])
+                {
+                    if (checkPerm.Contains("IsSubmit2"))
+                    {
+                        <button type="submit" id="submit" name="submit" class="btn btn-outline green" onclick="javascript:cekUpdateFile('Pending for Review by @checkPerm.Split(':')[2].Split(';')[0]');">Submit</button>
+                        @*<button type="button" class="btn green" onclick="javascript:cekUpdateFile('Draft');" >Send Back</button>*@
+                    }
+                    else if (checkPerm.Contains("IsApprove"))
+                    {
+                        <button type="submit" id="submit" name="submit" class="btn btn-outline green" onclick="javascript:cekUpdateFile('Pending for Approve by @checkPerm.Split(':')[3].Split(';')[0]');">Submit</button>
+                        @*<button type="button" class="btn green" onclick="javascript:cekUpdateFile('Draft');" >Send Back</button>*@
+                    }
+                }
+            }
+        }
+        @if (checkPerm.Contains("IsSubmit2"))
+        {
+            if (permission != null && permission.Any(q => q.IsSubmit2 == true) || isSuperAdmin)
+            {
+                if (Model.Status == "Pending for Review by " + checkPerm.Split(':')[2].Split(';')[0])
+                {
+                    if (checkPerm.Contains("IsApprove"))
+                    {
+                        <button type="submit" id="submit" name="submit" class="btn btn-outline green" onclick="javascript:cekUpdateFile('Pending for Approve by @checkPerm.Split(':')[3].Split(';')[0]');">Submit</button>
+                        if (checkPerm.Split(':')[1].Split(';')[0] != checkPerm.Split(':')[2].Split(';')[0])
+                        {
+                            <button type="button" class="btn green" onclick="javascript:cekUpdateFile('Draft');">Send Back</button>
+                        }
+                    }
+                }
+            }
+        }
+        @if (checkPerm.Contains("IsApprove"))
+        {
+            if (permission != null && permission.Any(q => q.IsApprove == true) || isSuperAdmin)
+            {
+                if (Model.Status == "Submit for Approve by " + checkPerm.Split(':')[3].Split(';')[0])
+                {
+                    <button type="button" class="btn green" onclick="javascript:cekUpdateFile('Approve');">Approve</button>
+                    <button type="button" class="btn green" onclick="javascript:cekUpdateFile('Draft');">Send Back</button>
+                }
+            }
+        }
+        @if (permission != null && permission.Any(q => q.IsUpdate == true) || isSuperAdmin)
+        {
+            if (Model.Status == "Draft" || Model.Status == "Submit For Review By " + checkPerm.Split(':')[1].Split(';')[0])
+            {
+                if (permission.Any(d => d.IsCreate))
+                {
+                    if (permission.Any(d => d.IsSubmit1))
+                    {
+                        if (checkPerm.Contains("IsSubmit2"))
+                        {
+                            <button type="submit" id="submit" name="submit" class="btn btn-outline green" onclick="javascript:cekUpdateFile('Pending for Review by @checkPerm.Split(':')[2].Split(';')[0]');">Submit</button>
+                        }
+                        else if (checkPerm.Contains("IsApprove"))
+                        {
+                            <button type="submit" id="submit" name="submit" class="btn btn-outline green" onclick="javascript:cekUpdateFile('Pending for Approve by @checkPerm.Split(':')[3].Split(';')[0]');">Submit</button>
+                        }
+                    }
+                    else
+                    {
+                        <button type="submit" id="submit" name="submit" class="btn btn-outline green" onclick="javascript:cekUpdateFile('Pending for Review by @checkPerm.Split(':')[1].Split(';')[0]');">Submit</button>
+                    }
+                }
+                else if (permission.Any(d => d.IsSubmit1))
+                {
+                    if (checkPerm.Contains("IsSubmit2"))
+                    {
+                        <button type="submit" id="submit" name="submit" class="btn btn-outline green" onclick="javascript:cekUpdateFile('Pending for Review by @checkPerm.Split(':')[2].Split(';')[0]');">Submit</button>
+                    }
+                    else if (checkPerm.Contains("IsApprove"))
+                    {
+                        <button type="submit" id="submit" name="submit" class="btn btn-outline green" onclick="javascript:cekUpdateFile('Pending for Approve by @checkPerm.Split(':')[3].Split(';')[0]');">Submit</button>
+                    }
+                }
+                else if (permission.Any(d => d.IsSubmit2))
+                {
+                    if (checkPerm.Contains("IsApprove"))
+                    {
+                        <button type="submit" id="submit" name="submit" class="btn btn-outline green" onclick="javascript:cekUpdateFile('Pending for Approve by @checkPerm.Split(':')[3].Split(';')[0]');">Submit</button>
+                    }
+                }
+                <button type="button" class="btn green" onclick="javascript:cekUpdateFile('Draft');">Update</button>
+            }
+        }
+        <button type="button" data-dismiss="modal" class="btn btn-outline dark">Close</button>
+        @*<button type="button" class="btn green" onclick="javascript:cekUpdateFile();" >Update</button>*@
+        @*<button type="button" class="btn red" onclick="javascript:SaveControl($('#riskId option:selected').val(), $('#control').val());">Submit for Review</button>*@
+    </div>
+    <script>
+        $('.removeImage').click(function () {
+            $(this).parent().parent().remove();
+            var images = [];
+            if ($('.image').length > 0) {
+                $('.image').each(function (index) {
+                    images.push($(this).find('img').attr('src'));
+                });
+            } else
+                images = "deleteall";
+            $.ajax({
+                type: "POST",
+                traditional: true,
+                url: "../getImages",
+                data: { images: images }
+            });
+        });
+        $(function () {
+            $("input[name=files]").previewimage({
+                div: ".preview"
+            });
+        });
+    </script>
+
+ }
+ else
+ {
+    <label>Please select a Control first</label>
+ }
+}
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}
+<section id="review-AuditQuery">
+    @Html.Partial("_ReviewAuditQuery")
+</section>
+<script>
+    function cekUpdateFile(_status) {
+        var maksrequestfile = 4000000;
+        var input = $('input[id = "updatefile1"]')[0];
+
+        if (document.getElementById("updatefile1").value != "") {
+            var size = input.files[0].size;
+            if (size > maksrequestfile)
+                alert("File melebihi 4 MB");
+            else
+                UpdateAuditQuery($('#No').val(), $('#Tanggal').val(), $('#editdari').val(), CKEDITOR.instances.Lampiran.getData(), $('#Perihal').val(), $('#Pembuka').val(), $('#IssueDesc').val(), $('#Criteria').val(), $('#Impact').val(), $('#AuditeeClarification').val(), $('#Penutup').val(), $('#Folder option:selected').val(), _status);
+        }
+        else
+            UpdateAuditQuery($('#No').val(), $('#Tanggal').val(), $('#editdari').val(), CKEDITOR.instances.Lampiran.getData(), $('#Perihal').val(), $('#Pembuka').val(), $('#IssueDesc').val(), $('#Criteria').val(), $('#Impact').val(), $('#AuditeeClarification').val(), $('#Penutup').val(), $('#Folder option:selected').val(), _status);
+    }
+    $(function () {
+        $(".datepicker").datepicker({
+            dateFormat: 'dd/mm/yy',
+            changeYear: true,
+            changeMonth: true,
+            showAnim: 'slideDown'
+        });
+        $.validator.addMethod("date",
+            function (value, element) {
+                return this.optional(element) !== null;
+                // || parseDate(value, "dd/mm/yy") !== null;
+            });
+        var status = "@Model.Status";
+        if (status == "Draft") {
+            $('.removeImage').css("display", "inline");
+            $('.file1').css("display", "block");
+            $('#Tanggal').datepicker("enable");
+        }
+        else {
+            $('.removeImage').css("display", "none");
+            $('.file1').css("display", "none");
+            $('#Tanggal').datepicker("disable");
+        }
+    });
+    $('.editmember').autocomplete({
+        source: '@Url.Action("AuditQueryAutocomplete")',
+        appendTo: $('#editAuditQuery'), change: function (event, ui) {
+            if (!ui.item) {
+                $(this).val("");
+            }
+        }
+    });
+    $('#editdari').autocomplete({
+        source: '@Url.Action("AuditQueryAutocomplete")',
+        appendTo: $('#editAuditQuery'), change: function (event, ui) {
+            if (!ui.item) {
+                $(this).val("");
+            }
+        }
+    });
+    function UpdateAuditQuery(_no, _tanggal, _dari, _lampiran, _perihal, _pembuka, _issuedesc, _criteria, _impact,
+_auditeeclar, _penutup, _folder, _status) {
+        if ($("#Tanggal").val() == "") {
+            alert("Please Fill Tanggal.")
+            return false;
+        }
+        if ($("#editmember-1").val() == "") {
+            alert("Please Fill Kepada.")
+            return false;
+        }
+        if ($("#editdari").val() == "") {
+            alert("Please Fill Dari.")
+            return false;
+        }
+        if (CKEDITOR.instances.Lampiran.getData() === '') {
+            alert("Please Fill Lampiran.")
+            return false;
+        }
+        if ($("#Perihal").val() == "") {
+            alert("Please Fill Perihal.")
+            return false;
+        }
+        if ($("#Pembuka").val() == "") {
+            alert("Please Fill Pembuka.")
+            return false;
+        }
+        if ($("#IssueDesc").val() == "") {
+            alert("Please Fill Issue Description.")
+            return false;
+        }
+        if ($("#Criteria").val() == "") {
+            alert("Please Fill Criteria.")
+            return false;
+        }
+        if ($("#Impact").val() == "") {
+            alert("Please Fill Impact.")
+            return false;
+        }
+        if ($("#AuditeeClarification").val() == "") {
+            alert("Please Fill Audit Clarification.")
+            return false;
+        }
+        if ($("#Penutup").val() == "") {
+            alert("Please Fill Penutup.")
+            return false;
+        }
+        if ($("#Folder").val() == "") {
+            alert("Please Fill Folder.")
+            return false;
+        }
+        var _controlId = $("#RCMDetailRiskControlID").val();
+        var no = parseInt(_no.split("/")[2]) + 1
+        var newno = _no.split("/")[0] + "/" + _no.split("/")[1] + "/" + String(no);
+        var _kepada = "";
+        for (i = 1; i < count; i++) {
+            _kepada += $("#editmember-" + i).val() + ";"
+        }
+
+        $.ajax({
+            url: "../UpdateAuditQuery/",
+            data: {
+                no: _no,
+                tanggal: _tanggal,
+                kepada: _kepada,
+                dari: _dari,
+                lampiran: _lampiran,
+                perihal: _perihal,
+                pembuka: _pembuka,
+                issuedesc: _issuedesc,
+                criteria: _criteria,
+                impact: _impact,
+                auditeeclar: _auditeeclar,
+                penutup: _penutup,
+                folder: _folder,
+                controlId: _controlId,
+                status: _status
+            },
+            cache: false,
+            type: "POST",
+            success: function (data) {
+                var markup = "";
+                for (var x = 0; x < data.length; x++) {
+                    if (data[x].Text == "Draft")
+                        markup += "<tr role='row' class='odd'><td style='display:none'>" + data[x].Value.split(";")[1] + "</td><td>" + data[x].Value.split(";")[0] + "</td><td>" + _perihal + "</td><td>" + data[x].Text + "</td><td><a data-target='#editAuditQuery' data-toggle='modal' title='Edit Audit Query' href='/FieldWorks/EditAuditQuery/" + data[x].Value.split(";")[1] + "'>Edit</a> | <a href='#' name=' Delete' title='Delete Audit Query' id=\"delAuditQuery-" + data[x].Value.split(";")[1] + "\" onclick='javascript:delAuditQuery(" + data[x].Value.split(";")[1] + ")' data-original-title='Are you sure to delete this Audit Query ?'>Delete</a> | <a href='/FieldWorks/Preview/" + data[x].Value.split(";")[1] + "'>Preview</a> </td></tr>"
+                    else
+                        markup += "<tr role='row' class='odd'><td style='display:none'>" + data[x].Value.split(";")[1] + "</td><td>" + data[x].Value.split(";")[0] + "</td><td>" + _perihal + "</td><td>" + data[x].Text + "</td><td><a data-target='#editAuditQuery' data-toggle='modal' title='Edit Audit Query' href='/FieldWorks/EditAuditQuery/" + data[x].Value.split(";")[1] + "'>Edit</a> | <a href='/FieldWorks/Preview/" + data[x].Value.split(";")[1] + "'>Preview</a> </td></tr>"
+                }
+                $("#table-auditquery tbody").html(markup).show();
+                $('#editAuditQuery').modal('hide');
+                $('#no').val(newno);
+                fileUpload();
+            },
+            error: function (reponse) {
+                alert("error : " + reponse);
+            }
+        });
+    }
+
+    function fileUpload() {
+        var formData = new FormData();
+        var fileInput = document.getElementById('updatefile1');
+        //Iterating through each files selected in fileInput
+        for (i = 0; i < fileInput.files.length; i++) {
+            //Appending each file to FormData object
+            formData.append(fileInput.files[i].name, fileInput.files[i]);
+        }
+        //Creating an XMLHttpRequest and sending
+        var xhr = new XMLHttpRequest();
+        xhr.open('POST', '../UploadFile/');
+        xhr.send(formData);
+        xhr.onreadystatechange = function () {
+            if (xhr.readyState == 4 && xhr.status == 200) {
+                //alert(xhr.responseText);
+            }
+        }
+        return false;
+    }
+
+    var count = parseInt('@Model.Kepada.Split(';').Count()');
+    $(document).ready(function () {
+        $("#editaddButton").click(function () {
+            if (count > 10) {
+                alert("Maksimal 10 Member");
+                return false;
+            }
+            var neweditTextBoxDiv = $(document.createElement('div'))
+                 .attr("id", 'editmemberdiv-' + count).addClass("form-group");
+            var html = '<label class = "control-label col-md-2">Kepada ' + count + '</label>' +
+                '<div class="col-md-5"><input name="editmember" id="editmember-' + count +
+                '" value="" class="form-control editmember" type="text" placeholder = "Auto Complete" >';
+
+            //for (var i = 0; i < questionArr.length; i++) {
+            //    html += "<option value=" + questionArr[i].Value +">" + questionArr[i].Text + "</option>"
+            //}
+            //html += '</select></div>';
+
+            neweditTextBoxDiv.after().html(html);
+            neweditTextBoxDiv.appendTo("#editMembersGroup");
+            count++;
+            $('.editmember').autocomplete({
+                source: '@Url.Action("AuditQueryAutocomplete")',
+                appendTo: $("#editAuditQuery"), change: function (event, ui) {
+                    if (!ui.item) {
+                        $(this).val("");
+                    }
+                }
+            });
+        });
+        $("#editremoveButton").click(function () {
+            if (count == 1) {
+                alert("No more Member to remove");
+                return false;
+            }
+            count--;
+            $("#editmemberdiv-" + count).remove();
+        });
+    });
+</script>
+<style>
+    .ui-datepicker {
+        z-index: 100000 !important;
+    }
+
+    .cke_dialog {
+        z-index: 1000000 !important;
+    }
+
+    .cke_panel {
+        z-index: 1000002 !important;
+    }
+</style>

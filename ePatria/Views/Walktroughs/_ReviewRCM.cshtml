@@ -1,0 +1,198 @@
+﻿<h4 class="modal-title">Review Notes</h4>
+<div class="publishContainer">
+    <textarea class="msgTextArea" id="txtMessage" data-bind="value: newMessage, jqAutoresize: {}" style="height:3em;" placeholder="Write your comment..."></textarea>
+    <div class="btn-group ">
+        <button class="btn btn-primary btn-lg" data-url="/Wall/SavePost" value="Comment" id="btnShare" data-bind="click: addPost">Comment</button>
+        <input type="hidden" data-bind="value: apmId" class="apmId" value="@Model.RiskControlMatrixID" />
+        @{
+            int apmId = Model.RiskControlMatrixID;
+        }
+        <script>
+            localStorage.apmId = 'rcm' + '@apmId';
+        </script>
+    </div>
+</div>
+<ul id="msgHolder" data-bind="foreach: posts">
+    <li class="postHolder">
+        <img data-bind="attr: { src: '../../Content/assets/global/img/avatar3_small.jpg' }"><a data-bind="text: PostedByName"></a>: <span data-bind="html: Message"></span>
+        <div class="postFooter">
+            <span class="timeago" data-bind="text: PostedDate"></span>&nbsp;<a class="linkComment" href="#" data-bind="click: toggleComment">Reply</a>
+            <div class="commentSection">
+                <ul data-bind="foreach: PostComments">
+                    <li class="commentHolder">
+                        <img data-bind="attr: { src: '../../Content/assets/global/img/avatar3_small.jpg' }"><a data-bind="text: CommentedByName"></a>: <span data-bind="    html: Message"></span>
+                        <div class="commentFooter"> <span class="timeago" data-bind="text: CommentedDate"></span>&nbsp;</div>
+                    </li>
+                </ul>
+                <div style="display: block" class="publishComment">
+                    <textarea class="commentTextArea" data-bind="value: newCommentMessage, jqAutoresize: {}" placeholder="Write your reply..."></textarea>
+                    <input type="button" value="Reply" class="btn blue" data-bind="click: addComment" />
+                </div>
+            </div>
+        </div>
+    </li>
+</ul>
+
+<script src="~/Scripts/jquery.autosize-min.js"></script>
+<script src="~/Scripts/jquery.timeago.js"></script>
+<script src="~/Scripts/knockout-3.4.0.js"></script>
+<script src="~/Scripts/wallpost.js"></script>
+
+<style>
+    .msgTextArea {
+        width: 100%;
+        height: 80px;
+        border-radius: 7px;
+    }
+
+    .commentTextArea {
+        width: 93%;
+        border-radius: 7px;
+        height: 40px;
+    }
+
+    .publishContainer {
+        width: 100%;
+        text-align: right;
+        background-color: #F2F2F2;
+        border-color: #B4BBCD;
+        border-image: none;
+        border-style: solid;
+        border-width: 1px;
+        padding: 1em 1.2em;
+        margin-bottom: 2em;
+        display: inline-block;
+    }
+
+    .publishComment {
+        text-align: right;
+        width: 100%;
+        display: none;
+    }
+
+    #msgHolder {
+        width: 65%;
+    }
+
+        #msgHolder img {
+            float: left;
+            margin-right: 7px;
+        }
+
+        #msgHolder a {
+            text-decoration: none;
+            color: #015BA7;
+        }
+
+            #msgHolder a:hover {
+                text-decoration: underline;
+            }
+
+    .postHolder {
+        padding: 5px;
+        border-bottom: solid 1px #E6E6E6;
+        margin: 5px;
+        list-style: none;
+    }
+
+        .postHolder p {
+            margin: 4px auto 7px 50px;
+        }
+
+        .postHolder a {
+            font-weight: bold;
+        }
+
+    .postFooter {
+        font-size: 0.85em;
+        margin-left: 55px;
+    }
+
+        .postFooter span {
+            color: #7D7D84;
+        }
+
+        .postFooter a {
+            font-weight: normal;
+        }
+
+    .commentHolder {
+        clear: both;
+        background-color: #EEF1F6;
+        padding: 5px;
+        border-bottom: 1px solid #DEE5EA;
+        border-top: 1px solid white;
+        list-style: none;
+    }
+
+    #btnShare, .btnComment, .btnRequest {
+        background-color: #5B74A8;
+        border: 0 none;
+        color: #FFFFFF;
+        cursor: pointer;
+        font-size: 13px;
+        font-weight: bold;
+        margin-right: 10px;
+        padding: 5px;
+        text-align: center;
+        
+    }
+
+    aside {
+        float: right;
+        width: 30%;
+        font-size: 0.85em;
+    }
+
+        aside > div, #myConnections {
+            border: solid 2px #3B5998;
+            border-radius: 7px;
+            float: left;
+            width: 99%;
+            margin-bottom: 5px;
+        }
+
+            aside h3, #myConnections h3 {
+                background-color: #3B5998;
+                color: White;
+                margin: 0px;
+                padding: 3px;
+                font-size: 0.95em;
+            }
+
+            aside a, #myConnections a {
+                text-decoration: none;
+                color: #015BA7;
+                font-weight: bold;
+            }
+
+                aside a:hover, #myConnections a:hover {
+                    text-decoration: underline;
+                }
+
+            aside img, #myConnections img {
+                float: left;
+                margin-right: 7px;
+            }
+
+    .useritem {
+        border-bottom: 1px solid #DEE5EA;
+        clear: both;
+        overflow: auto;
+        padding: 3px;
+    }
+
+        .useritem p {
+            margin: 4px auto 7px 55px;
+        }
+
+    .btnRequest, .btn {
+        margin-top: 7px;
+    }
+
+    #myConnections {
+        margin: 15px;
+        width: 60%;
+        font-size: 0.85em;
+    }
+</style>

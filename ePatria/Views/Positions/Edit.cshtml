@@ -1,0 +1,69 @@
+﻿@model ePatria.Models.Position
+
+@{
+    ViewBag.Title = "Edit";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Edit</h2>
+
+
+@using (Html.BeginForm(null, null, FormMethod.Post, new {id="posform"}))
+{
+    @Html.AntiForgeryToken()
+    
+    <div class="form-horizontal">
+        <h4>Position</h4>
+        <hr />
+        <div class="error-container">
+            <ul></ul>
+        </div>
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        @Html.HiddenFor(model => model.PositionID)
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.PositionName, "Position Name", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-5">
+                @Html.EditorFor(model => model.PositionName, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.PositionName, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.JobDesc, "Job Description", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-5">
+                @*@Html.EditorFor(model => model.JobDesc, new { htmlAttributes = new { @class = "form-control" } })*@
+                @Html.TextArea("JobDesc", new { @class = "form-control", @rows = "4" })
+                @Html.ValidationMessageFor(model => model.JobDesc, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-5">
+                <input type="submit" value="Save" class="btn blue" />
+            </div>
+        </div>
+    </div>
+}
+
+<div>
+    @Html.ActionLink("Back to List", "Index")
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+    <script>
+        $("#posform").validate({
+            errorLabelContainer: $("ul", $('div.error-container')),
+            wrapper: 'li',
+            rules: {
+                PositionName: "required",
+                JobDesc: "required"
+            },
+            messages: {
+                PositionName: "Please enter Position Name",
+                JobDesc: "Please enter Job Description"
+            }
+        });
+    </script>
+}

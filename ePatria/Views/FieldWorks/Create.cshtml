@@ -1,0 +1,158 @@
+﻿@model ePatria.Models.FieldWork
+
+@{
+    ViewBag.Title = "Create";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Create</h2>
+@using Microsoft.AspNet.Identity;
+@{ var checkPerm = HelperController.getPermissionRoleByPerm("FieldWork", User.Identity.GetUserId()); }
+@{ var Perm = HelperController.getPermission(User.Identity.GetUserId(), "FieldWork"); }
+@{ var empName = HelperController.getNameByUserName(User.Identity.Name);
+    var isSuperAdmin = HelperController.isSuperAdmin(User.Identity.GetUserId());
+}
+
+@using (Html.BeginForm()) 
+{
+    @Html.AntiForgeryToken()
+    
+    <div class="form-horizontal">
+        <h4>FieldWork</h4>
+        <hr />
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        <div class="form-group">
+            @Html.LabelFor(model => model.LetterOfCommandID, "Surat Perintah", htmlAttributes: new { @class = "control-label col-md-2" })
+            @*@Html.LabelFor(model => model.LetterOfCommandID, "LetterOfCommandID", htmlAttributes: new { @class = "control-label col-md-2" })*@
+            <div class="col-md-4">
+                @Html.DropDownList("LetterOfCommandID", null," -- PILIH SURAT PERINTAH -- ", htmlAttributes: new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.LetterOfCommandID, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.RiskControlMatrixID, "Risk Control", htmlAttributes: new { @class = "control-label col-md-2" })
+            @*@Html.LabelFor(model => model.RiskControlMatrixID, "RiskControlMatrixID", htmlAttributes: new { @class = "control-label col-md-2" })*@
+            <div class="col-md-4">
+                @*@Html.DropDownList("RiskControlMatrixID", null, htmlAttributes: new { @class = "form-control" })*@
+                @Html.DropDownList("RiskControlMatrixID", Enumerable.Empty<SelectListItem>(), "-- PILIH RISK CONTROL --", htmlAttributes: new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.RiskControlMatrixID, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="hidden form-group">
+            @Html.LabelFor(model => model.Status, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-4">
+                @Html.EditorFor(model => model.Status, new { htmlAttributes = new { @class = "form-control", @Value = "Draft" } })
+                @Html.ValidationMessageFor(model => model.Status, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+    @*@if (Perm.Any(d => d.IsCreate))
+    {
+        if (Perm.Any(d => d.IsSubmit1))
+        {
+            if (checkPerm.Contains("IsSubmit2"))
+            {
+                <button class="btn btn-primary" name="submit" type="submit" id="submit" value="Submit For Review By @checkPerm.Split(':')[2].Split(';')[0]"> Submit</button>
+            }
+            else if (checkPerm.Contains("IsApprove"))
+            {
+                <button class="btn btn-primary" name="submit" type="submit" id="submit" value="Submit For Approve By @checkPerm.Split(':')[3].Split(';')[0]"> Submit</button>
+            }
+        }
+        else
+        {
+            <button class="btn btn-primary" name="submit" type="submit" id="submit" value="Submit For Review By @checkPerm.Split(':')[1].Split(';')[0]"> Submit</button>
+        }
+    }
+    else if (Perm.Any(d => d.IsSubmit1))
+    {
+        if (checkPerm.Contains("IsSubmit2"))
+        {
+            <button class="btn btn-primary" name="submit" type="submit" id="submit" value="Submit For Review By @checkPerm.Split(':')[2].Split(';')[0]"> Submit</button>
+        }
+        else if (checkPerm.Contains("IsApprove"))
+        {
+            <button class="btn btn-primary" name="submit" type="submit" id="submit" value="Submit For Approve By @checkPerm.Split(':')[3].Split(';')[0]"> Submit</button>
+        }
+    }
+    else if (Perm.Any(d => d.IsSubmit2))
+    {
+        if (checkPerm.Contains("IsApprove"))
+        {
+            <button class="btn btn-primary" name="submit" type="submit" id="submit" value="Submit For Approve By @checkPerm.Split(':')[3].Split(';')[0]"> Submit</button>
+        }
+    }*@
+    @*@if (checkPerm.Contains("IsSubmit1"))
+                {
+                    <input class="btn btn-primary" name="submit" type="submit" id="submit" value="Submit For Review By @checkPerm.Split(':')[1].Split(';')[0]" />
+                }
+                else if (checkPerm.Contains("IsSubmit2"))
+                {
+                    <input class="btn btn-primary" name="submit" type="submit" id="submit" value="Submit For Approve By @checkPerm.Split(':')[2].Split(';')[0]" />
+                }
+                else if (checkPerm.Contains("IsApprove"))
+                {
+                     <input class="btn btn-primary" name="submit" type="submit" id="submit" value="Submit For Approve By @checkPerm.Split(':')[3].Split(';')[0]" />
+                }*@
+                <input type="submit" name="submit" value="Save" class="btn btn-default" />
+            </div>
+        </div>
+    </div>
+}
+
+<div>
+    @Html.ActionLink("Back to List", "Index")
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}
+<script>
+    $(function () {
+        $('select#LetterOfCommandID').change(function () {
+            var IdSp = $(this).val();
+
+            $.ajax({
+                url: 'GetRiskControl',
+                data: {
+                    Id: IdSp
+                },
+                type: 'POST',
+                dataType: 'json',
+                success: function (data) {
+                    $('select#RiskControlMatrixID').empty();
+                    $('select#RiskControlMatrixID').append('<option value=" ">-- PILIH RISK CONTROL --</option>');
+                    $.each(data, function (key, riskcontrol) {
+                        $('select#RiskControlMatrixID').append(
+                                '<option value="' + riskcontrol.Value + '">'
+                                + riskcontrol.Text +
+                                '</option>');
+
+                        //$('select#RiskControlMatrixID').append(
+                        //        '<option value="' + manager.Id + '">'
+                        //        + manager.Name +
+                        //        '</option>');
+                        //$.each(riskcontrol, function (text, value) {
+                        //    $('select#RiskControlMatrixID').append(
+                        //        '<option value="' + manager.Id + '">'
+                        //        + manager.Name +
+                        //        '</option>');
+                        //});
+                    });
+                }
+            });
+        });
+
+        $("#submit").click(function () {
+            if (confirm("Are You Sure Want To Submit?")) {
+                $('#submit').submit();
+            } else {
+                event.preventDefault();
+            }
+        });
+    });
+</script>

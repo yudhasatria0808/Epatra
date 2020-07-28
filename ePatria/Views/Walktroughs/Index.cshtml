@@ -1,0 +1,116 @@
+﻿@model IEnumerable<ePatria.Models.Walktrough>
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="row" style="margin-top:20px;">
+    <div class="col-md-12">
+        <!-- BEGIN EXAMPLE TABLE PORTLET-->
+        <div class="portlet box red-sunglo">
+            <div class="portlet-title">
+                <div class="caption">
+                    <i class="fa fa-user"></i> Walktrough
+                </div>
+            </div>
+            <div class="portlet-body">
+                <div class="table-toolbar">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="btn-group">
+
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="btn-group pull-right">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <table class="table table-striped table-hover table-bordered" id="table-employee">
+                    <thead>
+                        <tr>
+                            <th>
+                                Nomer Preliminary
+                            </th>
+                            <th>
+                                Activity Name
+                            </th>
+                            <th>
+                                Periode
+                            </th>
+                            <th>
+                                Remarks
+                            </th>
+                            <th>
+                                Actions
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                            @foreach (var item in Model)
+                            {
+                            <tr>
+                                <td>
+                                    <a href="@Url.Action("Create", "Walktroughs", new { id = item.WalktroughID })"> @Html.DisplayFor(modelItem => item.Preliminary.NomorPreliminarySurvey)</a>
+                                </td>
+                                <td class="sorting_1">
+                                    @Html.DisplayName(item.Activity.Name)
+                                </td>
+                                <td>
+                                    @Html.DisplayName(item.Date_Start.ToString()) - @Html.DisplayName(item.Date_End.ToString())
+                                </td>
+                                <td>
+                                    @if (item.Remarks != null) {
+                                        @Html.DisplayName(item.Remarks)
+                                    }
+                                </td>
+                                <td>
+                                   @Html.ActionLink("Preview", "Preview", new { id = item.WalktroughID })
+                                </td>
+                            </tr>
+                            }                            
+                    </tbody>
+                    </table>
+                </div>
+            </div>
+            <!-- END EXAMPLE TABLE PORTLET-->
+        </div>
+    </div>
+
+<script>
+    $(document).ready(function () {
+        $('#table-employee').DataTable({
+            dom: 'T<"clear">lfrtip',
+            tableTools: {
+                "sSwfPath": "/Content/assets/global/plugins/datatables/extensions/TableTools/swf/copy_csv_xls_pdf.swf",
+                "aButtons": [
+                {
+                    "sExtends": "xls",
+                    "mColumns": [0, 1, 2, 3],
+                    "sPdfOrientation": "landscape",
+                    "sPdfMessage": "Walktrough",
+                    "sButtonText": "Export to excel",
+                    "sFileName": "Walktrough.xls"
+                },
+                ]
+            }
+        });
+    });
+</script>
+
+    <!-- MODAL CREATE END -->
+    @section Scripts {
+        @Scripts.Render("~/bundles/jqueryval")
+        @if (ViewBag.message != null)
+        {
+            <script>
+            $(document).ready(function () {
+            toastr.success("@ViewBag.message", "Success");
+            });
+        </script>
+        }
+    }
+
+

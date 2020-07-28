@@ -1,0 +1,52 @@
+﻿@model IEnumerable<ePatria.Models.ConsultingDraftAgreement>
+
+@{
+    ViewBag.Title = "Index";
+    Layout = null;
+}
+
+@using Microsoft.AspNet.Identity;
+@{ var Perm = HelperController.getPermission(User.Identity.GetUserId(), "Consulting Draft Agreement");
+    var isSuperAdmin = HelperController.isSuperAdmin(User.Identity.GetUserId());
+}
+@foreach (var item in Model)
+{
+    <li>
+        <div class="col1">
+            <div class="cont">
+                <div class="cont-col1">
+                    <div class="label label-sm label-success">
+                        <i class="fa fa-user"></i>
+                    </div>
+                </div>
+                <div class="cont-col2">
+                    <div class="desc">
+                        <label><i>Consulting Draft Agreement for </i> <a href="@Url.Action("Details", "ConsultingDraftAgreements", new { id = item.ConsultingDraftAgreementID })"> @Html.DisplayFor(modelItem => item.NoRequest)</a>, Status : <i>@item.Status</i></label>
+                        @if (Perm != null && Perm.Any(q => q.IsUpdate == true) || isSuperAdmin)
+                        {
+                            if (item.Status == "Draft")
+                            {
+                                <label>
+                                    [@Html.ActionLink("Edit", "../ConsultingDraftAgreements/Edit", new { id = item.ConsultingDraftAgreementID }) |
+                                    @Html.ActionLink("Details", "../ConsultingDraftAgreements/Details", new { id = item.ConsultingDraftAgreementID }) |
+                                    @Html.ActionLink("Delete", "../ConsultingDraftAgreements/Delete", new { id = item.ConsultingDraftAgreementID }) |
+                                    @Html.ActionLink("Preview", "../ConsultingDraftAgreements/Preview", new { id=item.ConsultingDraftAgreementID })]
+                                </label>
+                            } else {
+                                <label>
+                                    [@Html.ActionLink("Details", "../ConsultingDraftAgreements/Details", new { id = item.ConsultingDraftAgreementID }) |
+                                    @Html.ActionLink("Preview", "../ConsultingDraftAgreements/Preview", new { id=item.ConsultingDraftAgreementID })]
+                                </label>
+                            }
+                        } else {
+                            <label>
+                                [@Html.ActionLink("Details", "../ConsultingDraftAgreements/Details", new { id = item.ConsultingDraftAgreementID }) |
+                                @Html.ActionLink("Preview", "../ConsultingDraftAgreements/Preview", new { id=item.ConsultingDraftAgreementID })]
+                            </label>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </li>
+}

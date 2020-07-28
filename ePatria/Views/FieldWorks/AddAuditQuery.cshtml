@@ -1,0 +1,115 @@
+@model ePatria.Models.AuditQuery
+
+@{  
+    Layout = null;
+}
+
+        <div class="form-horizontal">
+            <div class="form-group">
+                @Html.Label("No", htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-5">
+                    @Html.TextBox("no", (string)ViewBag.auditQueryNo, new { @class = "form-control", @readonly = true})
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.Label("Tanggal", htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-5">
+                    @Html.TextBox("tanggal", null, new { @class = "form-control datepicker", @readonly = true })
+                </div>
+            </div>
+            <div id="MembersGroup">
+                <div class="form-group" id="memberdiv1">
+                    @Html.Label("Kepada 1", htmlAttributes: new { @class = "control-label col-md-2", @id = "questionlabel#1" })
+                    <div class="col-md-5">
+                        <input name="kepada" id="member-1" class="form-control member" type="text" placeholder = "Auto Complete" />
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-md-offset-2 col-md-5">
+                    <a href="#" class="btn btn-sm green" id='addButton'><i class="fa fa-plus"></i>Add More Kepada</a>
+                    <a href="#" class="btn btn-sm red" id='removeButton'><i class="fa fa-times"></i>Remove Kepada</a>
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.Label("Dari", htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-5">
+                    @Html.TextBox("dari", null, new { @class = "form-control", @placeholder = "Auto Complete" })
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.Label("Lampiran", htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-9">
+                    @Html.TextArea("lampiran", null, new { @class = "form-control" })
+                    <script>
+                        $(function () {
+                            CKEDITOR.replace('lampiran');
+                            CKEDITOR.config.contentEditable = true;
+                        });
+                    </script>
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.Label("Perihal", htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-5">
+                    @Html.TextBox("perihal", null, new { @class = "form-control" })
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.Label("Pembuka", htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-5">
+                    @Html.TextArea("pembuka", null, new { @class = "form-control" })
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.Label("Issue Desc", htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-5">
+                    @Html.TextArea("issuedesc", null, new { @class = "form-control" })
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.Label("Criteria", htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-5">
+                    @Html.TextArea("criteria", null, new { @class = "form-control" })
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.Label("Impact", htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-5">
+                    @Html.TextArea("impact", null, new { @class = "form-control" })
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.Label("Auditee Clarification", htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-5">
+                    @Html.TextArea("auditeeclar", null, new { @class = "form-control" })
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.Label("Penutup", htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-5">
+                    @Html.TextArea("penutup", null, new { @class = "form-control" })
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.Label("Folder", htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-5">
+                    @Html.DropDownList("foldername", new List<SelectListItem>
+                            {
+                            new SelectListItem{ Text="Preparation", Value = "Preparation" },
+                            new SelectListItem{ Text="Field Work", Value = "Field Work" },
+                            new SelectListItem{ Text="Issue", Value = "Issue" },
+                            new SelectListItem{ Text="Followup", Value = "Followup" }
+                            }, htmlAttributes: new { @class = "form-control" })
+                    @Html.ValidationMessage("Folder", "", new { @class = "text-danger" })
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.Label("File", htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    <input type="file" name="files" id="file1" class="file1" multiple />
+                    <label><small>*maksimal 4 Mb</small></label>
+                    @*<div class="preview"></div>*@
+                </div>
+            </div>
+        </div>

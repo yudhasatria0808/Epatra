@@ -1,0 +1,162 @@
+﻿@model ePatria.Models.AuditPlanningMemorandum
+
+@if (ViewBag.WordDocumentMode == null || !ViewBag.WordDocumentMode)
+{
+    <h2>@ViewBag.Title.</h2>
+<h3>@ViewBag.Message</h3>
+}
+<table border="0" style="width: 100%">
+    <tr>
+        <td><b>AUDIT PLANNING MEMORANDUM</b></td>
+        <td width="33.5%">
+            <img src="http://www.pertaminapatraniaga.com/themes/patra/images/logo_patraniaga.png" alt="ePatria" height="50" width="175"></td>
+    </tr>
+</table>
+<br />
+<br />
+<table border="0" style="width: 100%">
+    <tr>
+        <td>Sesuai dengan Program Kerja Pemeriksaan Tahunan Fungsi Internal Audit tahun 2016, kami akan melaksanakan penugasan Audit atas @Model.ActualEngagement di PT. Pertamina Patra Niaga.<br /> Berikut ini disampaikan penjelasan singkat mengenai Audit yang dimaksud :</td>
+    </tr>
+</table>
+<br />
+<table border="0" style="width: 100%">
+    <tr>
+        <td valign="top" width="2%"><b>1.</b></td>
+        <td>
+            <b>Tujuan Audit</b><br />
+            <a>@Html.Raw(Model.TujuanAudit.Replace("\n","<br />"))</a><br /><br />
+        </td>
+    </tr>
+    <tr>
+        <td valign="top" width="2%"><b>2.</b></td>
+        <td>
+            <b>Ruang Lingkup Audit</b><br />
+            <a>@Html.Raw(Model.RuangLingkupAudit.Replace("\n","<br />"))</a><br /><br />
+        </td>
+    </tr>
+
+    <tr>
+        <td valign="top" width="2%"><b>3.</b></td>
+        <td>
+            <b>Metodologi Audit</b><br />
+            <a>@Html.Raw(Model.MetodologiAudit.Replace("\n","<br />"))</a><br /><br />
+        </td>
+    </tr>
+    <tr>
+        <td valign="top" width="2%"><b>4.</b></td>
+        <td>
+            <b>Data dan Dokumen Awal yang Diperlukan</b><br />
+            <a>@Html.Raw(Model.DataDanDokumen.Replace("\n","<br />"))</a><br /><br />
+        </td>
+    </tr>
+    <tr>
+        <td valign="top" width="2%"><b>5.</b></td>
+        <b>Jadwal Audit</b><br />
+        <td>
+            <table border="1" style="width: 70%">
+                <tr>
+                    <td style="background-color:black">Kegiatan</td>
+                    <td style="background-color:black">Tanggal</td>
+                </tr>
+                <tr>
+                    <td style="padding-left:5px"><i>Entry Meeting</i></td>
+                    <td>@Model.EntryMeetingDateStart.ToShortDateString()</td>
+                </tr>
+                <tr>
+                    <td style="padding-left:5px">Walktrough</td>
+                    <td>@Model.WalktroughDateStart.ToShortDateString() s.d @Model.WalktroughDateEnd.ToShortDateString()</td>
+                </tr>
+                <tr>
+                    <td style="padding-left:5px">Pelaksanaan <i>Fieldwork</i></td>
+                    <td>@Model.FieldWorkDateStart.ToShortDateString() s.d @Model.FieldWorkDateEnd.ToShortDateString()</td>
+                </tr>
+                <tr>
+                    <td style="padding-left:5px"><i>Exit Meeting</i></td>
+                    <td>@Model.ExitMeetingDateStart.ToShortDateString()</td>
+                </tr>
+                <tr>
+                    <td style="padding-left:5px">Laporan Hasil Audit</td>
+                    <td>@Model.EntryMeetingDateStart.ToShortDateString()</td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+    <tr></tr>
+    <tr>
+        <td valign="top" width="2%"><b>6.</b></td>
+        <b>Susunan Tim</b><br />
+        <td>
+            <table border="1" style="width: 70%">
+                <tr>
+                    <td style="background-color:black">Susunan Tim</td>
+                    <td style="background-color:black">Nama</td>
+                    <td style="background-color:black">NIK</td>
+                </tr>
+                <tr>
+                    <td style="padding-left:5px">Pengawas Tim</td>
+                    <td style="padding-left:5px">@Model.SupervisorID</td>
+                    <td style="padding-left:5px">@Model.getNoPekEmpByName(@Model.SupervisorID)</td>
+                </tr>
+                <tr>
+                    <td style="padding-left:5px">Ketua Tim</td>
+                    <td style="padding-left:5px">@Model.TeamLeaderID</td>
+                    <td style="padding-left:5px">@Model.getNoPekEmpByName(@Model.TeamLeaderID)</td>
+                </tr>
+                <tr>
+                    <td style="padding-left:5px">Anggota Tim</td>
+                    <td style="padding-left:5px">
+                        @{var y = 0;}
+                        @foreach (var mem in Model.MemberID.Split(';')) {
+                            y++;
+                            if (y < Model.MemberID.Split(';').Count()) {
+                                <li>@Html.DisplayName(mem)</li>
+                            }
+                        }
+                    </td>
+                    <td style="padding-left:5px">
+                        @{var z = 0;}
+                        @foreach (var mem in Model.MemberID.Split(';')) {
+                            z++;
+                            if (z < Model.MemberID.Split(';').Count()) {
+                                <li>@Model.getNoPekEmpByName(mem)</li>
+                            }
+                        }
+                    </td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+</table>
+<br />
+<table border="0" style="width: 100%">
+    <tr>
+        <td>Untuk memastikan pemahaman bersama dan kesepakatan terhadap setiap issue/temuan, dan untuk menyusun rencana tindak lanjut yang tepat, sebelum Exit Meeting akan dikirimkan Audit Query segera setelah suatu issue/temuan teridentifikasi.<br /><br />
+            Demikian disampaikan, atas perhatian dan kerjasamanya diucapkan terimakasih.
+        </td>
+        
+    </tr>
+</table>
+<br />
+<br />
+
+<table border="0" style="width: 100%">
+    <tr>
+        <td width="0px">Penanggung Jawab Tim,</td>
+    </tr>
+</table>
+<br />
+<br />
+<br />
+<table border="0" style="width: 100%">
+    <tr> 
+        <b><td width="0px">@Html.DisplayFor(model => model.PICID)</td></b>
+    </tr>
+</table>
+<br />
+<style>
+    table, th, td
+    {
+        border-collapse: collapse;
+    }
+</style>

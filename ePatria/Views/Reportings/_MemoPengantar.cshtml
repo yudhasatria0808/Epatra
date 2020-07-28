@@ -1,0 +1,13 @@
+﻿@model ePatria.Models.Reporting
+
+<h4>Description</h4>
+<hr />
+<div class="form-group">
+    <div class="col-md-10">
+        @Html.TextAreaFor(model => model.MemoDescription, new { htmlAttributes = new { @class = "form-control" } })
+        @Html.ValidationMessageFor(model => model.MemoDescription, "", new { @class = "text-danger" })
+        <script>
+            CKEDITOR.replace('MemoDescription');
+        </script>
+    </div>
+</div>

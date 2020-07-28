@@ -1,0 +1,125 @@
+﻿@model ePatria.Models.Reporting
+
+<div class="form-group">
+    @Html.LabelFor(model => model.Bab02Title, htmlAttributes: new { @class = "control-label col-md-2" })
+    <div class="col-md-5">
+        @Html.EditorFor(model => model.Bab02Title, new { htmlAttributes = new { @class = "form-control", @placeholder = "Auto Complete from Issue related Fieldwork" } })
+        @Html.ValidationMessageFor(model => model.Bab02Title, "", new { @class = "text-danger" })
+    </div>
+</div>
+
+<div class="form-group">
+    @Html.LabelFor(model => model.Fact, htmlAttributes: new { @class = "control-label col-md-2" })
+    <div class="col-md-8">
+        @Html.TextAreaFor(model => model.Fact, new { htmlAttributes = new { @class = "form-control" } })
+        @Html.ValidationMessageFor(model => model.Fact, "", new { @class = "text-danger" })
+        <script>
+            CKEDITOR.replace('Fact');
+        </script>
+    </div>
+</div>
+
+<div class="form-group">
+    @Html.LabelFor(model => model.Criteria, htmlAttributes: new { @class = "control-label col-md-2" })
+    <div class="col-md-8">
+        @Html.TextAreaFor(model => model.Criteria, new { htmlAttributes = new { @class = "form-control" } })
+        @Html.ValidationMessageFor(model => model.Impact, "", new { @class = "text-danger" })
+        <script>
+            CKEDITOR.replace('Criteria');
+        </script>
+    </div>
+</div>
+
+<div class="form-group">
+    @Html.LabelFor(model => model.Impact, htmlAttributes: new { @class = "control-label col-md-2" })
+    <div class="col-md-8">
+        @Html.TextAreaFor(model => model.Impact, new { htmlAttributes = new { @class = "form-control" } })
+        @Html.ValidationMessageFor(model => model.Impact, "", new { @class = "text-danger" })
+        <script>
+            CKEDITOR.replace('Impact');
+        </script>
+    </div>
+</div>
+
+<div class="form-group">
+    @Html.LabelFor(model => model.impactValue, htmlAttributes: new { @class = "control-label col-md-2" })
+    <div class="col-md-8">
+        @Html.TextAreaFor(model => model.impactValue, new { htmlAttributes = new { @class = "form-control" } })
+        @Html.ValidationMessageFor(model => model.impactValue, "", new { @class = "text-danger" })
+        <script>
+            CKEDITOR.replace('impactValue');
+        </script>
+    </div>
+</div>
+
+<div class="form-group">
+    @Html.LabelFor(model => model.Cause, htmlAttributes: new { @class = "control-label col-md-2" })
+    <div class="col-md-8">
+        @Html.TextAreaFor(model => model.Cause, new { htmlAttributes = new { @class = "form-control" } })
+        @Html.ValidationMessageFor(model => model.Cause, "", new { @class = "text-danger" })
+        <script>
+            CKEDITOR.replace('Cause');
+        </script>
+    </div>
+</div>
+
+<div class="form-group">
+    @Html.LabelFor(model => model.Recommendation, htmlAttributes: new { @class = "control-label col-md-2" })
+    <div class="col-md-8">
+        @Html.TextAreaFor(model => model.Recommendation, new { htmlAttributes = new { @class = "form-control" } })
+        @Html.ValidationMessageFor(model => model.Recommendation, "", new { @class = "text-danger" })
+        <script>
+            CKEDITOR.replace('Recommendation');
+        </script>
+    </div>
+</div>
+
+<script>
+    $(function () {
+        $('#Bab02Title').autocomplete({
+            source: function (request, response) {
+                $.getJSON("../Bab02TitleAutocomplete", { term: request.term, FieldWorkID: $('#FieldWorkID').val() },
+                          response);
+            }, change: function (event, ui) {
+                if (!ui.item) {
+                    $(this).val("");
+                }
+            }
+        });
+    });
+
+    function GetDetailIssue(_issueTitle) {
+        var url = "/Reportings/GetDetailIssue/";
+
+        $.ajax({
+            url: url,
+            data: { issueTitle: _issueTitle },
+            cache: false,
+            type: "GET",
+            success: function (data) {
+                CKEDITOR.instances.Fact.setData(data.split(';')[0]);
+                CKEDITOR.instances.Criteria.setData(data.split(';')[1]);
+                CKEDITOR.instances.Impact.setData(data.split(';')[2])
+                CKEDITOR.instances.impactValue.setData(data.split(';')[3])
+                CKEDITOR.instances.Cause.setData(data.split(';')[4])
+                CKEDITOR.instances.Recommendation.setData(data.split(';')[5])
+            },
+            error: function (reponse) {
+                alert("error : " + reponse);
+            }
+        });
+    }
+
+    $(document).ready(function () {
+        $("#Bab02Title").keyup(function (event) {
+            if (event.keyCode == 13) {
+                GetDetailIssue($(this).val());
+            }
+        });
+        $("#Bab02Title").keydown(function (event) {
+            if (event.keyCode == 9) {
+                GetDetailIssue($(this).val());
+            }
+        });
+    });
+</script>

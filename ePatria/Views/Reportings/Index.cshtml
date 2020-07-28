@@ -1,0 +1,131 @@
+﻿@model IEnumerable<ePatria.Models.Reporting>
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="row" style="margin-top:20px;">
+    <div class="col-md-12">
+        <!-- BEGIN EXAMPLE TABLE PORTLET-->
+        <div class="portlet box red-sunglo">
+            <div class="portlet-title">
+                <div class="caption">
+                    <i class="fa fa-user"></i> Reporting
+                </div>
+            </div>
+            <div class="portlet-body">
+                <div class="table-toolbar">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="btn-group">
+
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="btn-group pull-right">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <table class="table table-striped table-hover table-bordered" id="table-employee">
+                    <thead>
+                        <tr>
+                            <th>
+                                No. Laporan
+                            </th>
+                            <th>
+                                No. SP
+                            </th>
+                            <th>
+                                Activity Name 
+                            </th>
+                            <th>
+                                Engagement Name 
+                            </th>
+                            <th>
+                                Periode
+                            </th>
+                            <th>
+                                Remarks
+                            </th>
+                            <th>
+                                Action
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (ePatria.Models.Reporting item in Model)
+                        {
+                            <tr>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.NomorLaporan)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.LetterOfCommand.NomorSP)
+                                </td>
+                                <td>
+                                    @Html.DisplayName(item.LetterOfCommand.Activity.Name)
+                                </td>
+                                <td>
+                                    @if (item.LetterOfCommand.AuditPlanningMemorandum.ActualEngagement != null)
+                                    { 
+                                        @Html.DisplayName(item.LetterOfCommand.AuditPlanningMemorandum.ActualEngagement)
+                                    }
+                                    @*@Html.DisplayName(item.LetterOfCommand.AuditPlanningMemorandum.Preliminary.EngagementActivity.Name)*@
+                                </td>
+                                <td>
+                                    @Html.DisplayName(item.LetterOfCommand.Date_Start.ToString()) - @Html.DisplayName(item.LetterOfCommand.Date_End.ToString())
+                                </td>
+                                <td>
+                                    @Html.DisplayName(item.LetterOfCommand.Remarks)
+                                </td>
+                                <td>
+                                    @Html.ActionLink("Edit", "Edit", new { id = item.ReportingID }) |
+                                    @Html.ActionLink("Details", "Details", new { id = item.ReportingID }) |
+                                    @Html.ActionLink("Preview", "Preview", new { id = item.ReportingID }) |
+                                    @Html.ActionLink("Delete", "Delete", new { id = item.ReportingID })
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <!-- END EXAMPLE TABLE PORTLET-->
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        $('#table-employee').DataTable({
+            dom: 'T<"clear">lfrtip',
+            tableTools: {
+                "sSwfPath": "/Content/assets/global/plugins/datatables/extensions/TableTools/swf/copy_csv_xls_pdf.swf",
+                "aButtons": [
+                {
+                    "sExtends": "xls",
+                    "mColumns": [0, 1, 2, 3, 4],
+                    "sPdfOrientation": "landscape",
+                    "sPdfMessage": "Reporting",
+                    "sButtonText": "Export to excel",
+                    "sFileName": "Reporting.xls"
+                },
+                ]
+            }
+        });
+    });
+</script>
+
+<!-- MODAL CREATE END -->
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+    @if (ViewBag.message != null)
+    {
+    <script>
+        $(document).ready(function () {
+            toastr.success("@ViewBag.message", "Success");
+        });
+    </script>
+    }
+}

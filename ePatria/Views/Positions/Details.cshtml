@@ -1,0 +1,45 @@
+﻿@model ePatria.Models.Position
+
+@{
+    ViewBag.Title = "Details";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Details</h2>
+
+<div>
+    <h4>Position</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            Position Name 
+        </dt>
+
+        <dd>
+            <b>:</b>&nbsp;&nbsp;&nbsp;@Html.DisplayFor(model => model.PositionName)
+        </dd>
+
+        <dt>
+            Job Description
+        </dt>
+
+        <dd>
+            <b>:</b>&nbsp;&nbsp;&nbsp;@Html.DisplayFor(model => model.JobDesc)
+        </dd>
+
+    </dl>
+</div>
+<p> 
+    @Html.ActionLink("Back to List", "Index")
+</p>
+
+<style>
+.dl-horizontal dt{
+    text-align: left;
+    width: 120px;
+}
+
+.dl-horizontal dd{
+    margin-left: 0;
+}
+</style>

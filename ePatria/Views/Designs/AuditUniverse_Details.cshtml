@@ -1,0 +1,93 @@
+﻿@{
+    ViewBag.Title = "AuditUniverse_Details";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<style>
+    .padding5 {
+        padding: 5px;
+    }
+</style>
+
+<div class="portlet box red-sunglo">
+    <div class="portlet-title">
+        <div class="caption">
+            <i class="fa fa-eye"></i> Audit Universe Details
+        </div>
+    </div>
+    <div class="portlet-body">
+        <div class="table-toolbar">
+            <table>
+                <tr>
+                    <td class="padding5">
+                        <b>Name of Activity</b>
+                    </td>
+                    <td class="padding5">
+                        :
+                    </td>
+                    <td class="padding5">
+                        Production
+                    </td>
+                </tr>
+                <tr>
+                    <td class="padding5">
+                        <b>Sub Activity</b>
+                    </td>
+                    <td class="padding5">
+                        :
+                    </td>
+                    <td class="padding5">
+                        Machinery Processing
+                    </td>
+                </tr>
+                <tr>
+                    <td class="padding5">
+                        <b>Status</b>
+                    </td>
+                    <td class="padding5">
+                        :
+                    </td>
+                    <td class="padding5">
+                        Pending for Approval
+                    </td>
+                </tr>
+                <tr>
+                    <td class="padding5">
+                        <b>Year of Audit</b>
+                    </td>
+                    <td class="padding5">
+                        :
+                    </td>
+                    <td class="padding5">
+                        2014
+                    </td>
+                </tr>
+            </table>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="btn-group"></div>
+                </div>
+                <div class="col-md-6">
+                    <div class="btn-group pull-right">
+                        <a href="#modal-edit" data-toggle="modal" class="btn btn-pertamina-black">
+                            <i class="fa fa-edit"> Edit</i>
+                        </a>
+                        <a href="@Url.Action("AuditUniverse_Index", "Designs")" class="btn btn-default">
+                            <i class="fa fa-arrow-circle-left"> Back</i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+<!-- END EXAMPLE TABLE PORTLET-->
+				</div>
+			</div>
+<!-- MODAL EDIT START -->
+<div class="modal fade" id="modal-edit" tabindex="-1" role="basic" aria-hidden="true">
+    @Html.Partial("AuditUniverse_Edit")
+    <!-- /.modal-dialog -->
+</div>
+<!-- MODAL EDIT END -->

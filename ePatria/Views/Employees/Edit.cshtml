@@ -1,0 +1,200 @@
+﻿@model ePatria.Models.Employee
+
+@{
+    ViewBag.Title = "Edit";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Edit</h2>
+
+
+@using (Html.BeginForm("Edit", "Employees", FormMethod.Post, new { enctype="multipart/form-data", id="empform" }))
+{
+    @Html.AntiForgeryToken()
+    
+    <div class="form-horizontal">
+        <h4>Employee</h4>
+        <hr />
+        <div class="error-container">
+            <ul></ul>
+        </div>
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        @if (ViewBag.NameExist != null)
+        {
+            <ul class="validation-summary-errors text-danger"><li>@ViewBag.NameExist</li></ul>
+        }
+        @Html.HiddenFor(model => model.EmployeeID)
+        @Html.HiddenFor(model => model.UserName)
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Type, "Type", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-5">
+                @Html.DropDownList("Type", new List<SelectListItem>
+                     {
+                        new SelectListItem{ Text="Internal Audit", Value = "Auditor" },
+                        new SelectListItem{ Text="Business Owner", Value = "Auditee" }
+                     }, htmlAttributes: new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.Type, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Name, "Name", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-5">
+                @Html.EditorFor(model => model.Name, new { htmlAttributes = new { @class = "form-control", @readonly = "true" } })
+                @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.NoPEK, "No. PEK", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-5">
+                @Html.EditorFor(model => model.NoPEK, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.NoPEK, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Email, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-5">
+                @Html.EditorFor(model => model.Email, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Email, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.PhoneNumber, "Telephone", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-5">
+                @Html.EditorFor(model => model.PhoneNumber, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.PhoneNumber, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Status, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-5">
+                <div class="col-md-6">
+                    @Html.RadioButtonFor(model => model.Status, "PWTT") PWTT
+                    <br />
+                    @Html.RadioButtonFor(model => model.Status, "PWT") PWT
+                </div>
+                @Html.ValidationMessageFor(model => model.Status, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.OrganizationID, "Organization", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-5">
+                @Html.DropDownList("OrganizationID", null, htmlAttributes: new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.OrganizationID, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.PositionID, "Position", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-5">
+                @Html.DropDownList("PositionID", null, htmlAttributes: new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.PositionID, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        @*<div class="form-group">
+            @Html.Label("File : ", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @if (ViewBag.paths != null)
+                {*@
+                    @*if (ViewBag.Extension1 == "image")
+                    {
+                        <img src="@ViewBag.subPath1" alt="image" width="20%" height="20%"/>
+                        @Html.ActionLink("View Full Size", "../"+(string)ViewBag.subPath1, null, new { target="_blank" })
+                    } else 
+                    {
+                       @Html.LabelFor(model => model.EmployeeID, (string)ViewBag.newFName1) <br />
+                       @Html.ActionLink("Download File", "../"+(string)ViewBag.subPath1, null, new { target="_blank" })
+                    }*@
+                    @*int i = 0;
+                    List<string> images = new List<string>();
+                    foreach (var path in ViewBag.paths)
+                    {
+                        i++;
+                        string imageid = "image"+i.ToString();
+                            <div class="image">
+                                <img src="@path" alt="image" width="20%" height="20%" id=@imageid style="display:none" />
+                                <div>
+                                    @Html.Label("Delete", null, new { @class="removeImage btn btn-xs red", @style="cursor:pointer" })
+                                    @Html.ActionLink("Download", "../"+(string)path, null, new { target="_blank", @class="btn btn-xs green"})
+                                    @Html.LabelFor(model => model.EmployeeID, (string)path.Split('/')[3])
+                                    @{images.Add(Convert.ToString(path));}
+                                </div>
+                            </div>
+                    }
+                    Session["Images"] = images.ToArray();
+                }
+                <input type="file" name="files" id="file1" class="file1" />
+                <div class="preview"></div>
+            </div>
+        </div>
+        <script>
+            $('.removeImage').click(function () {
+                $(this).parent().parent().remove();
+                var images = [];
+                if ($('.image').length > 0) {
+                    $('.image').each(function (index) {
+                        images.push($(this).find('img').attr('src'));
+                    });
+                } else
+                    images = "deleteall";
+                $.ajax({
+                    type: "POST",
+                    traditional: true,
+                    url: "../getImages",
+                    data: { images: images }
+                });
+            });
+            $(function () {
+		    $("input[name=files]").previewimage({
+			    div: ".preview"
+		    });
+            });
+        </script>
+        <style type="text/css">
+            input[type='file'] {
+              color: transparent;
+            }
+        </style>*@
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Save" class="btn btn-default" />
+            </div>
+        </div>
+    </div>
+}
+
+<div>
+    @Html.ActionLink("Back to List", "Index")
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+    <script>
+        $("#empform").validate({
+            errorLabelContainer: $("ul", $('div.error-container')),
+            wrapper: 'li',
+            rules: {
+                Name: "required",
+                NoPEK: "required",
+                Email: "required",
+                PhoneNumber: "required",
+                Status: "required"
+            },
+            messages: {
+                Name: "Please enter Name",
+                NoPEK: "Please enter No. Pek",
+                Email: "Please enter Email",
+                PhoneNumber: "Please enter Phone Number",
+                Status: "Please Choose Status"
+            }
+        });
+    </script>
+}

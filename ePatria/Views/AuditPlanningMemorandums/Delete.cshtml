@@ -1,0 +1,201 @@
+﻿@model ePatria.Models.AuditPlanningMemorandum
+
+@{
+    ViewBag.Title = "Delete";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Delete</h2>
+
+<h3>Are you sure you want to delete this?</h3>
+<div>
+    <h4>Audit Planning Memorandum</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            No. Preliminary Survey
+        </dt>
+
+        <dd>
+            <b>:</b>&nbsp;&nbsp;&nbsp;@Html.Raw(ViewBag.NomerPrelim)
+        </dd>
+
+        <dt>
+            Nomer APM
+        </dt>
+
+        <dd>
+            <b>:</b>&nbsp;&nbsp;&nbsp;@Html.DisplayFor(model => model.NomerAPM)
+        </dd>
+
+        <dt>
+            Activity
+        </dt>
+
+        <dd>
+            <b>:</b>&nbsp;&nbsp;&nbsp;@Html.DisplayFor(model => model.Activity.Name)
+        </dd>
+
+        <dt>
+            Periode
+        </dt>
+
+        <dd>
+            <b>:</b>&nbsp;&nbsp;&nbsp;@Html.DisplayFor(model => model.Date_Start) to @Html.DisplayFor(model => model.Date_End)
+        </dd>
+
+        <dt>
+            Status
+        </dt>
+
+        <dd>
+            <b>:</b>&nbsp;&nbsp;&nbsp;@Html.DisplayFor(model => model.Status)
+        </dd>
+
+        <dt>
+            Tujuan Audit
+        </dt>
+
+        <dd>
+            <b>:</b>&nbsp;&nbsp;&nbsp;@Html.DisplayFor(model => model.TujuanAudit)
+        </dd>
+
+        <dt>
+            Ruang Lingkup Audit
+        </dt>
+
+        <dd>
+            <b>:</b>&nbsp;&nbsp;&nbsp;@Html.DisplayFor(model => model.RuangLingkupAudit)
+        </dd>
+
+        <dt>
+            Metologi Audit
+        </dt>
+
+        <dd>
+            <b>:</b>&nbsp;&nbsp;&nbsp;@Html.DisplayFor(model => model.MetodologiAudit)
+        </dd>
+
+        <dt>
+            Data dan Dokumen
+        </dt>
+
+        <dd>
+            <b>:</b>&nbsp;&nbsp;&nbsp;@Html.DisplayFor(model => model.DataDanDokumen)
+        </dd>
+
+        <dt>
+            Walktrough
+        </dt>
+
+        <dd>
+            <b>:</b>&nbsp;&nbsp;&nbsp;@Html.DisplayFor(model => model.WalktroughDateStart) to @Html.DisplayFor(model => model.WalktroughDateEnd)
+        </dd>
+
+        <dt>
+            Field Work
+        </dt>
+
+        <dd>
+            <b>:</b>&nbsp;&nbsp;&nbsp;@Html.DisplayFor(model => model.FieldWorkDateStart) to @Html.DisplayFor(model => model.FieldWorkDateEnd)
+        </dd>
+
+        <dt>
+            Entry Meeting
+        </dt>
+
+        <dd>
+            <b>:</b>&nbsp;&nbsp;&nbsp;@Html.DisplayFor(model => model.EntryMeetingDateStart)
+        </dd>
+
+        <dt>
+            Exit Meeting
+        </dt>
+
+        <dd>
+            <b>:</b>&nbsp;&nbsp;&nbsp;@Html.DisplayFor(model => model.ExitMeetingDateStart)
+        </dd>
+
+        <dt>
+            LHA
+        </dt>
+
+        <dd>
+            <b>:</b>&nbsp;&nbsp;&nbsp;@Html.DisplayFor(model => model.LHADateStart)
+        </dd>
+
+        <dt>
+            Responsible Person
+        </dt>
+
+        <dd>
+            <b>:</b>&nbsp;&nbsp;&nbsp;@Html.Raw(ViewBag.PICIDName)
+        </dd>
+
+        <dt>
+            Supervisor
+        </dt>
+
+        <dd>
+            <b>:</b>&nbsp;&nbsp;&nbsp;@Html.Raw(ViewBag.SupervisorName)
+        </dd>
+
+        <dt>
+            Team Leader
+        </dt>
+
+        <dd>
+            <b>:</b>&nbsp;&nbsp;&nbsp;@Html.Raw(ViewBag.TeamLeaderName)
+        </dd>
+
+        <dt>
+            Member
+        </dt>
+
+        <dd>
+            @{var y = 0;}
+            @foreach (var mem in Model.MemberID.Split(';')) {
+                y++;
+                if (y < Model.MemberID.Split(';').Count()) {
+                    <li style="margin-left:180px">@Html.DisplayName(mem)</li>
+                }
+            }
+        </dd>
+        <dt>
+            @Html.DisplayName("File")
+        </dt>
+
+        <dd>
+            @if (ViewBag.paths != null)
+            {
+                foreach (var path in ViewBag.paths)
+                {
+                    <div>
+                        @Html.ActionLink("Download", "../" + (string)path, null, new { target = "_blank", @class = "btn btn-xs green" })
+                        @Html.LabelFor(model => model.AuditPlanningMemorandumID, (string)path.Split('/')[3])
+                    </div>
+
+                }
+            }
+        </dd>
+    </dl>
+
+    @using (Html.BeginForm()) {
+        @Html.AntiForgeryToken()
+
+        <div class="form-actions no-color">
+            <input type="submit" value="Delete" class="btn btn-default" /> |
+            @Html.ActionLink("Back to List", "Index")
+        </div>
+    }
+</div>
+<style>
+.dl-horizontal dt{
+    text-align: left;
+    width: 180px;
+}
+
+.dl-horizontal dd{
+    margin-left: 0;
+}
+</style>

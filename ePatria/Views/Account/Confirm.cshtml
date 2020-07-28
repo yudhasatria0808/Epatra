@@ -1,0 +1,19 @@
+@{
+    ViewBag.Title = "Confirm Email Address Sent";
+}
+<h2>@ViewBag.Title.</h2>
+
+<div class="row">
+    <div class="col-md-8">
+        Please check your Email Inbox, a confirm Email is Sent to <b>@ViewBag.Email</b>
+        </div>
+ </div>
+
+@if (ViewBag.message != null)
+    {
+    <script>
+        $(document).ready(function () {
+            toastr.success("@ViewBag.message", "Success");
+        });
+    </script>
+    }

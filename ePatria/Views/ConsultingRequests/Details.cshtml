@@ -1,0 +1,416 @@
+﻿@model ePatria.Models.ConsultingRequest
+
+@{
+    ViewBag.Title = "Details";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@using Microsoft.AspNet.Identity;
+@{ var checkPerm = HelperController.getPermissionRoleByPerm("Consulting Request", User.Identity.GetUserId()); }
+@{ var Perm = HelperController.getPermission(User.Identity.GetUserId(), "Consulting Request"); 
+    var isSuperAdmin = HelperController.isSuperAdmin(User.Identity.GetUserId());
+}
+<h2>Details</h2>
+
+<div>
+    <h4>Consulting Request</h4>
+    <div class ="form-horizontal">
+        <div class="form-group">
+            <label class="control-label col-md-2">No. Request</label>
+            <div class="col-md-4">
+                @Html.TextBoxFor(model => model.NoRequest, new { @class = "form-control", @readonly = true })
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-2">No. Surat</label>
+            <div class="col-md-4">
+                @Html.TextBoxFor(model => model.NoSurat, new { @class = "form-control" , @readonly = true})
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-2">Requester</label>
+            <div class="col-md-4">
+                <input class="form-control" value="@ViewBag.requester" readonly/>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-2">Tanggal Surat</label>
+            <div class="col-md-2">
+                <input class="form-control" value="@Model.Date_Start.ToShortDateString()" readonly />
+            </div>
+            @*<div class="col-md-2">
+                <input class="form-control" value="@Model.Date_End.ToShortDateString()" readonly />
+            </div>*@
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-2">Evaluation Result</label>
+            <div class="col-md-4">
+                @Html.TextBoxFor(model => model.EvaluationResult, new { @class = "form-control", @readonly = true })
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-2">File</label>
+            <div class="col-md-4">
+                @if (ViewBag.paths != null)
+                {
+                    foreach (var path in ViewBag.paths)
+                    {
+                        <div>
+                            @Html.ActionLink("Download", "../" + (string)path, null, new { target = "_blank", @class = "btn btn-xs green" })
+                            @Html.LabelFor(model => model.ConsultingRequestID, (string)path.Split('/')[3])
+                        </div>
+
+                    }
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+@using (Html.BeginForm("Edit", "ConsultingRequests", FormMethod.Post, new { enctype = "multipart/form-data" }))
+{
+    @Html.AntiForgeryToken()
+
+    <div class="hidden">
+        <h4>Audit Planning Memorandum</h4>
+        <hr />
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        @Html.HiddenFor(model => model.Status)
+        @Html.EditorFor(model => model.ConsultingRequestID)
+        @Html.Editor("requester")
+        @*@Html.EditorFor(model => model.ActivityID)*@
+        @Html.EditorFor(model => model.ActivityStr)
+        @Html.EditorFor(model => model.NoRequest, new { htmlAttributes = new { @class = "form-control" } })
+        @Html.TextBoxFor(model => model.Date_Start, "{0:dd/MM/yyyy}", new { @class = "form-control datepicker", @readonly = true })
+        @*@Html.TextBoxFor(model => model.Date_End, "{0:dd/MM/yyyy}", new { @class = "form-control datepicker", @readonly = true })*@
+        @Html.EditorFor(model => model.NoSurat, new { htmlAttributes = new { @class = "form-control" } })
+        @Html.EditorFor(model => model.EvaluationResult, new { htmlAttributes = new { @class = "form-control" } })
+
+        <div class="form-group">
+            @Html.Label("File", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @if (ViewBag.paths != null)
+                {
+                    int i = 0;
+                    List<string> images = new List<string>();
+                    foreach (var path in ViewBag.paths)
+                    {
+                        i++;
+                        string imageid = "image" + i.ToString();
+                        <div class="image">
+                            <img src="@path" alt="image" width="20%" height="20%" id=@imageid style="display:none" />
+                            <div>
+                                @Html.Label("Delete", null, new { @class = "removeImage btn btn-xs red", @style = "cursor:pointer" })
+                                @Html.ActionLink("Download", "../" + (string)path, null, new { target = "_blank", @class = "btn btn-xs green" })
+                                @Html.LabelFor(model => model.ConsultingRequestID, (string)path.Split('/')[3])
+                                @{images.Add(Convert.ToString(path));}
+                            </div>
+                        </div>
+                    }
+                    Session["Images"] = images.ToArray();
+                }
+                <input type="file" name="files" id="file1" class="file1" />
+                <div class="preview"></div>
+            </div>
+        </div>
+        <script>
+            $('.removeImage').click(function () {
+                $(this).parent().parent().remove();
+                var images = [];
+                if ($('.image').length > 0) {
+                    $('.image').each(function (index) {
+                        images.push($(this).find('img').attr('src'));
+                    });
+                } else
+                    images = "deleteall";
+                $.ajax({
+                    type: "POST",
+                    traditional: true,
+                    url: "../getImages",
+                    data: { images: images }
+                });
+            });
+            $(function () {
+                $("input[name=files]").previewimage({
+                    div: ".preview"
+                });
+            });
+        </script>
+        <style type="text/css">
+            input[type='file'] {
+                color: transparent;
+            }
+        </style>
+
+
+    </div>
+    if (checkPerm.Contains("IsSubmit1"))
+    {
+        if (Perm != null && Perm.Any(q => q.IsSubmit1 == true) || isSuperAdmin)
+        {
+            if (Model.Status == "Pending for Review by " + checkPerm.Split(':')[1].Split(';')[0])
+            {
+                if (checkPerm.Contains("IsSubmit2"))
+                {
+                    <button class="btn btn-primary" name="submit" type="submit" id="submit" value="Submit For Review By @checkPerm.Split(':')[2].Split(';')[0]">Submit</button>
+                    @*<input class="btn btn-primary" name="submit" type="submit" id="submit" value="Submit For Review By @checkPerm.Split(':')[2].Split(';')[0]" />*@
+                    @*<input class="btn btn-primary" name="submit" type="submit" id="submit" value="Send Back" />*@
+                }
+                else if (checkPerm.Contains("IsApprove"))
+                {
+                    <button class="btn btn-primary" name="submit" type="submit" id="submit" value="Submit For Approve By @checkPerm.Split(':')[3].Split(';')[0]">Submit</button>
+                    @*<input class="btn btn-primary" name="submit" type="submit" id="submit" value="Submit For Approve By @checkPerm.Split(':')[3].Split(';')[0]" />*@
+                    @*<input class="btn btn-primary" name="submit" type="submit" id="submit" value="Send Back" />*@
+                }
+            }
+        }
+    }
+    if (checkPerm.Contains("IsSubmit2"))
+    {
+        if (Perm != null && Perm.Any(q => q.IsSubmit2 == true) || isSuperAdmin)
+        {
+            if (Model.Status == "Pending for Review by " + checkPerm.Split(':')[2].Split(';')[0])
+            {
+                if (checkPerm.Contains("IsApprove"))
+                {
+                    <button class="btn btn-primary" name="submit" type="submit" id="submit" value="Submit For Approve By @checkPerm.Split(':')[3].Split(';')[0]">Submit</button>
+                    @*<input class="btn btn-primary" name="submit" type="submit" id="submit" value="Submit For Approve By @checkPerm.Split(':')[3].Split(';')[0]" />*@
+                    if (checkPerm.Split(':')[1].Split(';')[0] != checkPerm.Split(':')[2].Split(';')[0]) {
+                        <input class="btn btn-primary" name="submit" type="submit" id="submit" value="Send Back" />
+                    }
+                }
+            }
+        }
+    }
+    if (checkPerm.Contains("IsApprove"))
+    {
+        if (Perm != null && Perm.Any(q => q.IsApprove == true) || isSuperAdmin)
+        {
+            if (Model.Status == "Pending for Approve by " + checkPerm.Split(':')[3].Split(';')[0])
+            {
+                <input class="btn btn-primary" name="submit" type="submit" id="submit" value="Approve" />
+                <input class="btn btn-primary" name="submit" type="submit" id="submit" value="Reject" />
+                <input class="btn btn-primary" name="submit" type="submit" id="submit" value="Send Back" />
+            }
+        }
+    }
+        
+}
+<p> 
+    @Html.ActionLink("Back to List", "Index")
+</p>
+
+
+@*Review Note*@
+
+<h2>Review Notes</h2>
+
+<div class="publishContainer">
+    <textarea class="msgTextArea" id="txtMessage" data-bind="value: newMessage, jqAutoresize: {}" style="height:3em;" placeholder="Write your comment..."></textarea>
+    <div class="btn-group ">
+        <button class="btn btn-primary btn-lg" data-url="/Wall/SavePost" value="Comment" id="btnShare" data-bind="click: addPost">Comment</button>
+        <input type="hidden" data-bind="value: apmId" class="apmId" value="@Model.ConsultingRequestID" />
+        @{
+            int apmId = Model.ConsultingRequestID;
+        }
+        <script>
+            localStorage.apmId = 'draft' + '@apmId';
+        </script>
+    </div>
+</div>
+
+<ul id="msgHolder" data-bind="foreach: posts">
+    <li class="postHolder">
+        <img data-bind="attr: { src: '../../Content/assets/global/img/avatar3_small.jpg' }"><a data-bind="    text: PostedByName"></a>: <span data-bind="    html: Message"></span>
+        <div class="postFooter">
+            <span class="timeago" data-bind="text: PostedDate"></span>&nbsp;<a class="linkComment" href="#" data-bind="    click: toggleComment">Reply</a>
+            <div class="commentSection">
+                <ul data-bind="foreach: PostComments">
+                    <li class="commentHolder">
+                        <img data-bind="attr: { src: '../../Content/assets/global/img/avatar3_small.jpg' }"><a data-bind="    text: CommentedByName"></a>: <span data-bind="    html: Message"></span>
+                        <div class="commentFooter"> <span class="timeago" data-bind="text: CommentedDate"></span>&nbsp;</div>
+                    </li>
+                </ul>
+                <div style="display: block" class="publishComment">
+                    <textarea class="commentTextArea" data-bind="value: newCommentMessage, jqAutoresize: {}" placeholder="Write your reply..."></textarea>
+                    <input type="button" value="Reply" class="btn blue" data-bind="click: addComment" />
+                </div>
+            </div>
+        </div>
+    </li>
+</ul>
+
+@section scripts{
+    <script src="~/Scripts/jquery.autosize-min.js"></script>
+    <script src="~/Scripts/jquery.timeago.js"></script>
+    <script src="~/Scripts/knockout-3.4.0.js"></script>
+    <script src="~/Scripts/wallpost.js"></script>
+
+}
+
+<style>
+    .msgTextArea {
+        width: 100%;
+        height: 80px;
+        border-radius: 7px;
+    }
+
+    .commentTextArea {
+        width: 93%;
+        border-radius: 7px;
+        height: 40px;
+    }
+
+    .publishContainer {
+        width: 65%;
+        text-align: right;
+        background-color: #F2F2F2;
+        border-color: #B4BBCD;
+        border-image: none;
+        border-style: solid;
+        border-width: 1px;
+        padding: 1em 1.2em;
+        margin-bottom: 2em;
+    }
+
+    .publishComment {
+        text-align: right;
+        width: 100%;
+        display: none;
+    }
+
+    #msgHolder {
+        width: 65%;
+    }
+
+        #msgHolder img {
+            float: left;
+            margin-right: 7px;
+        }
+
+        #msgHolder a {
+            text-decoration: none;
+            color: #015BA7;
+        }
+
+            #msgHolder a:hover {
+                text-decoration: underline;
+            }
+
+    .postHolder {
+        padding: 5px;
+        border-bottom: solid 1px #E6E6E6;
+        margin: 5px;
+        list-style: none;
+    }
+
+        .postHolder p {
+            margin: 4px auto 7px 50px;
+        }
+
+        .postHolder a {
+            font-weight: bold;
+        }
+
+    .postFooter {
+        font-size: 0.85em;
+        margin-left: 55px;
+    }
+
+        .postFooter span {
+            color: #7D7D84;
+        }
+
+        .postFooter a {
+            font-weight: normal;
+        }
+
+    .commentHolder {
+        clear: both;
+        background-color: #EEF1F6;
+        padding: 5px;
+        border-bottom: 1px solid #DEE5EA;
+        border-top: 1px solid white;
+        list-style: none;
+    }
+
+    #btnShare, .btnComment, .btnRequest {
+        background-color: #5B74A8;
+        border: 0 none;
+        color: #FFFFFF;
+        cursor: pointer;
+        font-size: 13px;
+        font-weight: bold;
+        margin-right: 10px;
+        padding: 5px;
+        text-align: center;
+    }
+
+    aside {
+        float: right;
+        width: 30%;
+        font-size: 0.85em;
+    }
+
+        aside > div, #myConnections {
+            border: solid 2px #3B5998;
+            border-radius: 7px;
+            float: left;
+            width: 99%;
+            margin-bottom: 5px;
+        }
+
+            aside h3, #myConnections h3 {
+                background-color: #3B5998;
+                color: White;
+                margin: 0px;
+                padding: 3px;
+                font-size: 0.95em;
+            }
+
+            aside a, #myConnections a {
+                text-decoration: none;
+                color: #015BA7;
+                font-weight: bold;
+            }
+
+                aside a:hover, #myConnections a:hover {
+                    text-decoration: underline;
+                }
+
+            aside img, #myConnections img {
+                float: left;
+                margin-right: 7px;
+            }
+
+    .useritem {
+        border-bottom: 1px solid #DEE5EA;
+        clear: both;
+        overflow: auto;
+        padding: 3px;
+    }
+
+        .useritem p {
+            margin: 4px auto 7px 55px;
+        }
+
+    .btnRequest, .btn {
+        margin-top: 7px;
+    }
+
+    #myConnections {
+        margin: 15px;
+        width: 60%;
+        font-size: 0.85em;
+    }
+</style>
+<style>
+.dl-horizontal dt{
+    text-align: left;
+    width: 140px;
+}
+
+.dl-horizontal dd{
+    margin-left: 0;
+}
+</style>

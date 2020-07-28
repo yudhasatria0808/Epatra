@@ -1,0 +1,662 @@
+﻿@model ePatria.Models.AnnualPlanning
+
+@{
+    ViewBag.Title = "Create";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Create</h2>
+@using Microsoft.AspNet.Identity;
+@{
+    var checkPerm = HelperController.getPermissionRoleByPerm("Annual Planning", User.Identity.GetUserId());
+    var userPerm = HelperController.getPermission(User.Identity.GetUserId(), "Annual Planning");
+}
+
+@using (Html.BeginForm(null, null, FormMethod.Post, new { id = "apform" }))
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-horizontal">
+        <h4>Annual Planning</h4>
+        <hr />
+        <div class="error-container">
+            <ul></ul>
+        </div>
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+        <div class="form-group">
+            @Html.Label("Tahun", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-2">
+                @Html.DropDownList("Tahun", new List<SelectListItem>
+                {
+                    new SelectListItem{ Text=@DateTime.Now.Year.ToString(), Value = @DateTime.Now.Year.ToString() },
+                    new SelectListItem{ Text=(@DateTime.Now.Year + 1).ToString(), Value = (@DateTime.Now.Year + 1).ToString() }
+                }, htmlAttributes: new { @class = "form-control" })
+            </div>
+        </div>
+
+        <div class="form-group input-group-sm">
+            @Html.LabelFor(model => model.Date_Start, "Periode", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-2">
+                @Html.TextBoxFor(model => model.Date_Start, "{0:dd/MM/yyyy}", new { @class = "form-control datepicker", @readonly = true })
+                @Html.ValidationMessageFor(model => model.Date_Start, "", new { @class = "text-danger" })
+            </div>
+            <div class="col-md-2">
+                @Html.TextBoxFor(model => model.Date_End, "{0:dd/MM/yyyy}", new { @class = "form-control datepicker", @readonly = true })
+                @Html.ValidationMessageFor(model => model.Date_End, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+
+        <div class="form-group">
+            @Html.Label("Activity", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-5">
+                @*@Html.DropDownList("ActivityID", null, htmlAttributes: new { @class = "form-control" })*@
+                @Html.DropDownList("ActivityID", null, "Please Select Activity", new { @onchange = "javascript:GetEngagementName(this.value);javascript:$('#field').show();", @class = "form-control" })
+                @Html.ValidationMessage("ActivityID", "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div id="field" style="display:none;">
+            <div class="form-group">
+                @Html.Label("Engagement Name", htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-5">
+                    <a href="#" class="btn btn-icon-only green" data-toggle="modal" data-target="#addEng"><i class="fa fa-plus"></i></a>
+                    <a href="#" class="btn btn-icon-only yellow" data-toggle="modal"><i class=" fa fa-edit"></i></a>
+                    <a href="#" class="btn btn-icon-only red" id="delEng" data-original-title="Are you sure to delete this Engagement Name?" onclick="javascript: delEng()"><i class="fa fa-times"></i></a>
+
+                    @*<a href="#" class="btn btn-icon-only red" data-toggle="modal" data-target="#deleteEng"><i class="fa fa-times"></i></a>*@
+                    @*<button class="btn btn-icon-only red" data-toggle="confirmation" data-original-title="Are you sure to delete this Risk?" onclick="javascript:DeleteRisk($('#EngagementID').val(), $('#riskId option:selected').val());"><i class="fa fa-times"></i></button>*@
+                    <br />
+                    <select multiple class="form-control" id="engagement" onchange="javascript: GetEngagementData($('#engagement option:selected').val(), $('#actId').val($('#ActivityID option:selected').val()));"></select>
+                </div>
+            </div>
+
+            <div id="addEng" class="modal fade" tabindex="-1" data-width="700">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                    <h4 class="modal-title">Add Engagement Name</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="form-horizontal">
+                        <div class="form-group">
+                            @Html.Label("Engagement Name", htmlAttributes: new { @class = "control-label col-md-4" })
+                            <div class="col-md-6">
+                                @Html.TextArea("name", null, new { @class = "form-control", @rows = "3" })
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            @Html.Label("Responsible Person", htmlAttributes: new { @class = "control-label col-md-4" })
+                            <div class="col-md-6">
+                                @Html.TextBox("pic", null, new { @class = "form-control", placeholder = "Auto Complete" })
+                                @Html.ValidationMessage("PICID", "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            @Html.Label("Supervisor", htmlAttributes: new { @class = "control-label col-md-4" })
+                            <div class="col-md-6">
+                                @Html.TextBox("supervisor", null, new { @class = "form-control", placeholder = "Auto Complete" })
+                                @Html.ValidationMessage("SupervisorID", "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            @Html.Label("Team Leader", htmlAttributes: new { @class = "control-label col-md-4" })
+                            <div class="col-md-6">
+                                @Html.TextBox("leader", null, new { @class = "form-control", placeholder = "Auto Complete" })
+                                @Html.ValidationMessage("TeamLeaderID", "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+
+                        @*<div class="form-group">
+                                @Html.Label("Member", htmlAttributes: new { @class = "control-label col-md-4" })
+                                <div class="col-md-6">
+                                    @Html.ListBox("membereng", null, new { @class = "form-control" })
+                                    @Html.ValidationMessage("MemberID", "", new { @class = "text-danger" })
+                                </div>
+                            </div>*@
+
+                        <div id="MembersGroup">
+                            <div class="form-group" id="memberdiv1">
+                                @Html.Label("Member 1", htmlAttributes: new { @class = "control-label col-md-4", @id = "questionlabel#1" })
+                                <div class="col-md-6">
+                                    @Html.TextBox("member-1", null, new { @class = "form-control member", placeholder = "Auto Complete" })
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="col-md-offset-4 col-md-6">
+                                <a href="#" class="btn btn-sm green" id='addButton'><i class="fa fa-plus"></i>Add More Member</a>
+                                <a href="#" class="btn btn-sm red" id='removeButton'><i class="fa fa-times"></i>Remove Member</a>
+                            </div>
+                        </div>
+
+
+                        <script type="text/javascript">
+                            $(function () {
+
+                                $('.member').autocomplete({
+                                    source: '@Url.Action("AutocompleteMember")',
+                                    appendTo: $("#addEng"), change: function (event, ui) {
+                                        if (!ui.item) {
+                                            $(this).val("");
+                                        }
+                                    }
+                                });
+                                $('#pic').autocomplete({
+                                    source: '@Url.Action("AutocompleteCIA")',
+                                    appendTo: $("#addEng"), change: function (event, ui) {
+                                        if (!ui.item) {
+                                            $(this).val("");
+                                        }
+                                    }
+                                });
+                                $('#leader').autocomplete({
+                                    source: '@Url.Action("AutocompleteKetua")',
+                                    appendTo: $("#addEng"), change: function (event, ui) {
+                                        if (!ui.item) {
+                                            $(this).val("");
+                                        }
+                                    }
+                                });
+                                $('#supervisor').autocomplete({
+                                    source: '@Url.Action("AutocompletePengawas")',
+                                    appendTo: $("#addEng"), change: function (event, ui) {
+                                        if (!ui.item) {
+                                            $(this).val("");
+                                        }
+                                    }
+                                });
+                            });
+                        </script>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" data-dismiss="modal" class="btn btn-outline dark">Close</button>
+                    <button type="button" class="btn green" onclick="javascript: SaveEngagement($('#name').val(), $('#ActivityID option:selected').val(), $('#pic').val(), $('#supervisor').val(), $('#leader').val());">Save</button>
+                </div>
+            </div>
+
+            <div id="editEng" class="modal fade" tabindex="-1" data-width="700">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                    <h4 class="modal-title">Edit Engagement</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="form-horizontal">
+                        <div class="form-group">
+                            @Html.Label("Engagement Name", htmlAttributes: new { @class = "control-label col-md-4" })
+                            <div class="col-md-6">
+                                @*@Html.TextBox("engname", null, new { @class = "form-control", @rows = "4" })*@
+                                @Html.TextArea("engname", null, new { @class = "form-control", @rows = "3" })
+                                <input type="hidden" id="actId" />
+                                @Html.Hidden("membernull", null, new { @class = "form-control" })
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            @Html.Label("Responsible Person", htmlAttributes: new { @class = "control-label col-md-4" })
+                            <div class="col-md-6">
+                                @Html.TextBox("pic1", null, new { @class = "form-control", @placeholder = "Auto Complete" })
+                                @Html.ValidationMessage("PICID", "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            @Html.Label("Supervisor", htmlAttributes: new { @class = "control-label col-md-4" })
+                            <div class="col-md-6">
+                                @Html.TextBox("supervisor1", null, new { @class = "form-control", @placeholder = "Auto Complete" })
+                                @Html.ValidationMessage("SupervisorID", "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            @Html.Label("Team Leader", htmlAttributes: new { @class = "control-label col-md-4" })
+                            <div class="col-md-6">
+                                @Html.TextBox("leader1", null, new { @class = "form-control", @placeholder = "Auto Complete" })
+                                @Html.ValidationMessage("TeamLeaderID", "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+
+                        <div id="MembersGroup1">
+                            <div class="form-group" id="memberedit1">
+                                @Html.Label("Member 1", htmlAttributes: new { @class = "control-label col-md-4", @id = "questionlabel#1" })
+                                <div class="col-md-6">
+                                    @Html.TextBox("member_1", null, new { @class = "form-control member1", placeholder = "Auto Complete" })
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="col-md-offset-4 col-md-6">
+                                <a href="#" class="btn btn-sm green" id='addButton1'><i class="fa fa-plus"></i>Add More Member</a>
+                                <a href="#" class="btn btn-sm red" id='removeButtonedit'><i class="fa fa-times"></i>Remove Member</a>
+                            </div>
+                        </div>
+
+
+                        <script type="text/javascript">
+                            $(function () {
+
+                                $('.member1').autocomplete({
+                                    source: '@Url.Action("AutocompleteMember")',
+                                    appendTo: $("#editEng"), change: function (event, ui) {
+                                        if (!ui.item) {
+                                            $(this).val("");
+                                        }
+                                    }
+                                });
+                                $('#pic1').autocomplete({
+                                    source: '@Url.Action("AutocompleteCIA")',
+                                    appendTo: $("#editEng"), change: function (event, ui) {
+                                        if (!ui.item) {
+                                            $(this).val("");
+                                        }
+                                    }
+                                });
+                                $('#leader1').autocomplete({
+                                    source: '@Url.Action("AutocompleteKetua")',
+                                    appendTo: $("#editEng"), change: function (event, ui) {
+                                        if (!ui.item) {
+                                            $(this).val("");
+                                        }
+                                    }
+                                });
+                                $('#supervisor1').autocomplete({
+                                    source: '@Url.Action("AutocompletePengawas")',
+                                    appendTo: $("#editEng"), change: function (event, ui) {
+                                        if (!ui.item) {
+                                            $(this).val("");
+                                        }
+                                    }
+                                });
+                            });
+
+                            var counters = 2;
+                            $(document).ready(function () {
+                                $("#addButton1").click(function () {
+                                    if (counters > 10) {
+                                        alert("Maksimal 10 Member");
+                                        return false;
+                                    }
+                                    var newTextBoxDiv = $(document.createElement('div'))
+                                         .attr("id", 'memberedit' + counters).addClass("form-group");
+                                    @*var questionArr = @Html.Raw(Json.Encode(@ViewBag.Questioners));*@
+                                    var html = '<label class = "control-label col-md-4">Member ' + counters + '</label>' +
+                                        '<div class="col-md-6"><input name="member_' + counters + '" id="member_' + counters +
+                                        '" value="" class="form-control member1" type="text" placeholder = "Auto Complete" >';
+
+                                    //for (var i = 0; i < questionArr.length; i++) {
+                                    //    html += "<option value=" + questionArr[i].Value +">" + questionArr[i].Text + "</option>"
+                                    //}
+                                    //html += '</select></div>';
+
+                                    newTextBoxDiv.after().html(html);
+                                    newTextBoxDiv.appendTo("#MembersGroup1");
+                                    counters++;
+                                    $('.member1').autocomplete({
+                                        source: '@Url.Action("AutocompleteMember")',
+                                        appendTo: $("#editEng"), change: function (event, ui) {
+                                            if (!ui.item) {
+                                                $(this).val("");
+                                            }
+                                        }
+                                    });
+                                });
+                                $("#removeButtonedit").click(function () {
+                                    if (counters == 1) {
+                                        alert("No more Member to remove");
+                                        return false;
+                                    }
+                                    counters--;
+                                    $("#memberedit" + counters).remove();
+                                });
+                            });
+                        </script>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" data-dismiss="modal" class="btn btn-outline dark">Close</button>
+                    <button type="button" class="btn green" onclick="javascript: UpdateEngagement($('#engagement option:selected').val(), $('#engname').val(), $('#actId').val(), $('#pic1').val(), $('#supervisor1').val(), $('#leader1').val(), $('#membernull').val());">Save</button>
+                </div>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-5">
+                @*<input type="submit" value="Create" class="btn btn-default" />*@
+                @if(userPerm.Any(d=>d.IsCreate)){
+                    if(userPerm.Any(d=>d.IsSubmit1))
+                    {
+                        if (checkPerm.Contains("IsSubmit2"))
+                        {
+                            <button class="btn btn-primary" name="submit" type="submit" id="submit" value="Submit For Review By @checkPerm.Split(':')[2].Split(';')[0]"> Submit</button>
+                        }
+                        else if (checkPerm.Contains("IsApprove"))
+                        {
+                            <button class="btn btn-primary" name="submit" type="submit" id="submit" value="Submit For Approve By @checkPerm.Split(':')[3].Split(';')[0]"> Submit</button>
+                       }
+                    }else{
+                        <button class="btn btn-primary" name="submit" type="submit" id="submit" value="Submit For Review By @checkPerm.Split(':')[1].Split(';')[0]"> Submit</button>
+                    }
+                }else if(userPerm.Any(d=>d.IsSubmit1)){
+                    if (checkPerm.Contains("IsSubmit2"))
+                    {
+                        <button class="btn btn-primary" name="submit" type="submit" id="submit" value="Submit For Review By @checkPerm.Split(':')[2].Split(';')[0]"> Submit</button>
+                    }
+                    else if (checkPerm.Contains("IsApprove"))
+                    {
+                        <button class="btn btn-primary" name="submit" type="submit" id="submit" value="Submit For Approve By @checkPerm.Split(':')[3].Split(';')[0]"> Submit</button>
+                    }
+                }else if(userPerm.Any(d=>d.IsSubmit2)){
+                    if (checkPerm.Contains("IsApprove"))
+                    {
+                        <button class="btn btn-primary" name="submit" type="submit" id="submit" value="Submit For Approve By @checkPerm.Split(':')[3].Split(';')[0]"> Submit</button>
+                    }
+                }
+
+                @*@if (checkPerm.Contains("IsSubmit1"))
+                    {
+                        <input class="btn btn-primary" name="submit" type="submit" id="submit" value="Submit For Review By @checkPerm.Split(':')[1].Split(';')[0]" />
+                    }
+                    else if (checkPerm.Contains("IsSubmit2"))
+                    {
+                        <input class="btn btn-primary" name="submit" type="submit" id="submit" value="Submit For Review By @checkPerm.Split(':')[2].Split(';')[0]" />
+                    }
+                    else if (checkPerm.Contains("IsApprove"))
+                    {
+                        <input class="btn btn-primary" name="submit" type="submit" id="submit" value="Submit For Approve By @checkPerm.Split(':')[3].Split(';')[0]" />
+                    }*@
+
+                <input class="btn btn-primary" name="submit" type="submit" id="submit" value="Save" />
+            </div>
+        </div>
+    </div>
+
+}
+
+<div>
+    @Html.ActionLink("Back to List", "Index")
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+    <script>
+        $("#apform").validate({
+            errorLabelContainer: $("ul", $('div.error-container')),
+            wrapper: 'li',
+            rules: {
+                Date_Start: "required",
+                Date_End: "required",
+                ActivityID: "required"
+            },
+            messages: {
+                Date_Start: "Please enter Date Start",
+                Date_End: "Please enter Date End",
+                ActivityID: "Please select Activity"
+            }
+        });
+    </script>
+}
+<script type="text/javascript">
+
+    function GetEngagementName(_nameid) {
+        if (_nameid != "") {
+            var procemessage = "<option value='0'> </option>";
+            $("#engagement").html(procemessage).show();
+            var url = "/AnnualPlannings/GetEngagement/";
+
+            $.ajax({
+                url: url,
+                data: { nameid: _nameid },
+                cache: false,
+                type: "POST",
+                success: function (data) {
+                    //var markup = "<option value='0'>Select Engagement Name</option>";
+                    var markup;
+                    for (var x = 0; x < data.length; x++) {
+                        markup += "<option value=" + data[x].Value + ">" + data[x].Text + "</option>";
+                    }
+                    $("#engagement").html(markup).show();
+                },
+                error: function (reponse) {
+                    alert("error : " + reponse);
+                }
+            });
+        } else
+            $("#engagement").html("");
+    }
+
+    function GetEngagementData(_engid) {
+        $('#engname').val($('#engagement option:selected').text())
+        var url = "/AnnualPlannings/GetEngagementData/";
+
+        $.ajax({
+            url: url,
+            data: { engId: _engid },
+            cache: false,
+            type: "POST",
+            success: function (data) {
+                var html = "";
+                counters = data.split(',')[3].split(';').length;
+                $('#leader1').val(data.split(',')[0])
+                $('#supervisor1').val(data.split(',')[1])
+                $('#pic1').val(data.split(',')[2])
+                for (i = 1; i < counters; i++) {
+                    html += '<div id="memberedit' + i + '" class="form-group"> <label class = "control-label col-md-4">Member ' + i + '</label>' +
+                        '<div class="col-md-6"><input name="member_' + i + '" id="member_' + i +
+                        '" value="' + data.split(',')[3].split(';')[i - 1] + '" class="form-control member1" type="text" placeholder = "Auto Complete" ></div></div>';
+                }
+                $("#MembersGroup1").html(html).show();
+                $('.member1').autocomplete({
+                    source: '@Url.Action("AutocompleteMember")',
+                    appendTo: $("#editEng"), change: function (event, ui) {
+                        if (!ui.item) {
+                            $(this).val("");
+                        }
+                    }
+                });
+                $('#membernull').val(data.split(',')[3])
+            },
+            error: function (reponse) {
+                alert("error : " + reponse);
+            }
+        });
+    }
+
+    function SaveEngagement(_engagementname, _activ, _emp_pic, _emp_supervisor, _emp_leader) {
+        //alert(_emp_member);
+        var _members = ""
+        for (i = 1; i < counter; i++) {
+            //_members += $("#member-" + i).val() + ";"
+            //if (counter == (i + 1)) {
+            //    _members += $("#member-" + i).val()
+            //}
+            //else {
+            _members += $("#member-" + i).val() + ";"
+            //}
+        }
+        //alert(_members);
+        $.ajax({
+            url: "SaveEngagement/",
+            data: {
+                engagementname: _engagementname,
+                activeid: _activ,
+                pic: _emp_pic,
+                supervisor: _emp_supervisor,
+                leader: _emp_leader,
+                member: _members
+            },
+            cache: false,
+            type: "POST",
+            success: function (data) {
+                var markup = "";
+                for (var x = 0; x < data.length; x++) {
+                    markup += "<option value=" + data[x].Value + ">" + data[x].Text + "</option>";
+                }
+                $("#engagement").html(markup).show();
+                $('#addEng').modal('hide');
+            },
+            error: function (reponse) {
+                alert("error : " + reponse);
+            }
+        });
+    }
+
+    function UpdateEngagement(_engId, _engagementname, _activ, _emp_pic, _emp_supervisor, _emp_leader, _emp_membernull) {
+        //alert(_engagementname + "-" + _activ);
+        var _members1 = ""
+        for (a = 1; a < counters; a++) {
+            //_members1 += $("#member_" + a).val() + ";"
+
+            //if (counters == (a + 1)) {
+            //    _members1 += $("#member_" + a).val()
+            //}
+            //else {
+            _members1 += $("#member_" + a).val() + ";"
+            //}
+            //alert(_members1);
+        }
+        $.ajax({
+            url: "UpdateEngagement/",
+            data: {
+                engId: _engId,
+                engagementname: _engagementname,
+                activeid: _activ,
+                pic: _emp_pic,
+                supervisor: _emp_supervisor,
+                leader: _emp_leader,
+                member: _members1,
+                membernull: _emp_membernull
+
+            },
+            cache: false,
+            type: "POST",
+            success: function (data) {
+                var markup = "";
+                for (var x = 0; x < data.length; x++) {
+                    markup += "<option value=" + data[x].Value + ">" + data[x].Text + "</option>";
+                }
+                $("#engagement").html(markup).show();
+                $('#editEng').modal('hide');
+            },
+            error: function (reponse) {
+                alert("error : " + reponse);
+            }
+        });
+    }
+
+    function DeleteEngagement(_engId, _activ) {
+        //alert( _activ + "-" + _engId);
+        $.ajax({
+            url: "DeleteEngagement/",
+            data: {
+                engId: _engId,
+                activeid: _activ
+            },
+            cache: false,
+            type: "POST",
+            success: function (data) {
+                var markup = "";
+                for (var x = 0; x < data.length; x++) {
+                    markup += "<option value=" + data[x].Value + ">" + data[x].Text + "</option>";
+                }
+                $("#engagement").html(markup).show();
+                $('#deleteEng').modal('hide');
+            },
+            error: function (reponse) {
+                //alert("error : " + reponse);
+                alert("Please select a Engagement first");
+            }
+        });
+    }
+
+    function delEng() {
+        $('#delEng').confirmation({
+            onConfirm: function () { DeleteEngagement($('#engagement option:selected').val(), $('#ActivityID option:selected').val()) },
+            placement: 'top'
+        });
+        $('#delEng').confirmation('show');
+    }
+</script>
+
+<script>
+    var counter = 2;
+    $(document).ready(function () {
+        $("#addButton").click(function () {
+            if (counter > 10) {
+                alert("Maksimal 10 Member");
+                return false;
+            }
+            var newTextBoxDiv = $(document.createElement('div'))
+                 .attr("id", 'memberdiv' + counter).addClass("form-group");
+            @*var questionArr = @Html.Raw(Json.Encode(@ViewBag.Questioners));*@
+            var html = '<label class = "control-label col-md-4">Member ' + counter + '</label>' +
+                '<div class="col-md-6"><input name="member-' + counter + '" id="member-' + counter +
+                '" value="" class="form-control member" type="text" placeholder = "Auto Complete" >';
+
+            //for (var i = 0; i < questionArr.length; i++) {
+            //    html += "<option value=" + questionArr[i].Value +">" + questionArr[i].Text + "</option>"
+            //}
+            //html += '</select></div>';
+
+            newTextBoxDiv.after().html(html);
+            newTextBoxDiv.appendTo("#MembersGroup");
+            counter++;
+            $('.member').autocomplete({
+                source: '@Url.Action("AutocompleteMember")',
+                appendTo: $("#addEng"), change: function (event, ui) {
+                    if (!ui.item) {
+                        $(this).val("");
+                    }
+                }
+            });
+        });
+        $("#removeButton").click(function () {
+            if (counter == 1) {
+                alert("No more Member to remove");
+                return false;
+            }
+            counter--;
+            $("#memberdiv" + counter).remove();
+        });
+    });
+
+    $(function () {
+        $("#submit").click(function () {
+            if (confirm("Are You Sure Want To Submit?")) {
+                $('#submit').submit();
+            } else {
+                event.preventDefault();
+            }
+        });
+    });
+
+
+
+
+    //function SaveFeedbackDetails(_feedbackId){
+    //    var _questions = ""
+    //    for (i = 1; i < counter; i++) {
+    //        _questions += $("#member-" + i + " option:selected").val() + ";"
+    //    }
+    //    $.ajax({
+    //        url: "../SaveDetailFeedback/",
+    //        data: {
+    //            feedbackID: _feedbackId,
+    //            questions: _questions
+    //        },
+    //        cache: false,
+    //        type: "POST",
+    //        success: function (data) {
+    //            window.location.href = "../index";
+    //        },
+    //        error: function (reponse) {
+    //            alert("error : " + reponse);
+    //        }
+    //    });
+    //}
+</script>
+

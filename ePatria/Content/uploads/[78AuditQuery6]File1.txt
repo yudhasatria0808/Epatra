@@ -1,0 +1,9 @@
+staging :
+running testaudit connection.rdp
+username: testuser
+password: Patraniag@
+
+prod :
+182.23.54.40
+username: guestAdmin
+password: P@tra12345

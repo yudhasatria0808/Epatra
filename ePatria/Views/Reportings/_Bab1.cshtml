@@ -1,0 +1,28 @@
+﻿@model ePatria.Models.Reporting
+
+<div class="form-group">
+    @Html.LabelFor(model => model.Bab01Title, htmlAttributes: new { @class = "control-label col-md-2" })
+    <div class="col-md-5">
+        @Html.EditorFor(model => model.Bab01Title, new { htmlAttributes = new { @class = "form-control" } })
+        @Html.ValidationMessageFor(model => model.Bab01Title, "", new { @class = "text-danger" })
+    </div>
+</div>
+
+<div class="form-group">
+    @Html.LabelFor(model => model.Bab01SubTitle, htmlAttributes: new { @class = "control-label col-md-2" })
+    <div class="col-md-5">
+        @Html.EditorFor(model => model.Bab01SubTitle, new { htmlAttributes = new { @class = "form-control" } })
+        @Html.ValidationMessageFor(model => model.Bab01SubTitle, "", new { @class = "text-danger" })
+    </div>
+</div>
+
+<div class="form-group">
+    @Html.LabelFor(model => model.Bab01Description, htmlAttributes: new { @class = "control-label col-md-2" })
+    <div class="col-md-8">
+        @Html.TextAreaFor(model => model.Bab01Description, new { htmlAttributes = new { @class = "form-control" } })
+        @Html.ValidationMessageFor(model => model.Bab01Description, "", new { @class = "text-danger" })
+        <script>
+            CKEDITOR.replace('Bab01Description');
+        </script>
+    </div>
+</div>

@@ -1,0 +1,194 @@
+﻿@model ePatria.Models.ConsultingDraftAgreement
+
+@{
+    ViewBag.Title = "Edit";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Edit</h2>
+@using Microsoft.AspNet.Identity;
+@{
+    var checkPerm = HelperController.getPermissionRoleByPerm("Consulting Draft Agreement", User.Identity.GetUserId());
+    var userPerm = HelperController.getPermission(User.Identity.GetUserId(), "Consulting Draft Agreement");
+}
+@using (Html.BeginForm(null, null, FormMethod.Post, new { id = "cdraftform" }))
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-horizontal">
+        <h4>ConsultingDraftAgreement</h4>
+        <hr />
+        <div class="error-container">
+            <ul></ul>
+        </div>
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        @Html.HiddenFor(model => model.ConsultingDraftAgreementID)
+        @*@Html.HiddenFor(model => model.ActivityID)*@
+        @Html.HiddenFor(model => model.ActivityStr)
+        @Html.HiddenFor(model => model.RequesterID)
+        @Html.HiddenFor(model => model.NoSurat)
+        @Html.HiddenFor(model => model.Status)
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.NoRequest, "No.Request", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-5">
+                @Html.EditorFor(model => model.NoRequest, new { htmlAttributes = new { @class = "form-control", @readonly = true} })
+            </div>
+        </div>
+
+        <div class="form-group input-group-sm">
+            @Html.Label("Date Start", htmlAttributes: new { @class = "control-label col-md-2" })
+
+            <div class="col-md-2">
+                <input name='Date_Start' input type='text' class="form-control datetimepicker" value="@ViewBag.datestart" />
+            </div>
+        </div>
+
+        <div class="form-group input-group-sm">
+            @Html.Label("Date End", htmlAttributes: new { @class = "control-label col-md-2" })
+
+            <div class="col-md-2">
+                <input name='Date_End' input type='text' class="form-control datetimepicker" value="@ViewBag.dateend" />
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.RequesterID, "Requester", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-5">
+                @Html.TextBox("requester", null, new { @class = "form-control", @readonly = true } )
+            </div>
+        </div>
+
+        @*<div class="form-group">
+                @Html.LabelFor(model => model.Date_Start, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-5">
+                    @Html.TextBoxFor(model => model.Date_Start, "{0:dd/MM/yyyy}", new { @class = "form-control", @readonly = true })
+                </div>
+            </div>*@
+
+
+        @*<div class="form-group">
+                @Html.LabelFor(model => model.Date_End, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-5">
+                    @Html.TextBoxFor(model => model.Date_End, "{0:dd/MM/yyyy}", new { @class = "form-control", @readonly = true })
+                </div>
+            </div>*@
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.ActivityID, "Activity", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-5">
+                @Html.TextBoxFor(model => model.ActivityStr, new { @class = "form-control", @readonly = true })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Tujuan, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-5">
+                @Html.TextAreaFor(model => model.Tujuan, new { @class = "form-control", @rows = "5" })
+                @Html.ValidationMessageFor(model => model.Tujuan, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.RuangLingkup, "Ruang Lingkup dan Batasan", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-5">
+                @Html.TextAreaFor(model => model.RuangLingkup, new { @class = "form-control", @rows = "5"})
+                @Html.ValidationMessageFor(model => model.RuangLingkup, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Peran, "Peran dan Tanggung Jawab", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-5">
+                @Html.TextAreaFor(model => model.Peran, new { @class = "form-control", @rows = "5" })
+                @Html.ValidationMessageFor(model => model.Peran, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                @if (userPerm.Any(d => d.IsCreate))
+                {
+                    if (userPerm.Any(d => d.IsSubmit1))
+                    {
+                        if (checkPerm.Contains("IsSubmit2"))
+                        {
+                            <button class="btn btn-primary" name="submit" type="submit" id="submit" value="Submit For Review By @checkPerm.Split(':')[2].Split(';')[0]"> Submit</button>
+                        }
+                        else if (checkPerm.Contains("IsApprove"))
+                        {
+                            <button class="btn btn-primary" name="submit" type="submit" id="submit" value="Submit For Approve By @checkPerm.Split(':')[3].Split(';')[0]"> Submit</button>
+                        }
+                    }
+                    else
+                    {
+                        <button class="btn btn-primary" name="submit" type="submit" id="submit" value="Submit For Review By @checkPerm.Split(':')[1].Split(';')[0]"> Submit</button>
+                    }
+                }
+                else if (userPerm.Any(d => d.IsSubmit1))
+                {
+                    if (checkPerm.Contains("IsSubmit2"))
+                    {
+                        <button class="btn btn-primary" name="submit" type="submit" id="submit" value="Submit For Review By @checkPerm.Split(':')[2].Split(';')[0]"> Submit</button>
+                    }
+                    else if (checkPerm.Contains("IsApprove"))
+                    {
+                        <button class="btn btn-primary" name="submit" type="submit" id="submit" value="Submit For Approve By @checkPerm.Split(':')[3].Split(';')[0]"> Submit</button>
+                    }
+                }
+                else if (userPerm.Any(d => d.IsSubmit2))
+                {
+                    if (checkPerm.Contains("IsApprove"))
+                    {
+                        <button class="btn btn-primary" name="submit" type="submit" id="submit" value="Submit For Approve By @checkPerm.Split(':')[3].Split(';')[0]"> Submit</button>
+                    }
+                }
+                @*@if (checkPerm.Contains("IsSubmit1"))
+                    {
+                        <input class="btn btn-primary" name="submit" type="submit" id="submit" value="Submit For Review By @checkPerm.Split(':')[1].Split(';')[0]" />
+                    }
+                    else if (checkPerm.Contains("IsSubmit2"))
+                    {
+                        <input class="btn btn-primary" name="submit" type="submit" id="submit" value="Submit For Review By @checkPerm.Split(':')[2].Split(';')[0]" />
+                    }
+                    else if (checkPerm.Contains("IsApprove"))
+                    {
+                        <input class="btn btn-primary" name="submit" type="submit" id="submit" value="Submit For Approve By @checkPerm.Split(':')[3].Split(';')[0]" />
+                    }*@
+                <input class="btn btn-primary" name="submit" type="submit" id="submit" value="Save" />
+            </div>
+        </div>
+    </div>
+}
+
+<div>
+    @Html.ActionLink("Back to List", "Index")
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+    <script type="text/javascript">
+        $("#cdraftform").validate({
+            errorLabelContainer: $("ul", $('div.error-container')),
+            wrapper: 'li',
+            rules: {
+                NoRequest: "required",
+                requester: "required",
+                Date_Start: "required",
+                Date_End: "required",
+                Tujuan: "required",
+                RuangLingkup: "required",
+                Peran: "required",
+            },
+            messages: {
+                NoRequest: "Please enter No. Request",
+                requester: "Please enter requester",
+                Date_Start: "Please enter Date Start",
+                Date_End: "Please enter Date End",
+                Tujuan: "Please enter Tujuan",
+                RuangLingkup: "Please enter Ruang Lingkup Dan Batasan",
+                Peran: "Please enter Peran Dan Tanggung Jawab",
+            }
+        });
+    </script>
+}

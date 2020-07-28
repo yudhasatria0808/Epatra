@@ -1,0 +1,158 @@
+﻿@model ePatria.Models.ConsultingReporting
+
+@{
+    ViewBag.Title = "Edit";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Edit</h2>
+
+
+@using (Html.BeginForm(null, null, FormMethod.Post, new {id="creportingform"}))
+{
+    @Html.AntiForgeryToken()
+    
+    <div class="form-horizontal">
+        <h4>Consulting Reporting</h4>
+        <hr />
+        <div class="error-container">
+            <ul></ul>
+        </div>
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        @Html.HiddenFor(model => model.ConsultingReportingID)
+        @Html.HiddenFor(model => model.ConsultingSuratPerintahID)
+        <div class="form-group">
+            @Html.LabelFor(model => model.ConsultingSuratPerintahID, "Letter of Command", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-5">
+                @Html.EditorFor(model => model.ConsultingLetterOfCommand.NomorSP, new { htmlAttributes = new { @class = "form-control", @readonly = true }})
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.Label("Activity", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-5">
+                @Html.EditorFor(model => model.ConsultingLetterOfCommand.ConsultingRequest.ActivityStr, new { htmlAttributes = new { @class = "form-control", @readonly = true } })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.ConsultingLetterOfCommand.EngagementName, "Engagement Name", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-5">
+                @Html.EditorFor(model => model.ConsultingLetterOfCommand.EngagementName, new { htmlAttributes = new { @class = "form-control", @readonly = true }})
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.NoLaporan,"No Laporan", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-5">
+                @Html.EditorFor(model => model.NoLaporan, new { htmlAttributes = new { @class = "form-control", @readonly = true } })
+                @Html.ValidationMessageFor(model => model.NoLaporan, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Kepada, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-5">
+                @Html.EditorFor(model => model.Kepada, new { htmlAttributes = new { @class = "form-control", placeholder = "Auto Complete" } })
+                @Html.ValidationMessageFor(model => model.Kepada, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Dari, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-5">
+                @Html.EditorFor(model => model.Dari, new { htmlAttributes = new { @class = "form-control", placeholder = "Auto Complete" } })
+                @Html.ValidationMessageFor(model => model.Dari, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Lampiran, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-5">
+                @Html.EditorFor(model => model.Lampiran, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Lampiran, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Perihal, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-5">
+                @Html.EditorFor(model => model.Perihal, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Perihal, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Hasil, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-8">
+                @Html.TextAreaFor(model => model.Hasil, new { @class = "form-control", id = "Hasil" })
+                @Html.ValidationMessageFor(model => model.Hasil, "", new { @class = "text-danger" })
+                <script>
+                    CKEDITOR.replace('Hasil');
+                </script>
+            </div>
+        </div>
+
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Save" class="btn btn-default" />
+            </div>
+        </div>
+    </div>
+}
+
+<div>
+    @Html.ActionLink("Back to List", "Index")
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+<script type="text/javascript">
+    $("#creportingform").validate({
+        errorLabelContainer: $("ul", $('div.error-container')),
+        wrapper: 'li',
+        ignore: [],
+        rules: {
+            NoLaporan: "required",
+            Hasil: {
+                required: function ()
+                {
+                    CKEDITOR.instances.Hasil.updateElement();
+                },
+            },
+            Kepada: "required",
+            Dari: "required",
+            Lampiran: "required",
+            Perihal: "required",
+        },
+        messages: {
+            NoLaporan: "Please enter No. Laporan",
+            Kepada: "Please enter Kepada",
+            Dari: "Please enter Dari",
+            Lampiran: "Please enter Lampiran",
+            Perihal: "Please enter Perihal",
+            Hasil: "Please enter Hasil",
+        }
+    });
+    </script>
+}
+
+<script>
+    $(function () {
+        $('#Kepada').autocomplete({
+            source: '@Url.Action("KepadaDariAutocomplete")', change: function (event, ui) {
+                if (!ui.item) {
+                    $(this).val("");
+                }
+            }
+        });
+        $('#Dari').autocomplete({
+            source: '@Url.Action("KepadaDariAutocomplete")', change: function (event, ui) {
+                if (!ui.item) {
+                    $(this).val("");
+                }
+            }
+        });
+    });
+</script>

@@ -1,0 +1,544 @@
+﻿@model ePatria.Models.Preliminary
+
+@{
+    ViewBag.Title = "Create";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@using Microsoft.AspNet.Identity;
+@{ 
+    var checkPerm = HelperController.getPermissionRoleByPerm("Preliminary Survey", User.Identity.GetUserId());
+    var userPerm = HelperController.getPermission(User.Identity.GetUserId(), "Preliminary Survey");
+    }
+<h2>Create</h2>
+
+    @using (Html.BeginForm("Create", "Preliminaries", FormMethod.Post, new { enctype = "multipart/form-data", id="preform" }))
+    {
+        @Html.AntiForgeryToken()
+        @Html.HiddenFor(model => model.Status)
+    <div class="form-horizontal">
+        <h4>Preliminary</h4>
+        <hr />
+        <div class="error-container">
+            <ul></ul>
+        </div>
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Type, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-5">
+                <div class="col-md-6">
+                    @Html.RadioButtonFor(model => model.Type, "Planned", new {@checked="checked"}) Planned &nbsp;
+                    <br />
+                    @Html.RadioButtonFor(model => model.Type, "UnPlanned", false) UnPlanned
+                </div>
+                @Html.ValidationMessageFor(model => model.Type, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.NomorPreliminarySurvey, "No. Preliminary Survey", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-5">
+                @Html.TextBox("noprelim", (string)ViewBag.preliminaryno, new { @class = "form-control", @readonly = true })
+                @Html.ValidationMessageFor(model => model.NomorPreliminarySurvey, "", new { @class = "text-danger" })
+               
+            </div>
+        </div>
+
+        <div id="Planned">
+            <div class="form-group">
+                @Html.LabelFor(model => model.ActivityID, "Activity", htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-5">
+                    @Html.DropDownListFor(model => model.ActivityID, null, "Please Select Activity", new { @onchange = "javascript:GetEng(this.value);", @class = "form-control" })
+                    @Html.ValidationMessageFor(model => model.ActivityID, "", new { @class = "text-danger" })
+                </div>
+            </div>
+        </div>
+
+        <div id="Eng">
+            <div class="form-group">
+                @Html.LabelFor(model => model.ActivityID, "Engagement Name", htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-5">
+                    <select id="engid" name="engid" class=" form-control" onchange="GetEngTeam(this.value)"></select>
+                    @Html.ValidationMessageFor(model => model.ActivityID, "", new { @class = "text-danger"})
+                </div>
+            </div>                    
+        </div>            
+
+        <div id="EngNull">
+            <div class="form-group">
+                @Html.LabelFor(model => model.ActivityID, "Engagement Name", htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-5">
+                    @*<select id="auditid" name="auditid" class=" form-control"></select>*@
+                    @Html.Editor("EngagementNameNull", new { htmlAttributes = new { @class = "form-control", placeholder = "Please Insert Engagement Name" } })
+                    @Html.ValidationMessageFor(model => model.ActivityID, "", new { @class = "text-danger" })
+                </div>
+            </div>
+        </div>
+
+            <div id="UnPlanned">
+                <div class="form-group">
+                    @Html.LabelFor(model => model.ActivityID, "Activity", htmlAttributes: new { @class = "control-label col-md-2" })
+                    <div class="col-md-5">
+                        @Html.DropDownList("UnActivityID", null, "Please Select Activity", new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.ActivityID, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.ActivityID, "Engagement Name", htmlAttributes: new { @class = "control-label col-md-2" })
+                    <div class="col-md-5">
+                        @*<select id="auditid" name="auditid" class=" form-control"></select>*@
+                        @Html.Editor("EngagementName", new { htmlAttributes = new { @class = "form-control", placeholder = "Please Insert Engagement Name" } })
+                        @Html.ValidationMessageFor(model => model.EngagementID, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+            </div>
+
+                <div class="form-group input-group-sm">
+                    @Html.LabelFor(model => model.Date_Start, "Periode", htmlAttributes: new { @class = "control-label col-md-2" })
+                    <div class="col-md-2">
+                        @Html.TextBoxFor(model => model.Date_Start, "{0:dd/MM/yyyy}", new { @class = "form-control datepicker", @readonly = true })
+                        @Html.ValidationMessageFor(model => model.Date_Start, "", new { @class = "text-danger" })
+                    </div>
+                    <div class="col-md-2">
+                        @Html.TextBoxFor(model => model.Date_End, "{0:dd/MM/yyyy}", new { @class = "form-control datepicker", @readonly = true })
+                        @Html.ValidationMessageFor(model => model.Date_End, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.PICID, "Responsible Person", htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-5">
+                    @Html.TextBox("pic", null, new { @class = "form-control", placeholder = "Auto Complete" })
+                    @Html.ValidationMessageFor(model => model.PICID, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.SupervisorID, "Supervisor", htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-5">
+                    @Html.TextBox("supervisor", null, new { @class = "form-control", placeholder = "Auto Complete" })
+                    @Html.ValidationMessageFor(model => model.SupervisorID, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.TeamLeaderID, "Team Leader", htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-5">
+                    @Html.TextBox("leader", null, new { @class = "form-control", placeholder = "Auto Complete" })
+                    @Html.ValidationMessageFor(model => model.TeamLeaderID, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            @*<div class="form-group">
+                @Html.LabelFor(model => model.MemberID, "Member", htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-5">
+                    @Html.TextBox("members", null, new { @class = "form-control", placeholder = "Auto Complete" })
+                    @Html.ValidationMessageFor(model => model.MemberID, "", new { @class = "text-danger" })
+                </div>
+            </div>*@
+            
+            <div id="MembersGroup1">
+                <div class="form-group" id="memberedit1">
+                    @Html.Label("Member", htmlAttributes: new { @class = "control-label col-md-2", @id = "questionlabel#1" })
+                    <div class="col-md-5">
+                        <input name="members" id="members-1" class="form-control members" type="text" placeholder = "Auto Complete" />
+                        @Html.Hidden("membernull", null, new { @class = "form-control" })
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div class="col-md-offset-2 col-md-5">
+                    <a href="#" class="btn btn-sm green" id='addButton1'><i class="fa fa-plus"></i>Add More Member</a>
+                    @*<a href="#" class="btn btn-sm red" id='removeButton1'><i class="fa fa-times"></i>Remove Member</a>*@
+                </div>
+            </div>
+
+                <div id="MembersGroup">
+                    <div class="form-group" id="memberdiv1">
+                        @Html.Label("Auditee", htmlAttributes: new { @class = "control-label col-md-2", @id = "questionlabel#1" })
+                        <div class="col-md-5">
+                            <input name="member" id="member-1" class="form-control member" type="text" placeholder = "Auto Complete" />
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-md-offset-2 col-md-5">
+                        <a href="#" class="btn btn-sm green" id='addButton'><i class="fa fa-plus"></i>Add More Auditee</a>
+                        @*<a href="#" class="btn btn-sm red" id='removeButton'><i class="fa fa-times"></i>Remove Auditee</a>*@
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    @Html.Label("File", htmlAttributes: new { @class = "control-label col-md-2" })
+                    <div class="col-md-10">
+                        <input type="file" name="files" id="file1" class="file1" />
+                        <div class="preview"></div>
+                    </div>
+                </div>
+
+                <script>
+                    $(function () {
+                        $("input[name=files]").previewimage({
+                            div: ".preview"
+                        });
+                    });
+                </script>
+                <style type="text/css">
+                    input[type='file'] {
+                        color: transparent;
+                    }
+                </style>
+
+                <div class="form-group">
+                    <div class="col-md-offset-2 col-md-5">
+                    @*<input type="submit" value="Create" class="btn btn-default" />*@
+                    @if (userPerm.Any(d => d.IsCreate))
+                    {
+                        if (userPerm.Any(d => d.IsSubmit1))
+                        {
+                            if (checkPerm.Contains("IsSubmit2"))
+                            {
+                                <button class="btn btn-primary" name="submit" type="submit" id="submit" value="Submit For Review By @checkPerm.Split(':')[2].Split(';')[0]"> Submit</button>
+                            }
+                            else if (checkPerm.Contains("IsApprove"))
+                            {
+                                <button class="btn btn-primary" name="submit" type="submit" id="submit" value="Submit For Approve By @checkPerm.Split(':')[3].Split(';')[0]"> Submit</button>
+                            }
+                        }
+                        else
+                        {
+                            <button class="btn btn-primary" name="submit" type="submit" id="submit" value="Submit For Review By @checkPerm.Split(':')[1].Split(';')[0]"> Submit</button>
+                        }
+                    }
+                    else if (userPerm.Any(d => d.IsSubmit1))
+                    {
+                        if (checkPerm.Contains("IsSubmit2"))
+                        {
+                            <button class="btn btn-primary" name="submit" type="submit" id="submit" value="Submit For Review By @checkPerm.Split(':')[2].Split(';')[0]"> Submit</button>
+                        }
+                        else if (checkPerm.Contains("IsApprove"))
+                        {
+                            <button class="btn btn-primary" name="submit" type="submit" id="submit" value="Submit For Approve By @checkPerm.Split(':')[3].Split(';')[0]"> Submit</button>
+                        }
+                    }
+                    else if (userPerm.Any(d => d.IsSubmit2))
+                    {
+                        if (checkPerm.Contains("IsApprove"))
+                        {
+                            <button class="btn btn-primary" name="submit" type="submit" id="submit" value="Submit For Approve By @checkPerm.Split(':')[3].Split(';')[0]"> Submit</button>
+                        }
+                    }
+                        
+                        @if (checkPerm.Contains("IsSubmit1"))
+                    {
+                        @*<button class="btn btn-primary" name="submit" type="submit" id="submit" value="Submit For Review By @checkPerm.Split(':')[2].Split(';')[0]"> Submit</button>*@
+                        @*<input class="btn btn-primary" name="submit" type="submit" id="submit" value="Submit For Review By @checkPerm.Split(':')[1].Split(';')[0]" />*@
+                    }
+                    else if (checkPerm.Contains("IsSubmit2"))
+                    {
+                        @*<button class="btn btn-primary" name="submit" type="submit" id="submit" value="Submit For Review By @checkPerm.Split(':')[3].Split(';')[0]">Submit</button>*@
+                        @*<input class="btn btn-primary" name="submit" type="submit" id="submit" value="Submit For Review By @checkPerm.Split(':')[2].Split(';')[0]" />*@
+                    }
+                    else if (checkPerm.Contains("IsApprove"))
+                    {
+                        @*<button class="btn btn-primary" name="submit" type="submit" id="submit" value="Submit For Review By @checkPerm.Split(':')[1].Split(';')[0]">Submit</button>*@
+                        @*<input class="btn btn-primary" name="submit" type="submit" id="submit" value="Submit For Approve By @checkPerm.Split(':')[3].Split(';')[0]" />*@
+                    }
+                    <input class="btn btn-primary" name="submit" type="submit" id="submit" value="Save" />
+                    </div>
+                </div>
+
+            </div>
+    }
+ 
+
+
+  
+
+
+    <div>
+        @Html.ActionLink("Back to List", "Index")
+    </div>
+
+    @section Scripts {
+        @Scripts.Render("~/bundles/jqueryval")
+        <script type="text/javascript">
+            $("#preform").validate({
+                errorLabelContainer: $("ul", $('div.error-container')),
+                wrapper: 'li',
+                rules: {
+                    ActivityID: "required",
+                    engid: "required",
+                    UnActivityID: "required",
+                    EngagementName: "required",
+                    Date_Start: "required",
+                    Date_End: "required",
+                    pic: "required", 
+                    supervisor: "required",
+                    leader: "required",
+                    members: "required"
+                },
+                messages: {
+                    ActivityID: "Please select Activity",
+                    engid: "Please select Engagement",
+                    UnActivityID: "Please select Activity",
+                    EngagementName: "Please enter Engagement name",
+                    Date_Start: "Please enter Date Start",
+                    Date_End: "Please enter Date End",
+                    pic: "Please enter Responsible Person name",
+                    supervisor: "Please enter Supervisor name",
+                    leader: "Please enter Team Leader name",
+                    members: "Please enter Member name"
+                }
+            });
+            $(function () {
+                $('.member').autocomplete({
+                    source: '@Url.Action("AutocompleteAll")', change: function (event, ui) {
+                        if (!ui.item) {
+                            $(this).val("");
+                        }
+                    }
+                });
+            })
+            var counter = 2;
+            function removeAuditee(idx) {
+                $("#memberdiv" + idx).remove();
+            }
+            $(document).ready(function () {
+                $("#addButton").click(function () {
+                    if (counter > 10) {
+                        alert("Maksimal 10 Member");
+                        return false;
+                    }
+                    var newTextBoxDiv = $(document.createElement('div'))
+                         .attr("id", 'memberdiv' + counter).addClass("form-group");
+                    @*var questionArr = @Html.Raw(Json.Encode(@ViewBag.Questioners));*@
+                    var html = '<label class = "control-label col-md-2"></label>' +
+                        '<div class="col-md-5"><input name="member" id="member-' + counter +
+                        '" value="" class="form-control member" type="text" placeholder = "Auto Complete" ></div>' +
+                        '<div class="col-md-2"><a href="#" class="btn btn-sm red" onclick="removeAuditee(' + counter + ');"><i class="fa fa-times"></i></a></div>';
+                    //var html = '<label class = "control-label col-md-2">Auditee ' + counter + '</label>' +
+                    //    '<div class="col-md-5"><input name="member" id="member-' + counter +
+                    //    '" value="" class="form-control member" type="text" placeholder = "Auto Complete" ></div>' +
+                    //    '<div class="col-md-2"><a href="#" class="btn btn-sm red" onclick="removeAuditee(' + counter + ');"><i class="fa fa-times"></i></a></div>';;
+
+                    //for (var i = 0; i < questionArr.length; i++) {
+                    //    html += "<option value=" + questionArr[i].Value +">" + questionArr[i].Text + "</option>"
+                    //}
+                    //html += '</select></div>';
+
+                    newTextBoxDiv.after().html(html);
+                    newTextBoxDiv.appendTo("#MembersGroup");
+                    counter++;
+                    $('.member').autocomplete({
+                        source: '@Url.Action("AutocompleteAll")',
+                            appendTo: $("#addEng"), change: function (event, ui) {
+                            if (!ui.item) {
+                                $(this).val("");
+                            }
+                        }
+                    });
+                });
+                $("#removeButton").click(function () {
+                    if (counter == 1) {
+                        alert("No more Member to remove");
+                        return false;
+                    }
+                    counter--;
+                    $("#memberdiv" + counter).remove();
+                });
+            });
+
+            var countermember = 2;
+            function removeMember(idx) {
+                $("#memberedit" + idx).remove();
+            }
+            $(document).ready(function () {
+                $("#addButton1").click(function () {
+                    if (countermember > 10) {
+                        alert("Maksimal 10 Member");
+                        return false;
+                    }
+                    var newTextBoxDiv = $(document.createElement('div'))
+                         .attr("id", 'memberedit' + countermember).addClass("form-group");
+                    var html = '<label class = "control-label col-md-2"></label>' +
+                        '<div class="col-md-5"><input name="members" id="members-' + countermember +
+                        '" value="" class="form-control members" type="text" placeholder = "Auto Complete" ></div>' +
+                        '<div class="col-md-2"><a href="#" class="btn btn-sm red" onclick="removeMember(' + countermember + ');"><i class="fa fa-times"></i></a></div>';
+                    //var html = '<label class = "control-label col-md-2">Member ' + countermember + '</label>' +
+                    //    '<div class="col-md-5"><input name="members" id="members-' + countermember +
+                    //    '" value="" class="form-control members" type="text" placeholder = "Auto Complete" ></div>' +
+                    //    '<div class="col-md-2"><a href="#" class="btn btn-sm red" onclick="removeMember(' + countermember + ');"><i class="fa fa-times"></i></a></div>';
+
+                    newTextBoxDiv.after().html(html);
+                    newTextBoxDiv.appendTo("#MembersGroup1");
+                    countermember++;
+                    $('.members').autocomplete({
+                        source: '@Url.Action("AutocompleteMember")', change: function (event, ui) {
+                            if (!ui.item) {
+                                $(this).val("");
+                            }
+                        }
+                    });
+                });
+                $("#removeButton1").click(function () {
+                    if (countermember == 1) {
+                        alert("No more Member to remove");
+                        return false;
+                    }
+                    countermember--;
+                    $("#memberedit" + countermember).remove();
+                });
+            });
+
+            $('#leader').autocomplete({
+                source: '@Url.Action("AutocompleteKetua")', change: function (event, ui) {
+                    if (!ui.item) {
+                        $(this).val("");
+                    }
+                }
+            });
+            $('#supervisor').autocomplete({
+                source: '@Url.Action("AutocompletePengawas")', change: function (event, ui) {
+                    if (!ui.item) {
+                        $(this).val("");
+                    }
+                }
+            });
+            $('#pic').autocomplete({
+                source: '@Url.Action("AutocompleteCIA")', change: function (event, ui) {
+                    if (!ui.item) {
+                        $(this).val("");
+                    }
+                }
+            });
+            $('.members').autocomplete({
+                source: '@Url.Action("AutocompleteMember")', change: function (event, ui) {
+                    if (!ui.item) {
+                        $(this).val("");
+                    }
+                }
+            });
+        </script>
+    }
+
+
+    <script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/jquery-ui.min.js"></script>
+    <script language="javascript" type="text/javascript">
+        
+        function GetEng(_activId) {
+            var procemessage = "<option value='0'> Please wait...</option>";
+            //var procemessage = "<option value='0'> " + $("#EngNull").show(); +"</option>";
+            
+            $("#engid").html(procemessage).show();
+            var url = "/Preliminaries/GetEng/";
+
+            $.ajax({
+                url: url,
+                data: { activId: _activId },
+                cache: false,
+                type: "POST",
+                success: function (data) {
+                    //var markup = "<option value='0'>Select Engagement Name</option>";
+                    var markup = "<option value=>Please Select Engagement</option>";
+                    //var markup = "<option value='0'> Select Engagement Name</option>";
+                    for (var x = 0; x < data.length; x++) {
+                        //markup += "<option value=" + data[x].Value + ">" + data[x].Text + "</option>";
+                        markup += "<option value=" + data[x].Value + ">" + data[x].Text + "</option>";
+                    }
+                    if (data == 0) {
+                        $("#EngNull").show();
+                        $("#Eng").hide();
+                    } else {
+                        $("#EngNull").hide();
+                        $("#Eng").show();
+                        $("#engid").html(markup).show();
+                    }                                               
+                    
+                },
+                error: function (reponse) {
+                    alert("error : " + reponse);
+                }
+            });
+        }
+
+        function GetEngTeam(_engId) {
+            var url = "/Preliminaries/GetEngTeam/";
+
+            $.ajax({
+                url: url,
+                data: { engId: _engId },
+                cache: false,
+                type: "POST",
+                success: function (data) {
+                    var html = "";
+                    countermember = data.split(',')[3].split(';').length;
+                    $('#leader').val(data.split(',')[0])
+                    $('#supervisor').val(data.split(',')[1])
+                    $('#pic').val(data.split(',')[2])
+                    for (i = 1; i < countermember; i++)
+                    {
+                        if (i == 1)
+                        {
+                            html += '<div id="memberedit' + i + '" class="form-group"> <label class = "control-label col-md-2">Member</label>' +
+                            '<div class="col-md-5"><input name="members" id="member_' + i +
+                            '" value="' + data.split(',')[3].split(';')[i - 1] + '" class="form-control members" type="text" placeholder = "Auto Complete"></div></div>';
+                        }
+                        else {
+                            html += '<div id="memberedit' + i + '" class="form-group"> <label class = "control-label col-md-2"></label>' +
+                            '<div class="col-md-5"><input name="members" id="member_' + i +
+                            '" value="' + data.split(',')[3].split(';')[i - 1] + '" class="form-control members" type="text" placeholder = "Auto Complete"></div></div>' +
+                            '<div class="col-md-2"><a href="#" class="btn btn-sm red" onclick="removeMember(' + i + ');"><i class="fa fa-times"></i></a></div>';
+                        }
+                    }
+                    $("#MembersGroup1").html(html).show();
+                    $('.members').autocomplete({
+                        source: '@Url.Action("AutocompleteMember")', change: function (event, ui) {
+                            if (!ui.item) {
+                                $(this).val("");
+                            }
+                        }
+                    });
+                    
+                },
+                error: function (reponse) {
+                    alert("error : " + reponse);
+                }
+            });
+        }
+
+     
+    </script>
+
+    <script>
+        $("#Planned").show();
+        $("#UnPlanned").hide();
+        $("#EngNull").hide();
+        $("input[name='Type']").on("change", function () {
+            if ($(this).val() == "UnPlanned") {
+                $("#Planned").hide();
+                $("#UnPlanned").show();
+                $("#Eng").hide();
+            }
+            if ($(this).val() == "Planned") {
+                $("#Planned").show();
+                $("#Eng").show();
+                $("#UnPlanned").hide();
+            }
+        });
+        $(function () {
+            $("#submit").click(function () {
+                if (confirm("Are You Sure Want To Submit?")) {
+                    $('#submit').submit();
+                } else {
+                    event.preventDefault();
+                }
+            });
+        });
+    </script>
+
+
+

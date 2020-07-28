@@ -1,0 +1,52 @@
+﻿@model IEnumerable<ePatria.Models.ConsultingRequest>
+
+@{
+    ViewBag.Title = "Consulting Request Index";
+}
+
+@using Microsoft.AspNet.Identity;
+@{ var Perm = HelperController.getPermission(User.Identity.GetUserId(), "Consulting Request"); 
+    var isSuperAdmin = HelperController.isSuperAdmin(User.Identity.GetUserId());
+}
+@foreach (var item in Model)
+{
+    <li>
+        <div class="col1">
+            <div class="cont">
+                <div class="cont-col1">
+                    <div class="label label-sm label-danger">
+                        <i class="fa fa-bolt"></i>
+                    </div>
+                </div>
+                <div class="cont-col2">
+                    <div class="desc">
+                        <label><i>Consulting Request</i> <a href="@Url.Action("Details", "ConsultingRequests", new { id = item.ConsultingRequestID })"> @Html.DisplayFor(modelItem => item.NoRequest)</a>, Status : <i>@item.Status</i></label>
+                        @if (Perm != null && Perm.Any(q => q.IsUpdate == true) || isSuperAdmin)
+                        {
+                            if (item.Status == "Draft")
+                            {
+                                <label>
+                                    [@Html.ActionLink("Edit", "../ConsultingRequests/Edit", new { id = item.ConsultingRequestID }) |
+                                    @Html.ActionLink("Details", "../ConsultingRequests/Details", new { id = item.ConsultingRequestID }) |
+                                    @Html.ActionLink("Delete", "../ConsultingRequests/Delete", new { id = item.ConsultingRequestID }) |
+                                    @Html.ActionLink("Preview", "../ConsultingRequests/Preview", new { id=item.ConsultingRequestID })]
+                                </label>
+                            } else {
+                                <label>
+                                    [@Html.ActionLink("Details", "../ConsultingRequests/Details", new { id = item.ConsultingRequestID }) |
+                                    @Html.ActionLink("Preview", "../ConsultingRequests/Preview", new { id=item.ConsultingRequestID })]
+                                </label>
+                            }
+                        } else {
+                            <label>
+                                [@Html.ActionLink("Details", "../ConsultingRequests/Details", new { id = item.ConsultingRequestID }) |
+                                @Html.ActionLink("Preview", "../ConsultingRequests/Preview", new { id=item.ConsultingRequestID })]
+                            </label>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </li>
+}
+

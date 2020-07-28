@@ -1,0 +1,59 @@
+﻿@using System.Web.Mvc;
+@using System.Web.Mvc.Routing;
+@using System.Web.Mvc.Html;
+@using System.Web.Mvc.Razor;
+@using ePatria.Controllers;
+@using Microsoft.AspNet.Identity;
+
+@helper GetTreeView(System.Web.Mvc.HtmlHelper h, List<ePatria.Models.Organization> organization, int? orgParentID)
+{
+    var permission = HelperController.getPermission(User.Identity.GetUserId(), "Master Data");
+    var isSuperAdmin = HelperController.isSuperAdmin(User.Identity.GetUserId());
+    foreach (var i in organization.Where(a => a.OrganizationParentID.Equals(orgParentID)))
+    {
+       
+            <li>
+                @{var submenu = organization.Where(a => a.OrganizationParentID.Equals(i.OrganizationID)).Count();}
+
+                @if (i.OrganizationParentID == null) //buat parent organization
+                {
+                    <span class="collapsed collapsible">&nbsp;</span>
+                    @h.ActionLink(i.Name, "Details", "Organizations", new { organizationID = i.OrganizationID }, new { @class = "" })
+                    @h.Raw("&nbsp;")
+                    if (permission != null && permission.Any(q => q.IsCreate == true) || isSuperAdmin)
+                    {
+                        @h.Raw(@h.ActionLink("create_replace", "CreateSubOrganization", "Organizations", new { organizationid = i.OrganizationID }, new { @class = "btn default btn-xs green" }).ToHtmlString().Replace("create_replace", "<i class=\"fa fa-plus\"></i>"))
+                        @h.Raw(@h.ActionLink("delete_replace", "DeleteOrganization", "Organizations", new { organizationID = i.OrganizationID }, new { @class = "btn default btn-xs red", }).ToHtmlString().Replace("delete_replace", "<i class=\"fa fa-trash-o\"></i>"))
+                    }
+                }
+                else
+                {
+                    <span style="width:15px; display:inline-block">&nbsp;</span>
+                }
+
+                @if (i.OrganizationParentID > 0) //buat sub organization
+                {
+                    <span class="collapsed collapsible">&nbsp;</span>
+                    @h.ActionLink(i.Name, "Details", "Organizations", new { organizationID = i.OrganizationID }, new { @class = "" })
+                    @h.Raw("&nbsp;")
+                    if (permission != null && permission.Any(q => q.IsCreate == true) || isSuperAdmin)
+                    {
+                        @h.Raw(@h.ActionLink("create_replace", "CreateSubOrganization", "Organizations", new { organizationid = i.OrganizationID }, new { @class = "btn default btn-xs green" }).ToHtmlString().Replace("create_replace", "<i class=\"fa fa-plus\"></i>"))
+                        @h.Raw(@h.ActionLink("delete_replace", "DeleteOrganization", "Organizations", new { organizationID = i.OrganizationID }, new { @class = "btn default btn-xs red", }).ToHtmlString().Replace("delete_replace", "<i class=\"fa fa-trash-o\"></i>"))
+                    }
+                }
+
+                @h.Raw("<p>")
+
+                @if (submenu > 0)
+                {
+                    <ul>
+                        @TreeViewOrganization.GetTreeView(h, organization, i.OrganizationID) @* recursive nya disini *@
+                    </ul>
+                }
+            </li>
+    }
+}        
+
+            
+

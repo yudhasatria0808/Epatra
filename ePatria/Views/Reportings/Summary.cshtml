@@ -1,0 +1,141 @@
+﻿@model ePatria.Models.Reporting
+
+@if (ViewBag.WordDocumentMode == null || !ViewBag.WordDocumentMode)
+{
+    <h2>@ViewBag.Title.</h2>
+<h3>@ViewBag.Message</h3>
+}
+
+<table border="0" style="width: 100%">
+    <tr>
+        <td align="right" width="30%">
+            <img src="http://www.pertaminapatraniaga.com/themes/patra/images/logo_patraniaga.png" alt="ePatria" height="55" width="200">
+        </td>
+
+    </tr>
+    <tr>
+</table>
+
+<div>
+    <h4>Executive Summary Reporting</h4>
+    <hr />
+    <table border="0" style="width: 100%">
+    <tr>
+        <td width="10%">Nomor SP</td>
+        <td>:</td>
+        <td>
+            @Html.DisplayFor(model => model.LetterOfCommand.NomorSP)
+        </td>
+    </tr>
+    <tr>
+        <td width="10%">Activity</td>
+        <td>:</td>
+        <td>
+            @Html.DisplayFor(model => model.LetterOfCommand.Activity.Name)
+        </td>
+    </tr>
+    <tr>
+        <td width="10%">Engagement</td>
+        <td>:</td>
+        <td>
+            @Html.DisplayFor(model => model.LetterOfCommand.AuditPlanningMemorandum.Preliminary.EngagementActivity.Name)
+        </td>
+    </tr>
+    <tr>
+        <td width="10%">Activity</td>
+        <td>:</td>
+        <td>
+            @Html.DisplayFor(model => model.LetterOfCommand.Activity.Name)
+        </td>
+    </tr>
+    <tr>
+        <td width="10%">Nomor Laporan</td>
+        <td>:</td>
+        <td>
+            @Html.DisplayFor(model => model.NomorLaporan)
+        </td>
+    </tr>
+    <tr>
+        <td width="10%">Memo Description</td>
+        <td>:</td>
+        <td>
+            @Html.Raw(Model.MemoDescription)
+        </td>
+    </tr>
+    <tr>
+        <td width="10%">Summary Description</td>
+        <td>:</td>
+        <td>
+            @Html.Raw(Model.SummaryDescription)
+        </td>
+    </tr>
+    <tr>
+        <td width="10%">Bab 01 Title</td>
+        <td>:</td>
+        <td>
+            @Html.DisplayFor(model => model.Bab01Title)
+        </td>
+    </tr>
+    <tr>
+        <td width="10%">Bab 01 SubTitle</td>
+        <td>:</td>
+        <td>
+            @Html.DisplayFor(model => model.Bab01SubTitle)
+        </td>
+    </tr>
+        <td width="10%">Bab 01 Description</td>
+        <td>:</td>
+        <td>
+            @Html.Raw(Model.Bab01Description)
+        </td>
+    <tr>
+        <td width="10%">Bab 02 Title</td>
+        <td>:</td>
+        <td>
+            @Html.DisplayFor(model => model.Bab02Title)
+        </td>
+    </tr>
+    <tr>
+        <td width="10%">Fact</td>
+        <td>:</td>
+        <td>
+            @Html.Raw(Model.Fact)
+        </td>
+    </tr>
+    <tr>
+        <td width="10%">Criteria</td>
+        <td>:</td>
+        <td>
+            @Html.Raw(Model.Criteria)
+        </td>
+    </tr>
+    <tr>
+        <td width="10%">Impact</td>
+        <td>:</td>
+        <td>
+            @Html.Raw(Model.Impact)
+        </td>
+    </tr>
+    <tr>
+        <td width="10%">Impact Value</td>
+        <td>:</td>
+        <td>
+            @Html.Raw(Model.impactValue)
+        </td>
+    </tr>
+    <tr>
+        <td width="10%">Cause</td>
+        <td>:</td>
+        <td>
+            @Html.Raw(Model.Cause)
+        </td>
+    </tr>
+    <tr>
+        <td width="10%">Reccomendation</td>
+        <td>:</td>
+        <td>
+            @Html.Raw(Model.Recommendation)
+        </td>
+    </tr>
+</table>
+</div>

@@ -1,0 +1,46 @@
+﻿@model IEnumerable<ePatria.Models.AnnualPlanning>
+@{
+    ViewBag.Title = "Index";
+    Layout = null;
+}
+
+@using Microsoft.AspNet.Identity;
+@{ var Perm = HelperController.getPermission(User.Identity.GetUserId(), "Annual Planning"); 
+    var isSuperAdmin = HelperController.isSuperAdmin(User.Identity.GetUserId());
+}
+@foreach (var item in Model)
+{
+    <li>
+        <div class="col1">
+            <div class="cont">
+                <div class="cont-col1">
+                    <div class="label label-sm label-danger">
+                        <i class="fa fa-user"></i>
+                    </div>
+                </div>
+                <div class="cont-col2">
+                    <div class="desc">
+                        <label><i>Annual Planning</i> @item.Activity.Name, Status : <i>@item.Approval_Status</i></label>
+                        @if (Perm != null && Perm.Any(q => q.IsUpdate == true) || isSuperAdmin)
+                        {
+                            if (item.Approval_Status == "Draft")
+                            {
+                                <label>
+                                    [@Html.ActionLink("Edit", "../AnnualPlannings/Edit", new { id = item.AnnualPlanningID }) |
+                                    @Html.ActionLink("Details", "../AnnualPlannings/Details", new { id = item.AnnualPlanningID }) |
+                                    @Html.ActionLink("Delete", "../AnnualPlannings/Delete", new { id = item.AnnualPlanningID })]
+                                </label>
+            
+                            } else
+                            {
+                                <label>[@Html.ActionLink("Details", "../AnnualPlannings/Details", new { id = item.AnnualPlanningID })] </label>
+                            }
+                        } else {
+                            <label>[@Html.ActionLink("Details", "../AnnualPlannings/Details", new { id = item.AnnualPlanningID })] </label>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </li>
+}   

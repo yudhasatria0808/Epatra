@@ -1,0 +1,129 @@
+﻿<style>
+    .padding5 {
+        padding: 5px;
+    }
+</style>
+
+<div class="modal-dialog modal-lg">
+    <div class="modal-content">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+            <h4 class="modal-title"><i class="fa fa-plus-circle"></i> <b>Add Audit Universe</b></h4>
+        </div>
+        <div class="modal-body">
+            <form id="new-audit-universe" role="form">
+                <table id="table-new-audit-universe">
+                    <tr class="padding5">
+                        <td class="padding5">
+                            Department
+                        </td>
+                        <td class="padding5">
+                            :
+                        </td>
+                        <td class="padding5">
+                            <input type="text" name="Department" class="form-control" value="" />
+                        </td>
+                    </tr>
+                    <tr class="padding5">
+                        <td class="padding5">
+                            Name of Activity
+                        </td>
+                        <td class="padding5">
+                            :
+                        </td>
+                        <td class="padding5">
+                            <input type="text" name="Name of Activity" class="form-control" value="" />
+                        </td>
+                    </tr>
+                </table>
+                <div style="margin-top:10px; margin-bottom:10px;"></div>
+                <!-- BEGIN EXAMPLE TABLE PORTLET-->
+                <div class="portlet box red-sunglo">
+                    <div class="portlet-title">
+                        <div class="caption">
+                            Sub Activity
+                        </div>
+                    </div>
+                    <div class="portlet-body">
+                        <div class="table-toolbar">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="btn-group">
+
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="btn-group pull-right">
+                                        <button type="button" id="button-add-activity" onclick="AddSubActivity()" class="btn btn-pertamina-green">
+                                            Add New <i class="fa fa-plus"></i>
+                                        </button>                                        
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <table class="table table-striped table-hover table-bordered" id="table-new-activity">
+                            <thead>
+                                <tr>
+                                    <th>
+                                        Sub Activity
+                                    </th>
+                                    <th style="width:90px;">
+                                        Status
+                                    </th>
+                                    <th style="width:120px;">
+                                        Action
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr hidden>
+                                    <td>
+                                        
+                                    </td>
+                                    <td>
+                                        
+                                    </td>
+                                    <td>
+                                        
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <!-- END EXAMPLE TABLE PORTLET-->
+                <div class="modal-footer" style="margin-top:10px; margin-bottom:-10px;">
+                    <button type="button" class="btn btn-pertamina-green" data-dismiss="modal"><i class="fa fa-arrow-up"></i> Submit</button>
+                    <button type="submit" class="btn btn-pertamina-blue" data-dismiss="modal"><i class="fa fa-eye"></i> Submit for Review</button>
+                    <button type="submit" class="btn btn-default" data-dismiss="modal"><i class="fa fa-sign-out"></i> Check Out</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    <!-- /.modal-content -->
+</div>
+<!-- /.modal-dialog -->
+
+<script>
+    function AddSubActivity() {
+        var hideButton = document.getElementById("button-add-activity").remove();
+        var table = document.getElementById("table-new-activity");
+        var row = table.insertRow(2);
+        var cell1 = row.insertCell(0);
+        var cell2 = row.insertCell(1);
+        var cell3 = row.insertCell(2);
+        cell1.innerHTML = '<input type="text" name="Sub Activity" class="form-control" value="" />';
+        cell2.innerHTML = '<select name="Status" class="form-control" style="width:150px;"><option value="Active">Active</option> <option value="Inactive">Inactive</option></select>';
+        cell3.innerHTML = '<button type="button" class="btn btn-pertamina-blue" title="Edit"><i class="fa fa-edit"></i></button> <button type="button" onclick="AddSub_SubActivity(this)" class="btn btn-default" title="Add Sub"><i class="fa fa-arrow-down"></i></button>';
+    }
+    function AddSub_SubActivity() {
+        var table = document.getElementById("table-new-activity");
+        var row = table.insertRow();
+        var cell1 = row.insertCell(0);
+        var cell2 = row.insertCell(1);
+        var cell3 = row.insertCell(2);
+        cell1.innerHTML = '<input type="text" name="Sub-Sub Activity" class="form-control" value="" />';
+        cell2.innerHTML = '<select name="Status" class="form-control"><option value="Active">Active</option> <option value="Inactive">Inactive</option></select>';
+        cell3.innerHTML = '<button type="button" class="btn btn-pertamina-blue" title="Edit"><i class="fa fa-edit"></i></button> <button type="button" onclick="AddSub_SubActivity(this)" class="btn btn-default" title="Add Sub"><i class="fa fa-arrow-down"></i></button>';
+    }
+</script>

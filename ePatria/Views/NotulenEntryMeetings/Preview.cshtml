@@ -1,0 +1,158 @@
+﻿@model ePatria.Models.NotulenEntryMeeting
+
+@{
+    ViewBag.Title = "About";
+}
+
+@if (ViewBag.WordDocumentMode == null || !ViewBag.WordDocumentMode)
+{
+    <h2>@ViewBag.Title.</h2>
+    <h3>@ViewBag.Message</h3>
+}
+
+<table border="1" style="width: 100%">
+    <tr>
+        <center>
+        <td width="33.5%"><img src="http://www.pertaminapatraniaga.com/themes/patra/images/logo_patraniaga.png" alt="ePatria" height="50" width="175">
+        </td>
+        <td style="background-color:#c6c4c4"><strong>NOTULEN RAPAT</strong></td>
+        </center>
+    </tr>
+</table>
+<br />
+<table border="1" style="width: 100%">
+    <tr>
+        <td style="padding-left:5px" width="33.5%">Judul:
+        </td>
+        <td style="padding-left:5px">Entry Meeting Audit atas Aktivitas
+        </td>
+    </tr>
+    <tr>
+        <td style="padding-left:5px" width="33.5%">Tujuan:
+        </td>
+        <td style="padding-left:5px">@Html.DisplayFor(model => model.Tujuan)<br />
+        </td>
+    </tr>
+    <tr>
+        <td style="padding-left:5px" width="33.5%">Tanggal & Waktu:
+        </td>
+        <td style="padding-left:5px">@Convert.ToDateTime(Model.TimeConsumableStartDate).ToString("dd/MM/yyyy HH:mm") WIB to @Convert.ToDateTime(Model.TimeConsumableEndDate).ToString("dd/MM/yyyy HH:mm") WIB</td>
+    </tr>
+    <tr>
+        <td style="padding-left:5px" width="33.5%">Tempat:
+        </td>
+        <td style="padding-left:5px">@Html.DisplayFor(model => model.Place)
+        </td>
+    </tr>
+    <tr>
+        <td style="padding-left:5px;border-bottom:none" width="33.5%">Pemimpin Rapat:
+        </td>
+        <td style="padding-left:5px;border-bottom:none">@Html.Raw(ViewBag.Chairman)
+        </td>
+    </tr>
+    <tr>
+        <td style="padding-left:5px;border-top:none" width="33.5%">Notulis:
+        </td>
+        <td style="padding-left:5px;border-top:none">@Html.Raw(ViewBag.Reporter)
+        </td>
+    </tr>
+    <tr>
+        <td style="padding-left:5px" width="33.5%">Peserta Rapat:
+        </td>
+        <td style="padding-left:5px">@Html.Raw(ViewBag.Member)
+        </td>
+    </tr>
+    <tr>
+        <td style="padding-left:5px" width="33.5%">Daftar Hadir:
+        </td>
+        <td style="padding-left:5px">Terlampir
+        </td>
+    </tr>
+</table>
+<br />
+<table border="1" style="width: 100%">
+    <tr>
+        <td style="padding-left:5px;padding-right:5px;background-color:black;text-decoration-color:white" align="left">No
+        </td>
+        <td style="padding-left:5px;background-color:black;text-decoration-color:white" align="center">Item
+        </td>
+    </tr>
+    <tr>
+        <td style="padding-left:5px;background-color:#c6c4c4" colspan="2">A.Pembukaan
+       
+        </td>
+    </tr>
+    <tr>
+        <td style="padding-left:5px"></td>
+        <td style="padding-left:5px">Pembukaan Entry Meeting oleh Chief lnternal Audit<br />
+           @Html.Raw(Model.Opening.Replace("\n","<br />"))
+        </td>
+    </tr>
+
+    <tr>
+        <td style="padding-left:5px;background-color:#c6c4c4" colspan="2">B. Pemaparan Rencana Penugasan</td>
+    </tr>
+    <tr>
+        <td style="padding-left:5px"></td>
+        <td style="padding-left:5px">
+            <ol type="1">
+                <li>Jadwal Audit:<br />
+                    Entry Meeting: @Convert.ToDateTime(Model.LetterOfCommand.AuditPlanningMemorandum.EntryMeetingDateStart).ToString("dd/MM/yyyy")<br />
+                    Fieldwork: @Convert.ToDateTime(Model.LetterOfCommand.AuditPlanningMemorandum.FieldWorkDateStart).ToString("dd/MM/yyyy") - @Convert.ToDateTime(Model.LetterOfCommand.AuditPlanningMemorandum.FieldWorkDateEnd).ToString("dd/MM/yyyy")<br />
+                    Exit Meeting: @Convert.ToDateTime(Model.LetterOfCommand.AuditPlanningMemorandum.ExitMeetingDateStart).ToString("dd/MM/yyyy")<br />
+                    Laporan: @Convert.ToDateTime(Model.LetterOfCommand.AuditPlanningMemorandum.LHADateStart).ToString("dd/MM/yyyy")<br/>
+                    Time schedule ini sudah merupakan waktu maksimal pelaksanaan audit, sehingga untuk
+kelancaran pelaksanaan audit, diperlukan komitmen dan kerjasama dari masing-masing fungsi,
+khususnya dalam hal penyediaan data audit.</li>
+                <li>Apabila sampai dengan batas waktu yang telah ditentukan data yang diminta belum diterima
+oleh auditor, maka disepakati bahwa kesimpulan hasil audit akan didasarkan pada data yang
+tersedia saja dan akan dituliskan perihal keterbatasan data tersebut dalam laporan yang akan
+disampaikan kepada Direksi.</li>
+                <li>Sesuai penjabaran ruang lingkup audit yaitu proses pengadaan, penerimaan, dan pembayaran,
+maka akan lebih sesuai jika menginfokan juga kepada VP Treasury terkait proses penerbitan
+SKBDN dan L/C nya. Diputuskan untuk entry meeting susulan kepada VP Treasury akan
+dilaksanakan langsung antara Auditor dengan Vp rreasury di hari yang sama.</li>
+                <li>Data yang diperlukan dalam proses audit akan dikirimkan via email kepada ouditee terkait.
+Follow up status permintaan data akan di updote secara periodik kepada PtC/ouditee di Fungsi
+terkait.</li>
+                <li>@Html.Raw(Model.ExposurePlan.Replace("\n","<br />"))</li>
+            </ol>
+
+        </td>
+    </tr>
+
+</table>
+<br />
+<table border="0">
+    <tr>
+        <center>
+        <td style="padding-left:5px">Notulis</td>
+        <td style="padding-left:5px">Jakarta, @DateTime.Now.ToShortDateString() <br /> Mengetahui</td>
+        </center>
+    </tr>
+
+    <tr>
+        <center>
+        <td style="padding-left:5px" width="20%">
+            <br />
+            <br />
+            <br />
+            @Html.Raw(ViewBag.Reporter)
+        </td>
+        <td style="padding-left:5px" width="20%">
+            <br />
+            <br />
+            <br />
+            @Html.Raw(ViewBag.Chairman)
+        </td>
+        </center>
+    </tr>
+</table>
+
+
+<style>
+    table, th, td
+    {
+        border-collapse: collapse;
+    }
+</style>

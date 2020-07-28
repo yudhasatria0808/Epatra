@@ -1,0 +1,140 @@
+﻿@model IEnumerable<ePatria.Models.Preliminary>
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@using Microsoft.AspNet.Identity;
+@{  var Perm = HelperController.getPermission(User.Identity.GetUserId(), "Preliminary Survey");
+    var isSuperAdmin = HelperController.isSuperAdmin(User.Identity.GetUserId());
+}
+<div class="row" style="margin-top:20px;">
+    <div class="col-md-12">
+        <!-- BEGIN EXAMPLE TABLE PORTLET-->
+        <div class="portlet box red-sunglo">
+            <div class="portlet-title">
+                <div class="caption">
+                    <i class="fa fa-user"></i> Preliminary
+                </div>
+            </div>
+            <div class="portlet-body">
+                <div class="table-toolbar">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="btn-group">
+
+                            </div>
+                        </div>
+                        @if (Perm != null && Perm.Any(q => q.IsCreate == true || q.IsSubmit1 == true) || isSuperAdmin)
+                        {
+                        <div class="col-md-6">
+                            <div class="btn-group pull-right">
+                                <a href="@Url.Action("Create")" class="btn green">Add New <i class="fa fa-plus"></i></a>
+                            </div>
+                        </div>
+                        }
+                    </div>
+                </div>
+                <table class="table table-striped table-hover table-bordered" id="table-pre">
+                    <thead>
+                        <tr>
+                            <th>
+                                Activity Name
+                            </th>
+                            <th>
+                                Periode
+                            </th>
+                            <th>
+                                Auditee
+                            </th>
+                            <th>
+                                Status
+                            </th>
+                            @*<th>
+                                Action
+                            </th>*@
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td>
+                                    <a href="@Url.Action("Details", "Preliminaries", new { id = item.PreliminaryID })"> @Html.DisplayFor(modelItem => item.Activity.Name)</a>
+                                </td>
+                                <td>
+                                    @Html.DisplayName(item.Date_Start.ToShortDateString()) To @Html.DisplayName(item.Date_End.ToShortDateString())
+                                </td>
+                                <td>
+                                    <ul>
+                                        @{var i = 0;}
+                                        @foreach (var mem in item.EmployeeID.Split(';')) {
+                                            i++;
+                                            if (i < item.EmployeeID.Split(';').Count()) {
+                                                <li>@Html.DisplayName(mem)</li>
+                                            }
+                                        }
+                                    </ul>
+                                </td>
+                                <td>
+                                    @if (item.Status != null)
+                                    {
+
+                                        @Html.DisplayName(item.Status)
+
+                                    }
+                                    else
+                                    {
+                                        @Html.DisplayName("Pending")
+                                    }
+
+                                </td>  
+                                @*<td>
+                                    @Html.ActionLink("Edit", "Edit", new { id = item.PreliminaryID }) |
+                                    @Html.ActionLink("Details", "Details", new { id = item.PreliminaryID }) |
+                                    @Html.ActionLink("Delete", "Delete", new { id = item.PreliminaryID })
+                                </td>*@
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <!-- END EXAMPLE TABLE PORTLET-->
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        $('#table-pre').DataTable({
+            dom: 'T<"clear">lfrtip',
+            tableTools: {
+                "sSwfPath": "/Content/assets/global/plugins/datatables/extensions/TableTools/swf/copy_csv_xls_pdf.swf",
+                "aButtons": [
+                {
+                    "sExtends": "xls",
+                    "mColumns": [0, 1, 2, 3],
+                    "sPdfOrientation": "landscape",
+                    "sPdfMessage": "Preliminary",
+                    "sButtonText": "Export to excel",
+                    "sFileName": "Preliminary.xls"
+                },
+                ]
+            }
+        });
+    });
+</script>
+
+<!-- MODAL CREATE END -->
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+    @if (ViewBag.message != null)
+    {
+    <script>
+        $(document).ready(function () {
+            toastr.success("@ViewBag.message", "Success");
+        });
+    </script>
+    }
+}

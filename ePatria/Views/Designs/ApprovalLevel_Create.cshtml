@@ -1,0 +1,51 @@
+﻿<style>
+    .padding5 {
+        padding: 5px;
+    }
+</style>
+
+<form role="form">
+    <table id="add-new-approval">
+        <tr>
+            <td class="padding5">
+                Features
+            </td>
+            <td class="padding5">
+                :
+            </td>
+            <td class="padding5">
+                <input type="text" name="Features" value="" placeholder="automatic" disabled>
+            </td>
+        </tr>
+        <tr>
+            <td class="padding5">
+                Status
+            </td>
+            <td class="padding5">
+                :
+            </td>
+            <td class="padding5">
+                <select name="Status">
+                    <option value="">Select...</option>
+                    <option value="Reviewer">Reviewer</option>
+                    <option value="Approval">Approval</option>
+                </select>
+            </td>
+        <tr>
+            <td class="padding5">
+                Approval
+            </td>
+            <td class="padding5">
+                :
+            </td>
+            <td class="padding5">
+                <input type="text" name="Approval" value="">
+            </td>
+        </tr>
+        </tr>
+    </table>
+    <div class="modal-footer" style="margin-top:20px; margin-bottom:-10px;">
+        <button type="button" class="btn btn-pertamina-red" data-dismiss="modal"><i class="fa fa-times-circle"></i> Close</button>
+        <button type="button" class="btn btn-pertamina-blue" data-dismiss="modal"><i class="fa fa-download"></i> Save</button>
+    </div>
+</form>

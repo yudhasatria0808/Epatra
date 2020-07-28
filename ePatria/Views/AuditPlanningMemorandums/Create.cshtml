@@ -1,0 +1,618 @@
+﻿@model ePatria.Models.AuditPlanningMemorandum
+
+@{
+    ViewBag.Title = "Create";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Create</h2>
+@using Microsoft.AspNet.Identity;
+@{
+    var checkPerm = HelperController.getPermissionRoleByPerm("Audit Planning Memorandum", User.Identity.GetUserId());
+    var userPerm = HelperController.getPermission(User.Identity.GetUserId(), "Audit Planning Memorandum");
+}
+@using (Html.BeginForm("Create", "AuditPlanningMemorandums", FormMethod.Post, new { enctype = "multipart/form-data", id = "apmform" }))
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-horizontal">
+        <h4>Audit Planning Memorandum</h4>
+        <hr />
+        <div class="error-container">
+            <ul></ul>
+        </div>
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        @Html.Hidden("ReviewRelationMasterID")
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.PreliminaryID, "No. Preliminary Survey", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-5">
+                @*@Html.TextBox("nomer", null, new { @class = "form-control", @onchange = "javascript: GetPrelim(this.value);GetEngName(this.value);", })*@
+                @Html.TextBox("nomer", null, new { @class = "form-control", @onchange = "javascript: GetPrelim(this.value);GetEngName(this.value);GetMem(this.value);", placeholder = "Auto Complete" })
+                @Html.ValidationMessage("nomer", new { @class = "text-danger" })
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(model => model.NomerAPM, "Nomer APM", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-5">
+                @Html.TextBox("nomerapm", (string)ViewBag.apmnomer, new { @class = "form-control", @readonly = true })
+                @Html.ValidationMessageFor(model => model.NomerAPM, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.ActivityID, "Activity", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-5">
+                @*<select id="activid" name="activid" class=" form-control"></select>*@
+                @Html.TextBox("activid", null, new { @class = "form-control", @readonly = true })
+                @Html.ValidationMessageFor(model => model.ActivityID, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.ActivityID, "Engagement Name", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-5">
+                @*<select id="enggname" name="enggname" class=" form-control"></select>*@
+                @Html.TextBox("enggname", null, new { @class = "form-control", @readonly = true })
+                @Html.ValidationMessageFor(model => model.ActivityID, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.ActualEngagement, "Actual Engagement", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-5">
+                @*<select id="enggname" name="enggname" class=" form-control"></select>*@
+                @Html.TextBoxFor(model => model.ActualEngagement, new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.ActivityID, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group input-group-sm">
+            @Html.LabelFor(model => model.Date_Start, "Jadwal Audit", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-2">
+                @Html.TextBoxFor(model => model.Date_Start, "{0:dd/MM/yyyy}", new { @class = "form-control datepicker", @readonly = true })
+                @Html.ValidationMessageFor(model => model.Date_Start, "", new { @class = "text-danger" })
+            </div>
+            <div class="col-md-2">
+                @Html.TextBoxFor(model => model.Date_End, "{0:dd/MM/yyyy}", new { @class = "form-control datepicker", @readonly = true })
+                @Html.ValidationMessageFor(model => model.Date_End, "", new { @class = "text-danger" })
+            </div>
+        </div>
+        
+        <div class="form-group">
+            @Html.LabelFor(model => model.TujuanAudit, "Tujuan Audit", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-5">
+                @Html.TextAreaFor(model => model.TujuanAudit, new { @class = "form-control", @rows = "4" })
+                @Html.ValidationMessageFor(model => model.TujuanAudit, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.RuangLingkupAudit, "Ruang Lingkup Audit", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-5">
+                @Html.TextAreaFor(model => model.RuangLingkupAudit, new { @class = "form-control", @rows = "4" })
+                @Html.ValidationMessageFor(model => model.RuangLingkupAudit, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.MetodologiAudit, "Metodologi Audit", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-5">
+                @Html.TextAreaFor(model => model.MetodologiAudit, new { @class = "form-control", @rows = "4" })
+                @Html.ValidationMessageFor(model => model.MetodologiAudit, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.DataDanDokumen, "Data dan Dokumen", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-5">
+                @Html.TextAreaFor(model => model.DataDanDokumen, new { @class = "form-control", @rows = "4" })
+                @Html.ValidationMessageFor(model => model.DataDanDokumen, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.Label("File", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                <input type="file" name="files" id="file1" class="file1" />
+                <div class="preview"></div>
+            </div>
+        </div>
+
+        <script>
+            $(function () {
+                $("input[name=files]").previewimage({
+                    div: ".preview"
+                });
+            });
+        </script>
+        <style type="text/css">
+            input[type='file'] {
+                color: transparent;
+            }
+        </style>
+
+        <div class="form-group input-group-sm">
+            @Html.LabelFor(model => model.WalktroughDateStart, "Walktrough ", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-2">
+                @Html.TextBoxFor(model => model.WalktroughDateStart, "{0:dd/MM/yyyy}", new { @class = "form-control datepicker", @readonly = true })
+                @Html.ValidationMessageFor(model => model.WalktroughDateStart, "", new { @class = "text-danger" })
+            </div>
+            <div class="col-md-2">
+                @Html.TextBoxFor(model => model.WalktroughDateEnd, "{0:dd/MM/yyyy}", new { @class = "form-control datepicker", @readonly = true })
+                @Html.ValidationMessageFor(model => model.WalktroughDateEnd, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group input-group-sm">
+            @Html.LabelFor(model => model.EntryMeetingDateStart, "Entry Meeting ", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-4">
+                @Html.TextBoxFor(model => model.EntryMeetingDateStart, "{0:dd/MM/yyyy}", new { @class = "form-control datepicker", @readonly = true })
+                @Html.ValidationMessageFor(model => model.EntryMeetingDateStart, "", new { @class = "text-danger" })
+            </div>
+
+        </div>
+
+        <div class="form-group input-group-sm">
+            @Html.LabelFor(model => model.FieldWorkDateStart, "Field Work", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-2">
+                @Html.TextBoxFor(model => model.FieldWorkDateStart, "{0:dd/MM/yyyy}", new { @class = "form-control datepicker", @readonly = true })
+                @Html.ValidationMessageFor(model => model.FieldWorkDateStart, "", new { @class = "text-danger" })
+            </div>
+            <div class="col-md-2">
+                @Html.TextBoxFor(model => model.FieldWorkDateEnd, "{0:dd/MM/yyyy}", new { @class = "form-control datepicker", @readonly = true })
+                @Html.ValidationMessageFor(model => model.FieldWorkDateEnd, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group input-group-sm">
+            @Html.LabelFor(model => model.ExitMeetingDateStart, "Exit Meeting", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-4">
+                @Html.TextBoxFor(model => model.ExitMeetingDateStart, "{0:dd/MM/yyyy}", new { @class = "form-control datepicker", @readonly = true })
+                @Html.ValidationMessageFor(model => model.ExitMeetingDateStart, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group input-group-sm">
+            @Html.LabelFor(model => model.LHADateStart, "LHA", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-4">
+                @Html.TextBoxFor(model => model.LHADateStart, "{0:dd/MM/yyyy}", new { @class = "form-control datepicker", @readonly = true })
+                @Html.ValidationMessageFor(model => model.LHADateStart, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.PICID, "Responsible Person", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-5">
+                @Html.TextBox("pic", null, new { @class = "form-control", @placeholder = "Auto Complete" })
+                @Html.ValidationMessageFor(model => model.PICID, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.SupervisorID, "Supervisor", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-5">
+                @Html.TextBox("supervisor", null, new { @class = "form-control", @placeholder = "Auto Complete" })
+                @Html.ValidationMessageFor(model => model.SupervisorID, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.TeamLeaderID, "Team Leader", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-5">
+                @Html.TextBox("leader", null, new { @class = "form-control", @placeholder = "Auto Complete" })
+                @Html.ValidationMessageFor(model => model.TeamLeaderID, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        @*<div class="form-group">
+                @Html.LabelFor(model => model.MemberID, "Member", htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-5">
+                    @Html.TextBox("member", null, new { @class = "form-control", @placeholder="Auto Complete" })
+                    @Html.ValidationMessageFor(model => model.MemberID, "", new { @class = "text-danger" })
+                </div>
+            </div>*@
+
+        <div id="MembersGroup1">
+            <div class="form-group" id="memberedit1">
+                @Html.Label("Member", htmlAttributes: new { @class = "control-label col-md-2", @id = "questionlabel#1" })
+                <div class="col-md-5">
+                    <input name="members" id="members-1" class="form-control members" type="text" placeholder="Auto Complete" />
+                    @Html.Hidden("membernull", null, new { @class = "form-control" })
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-5">
+                <a href="#" class="btn btn-sm green" id='addButton1'><i class="fa fa-plus"></i>Add More Member</a>
+                @*<a href="#" class="btn btn-sm red" id='removeButton1'><i class="fa fa-times"></i>Remove Member</a>*@
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Kesimpulan, "Catatan", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-5">
+                @Html.TextAreaFor(model => model.Kesimpulan, new { @class = "form-control", @rows = "4" })
+                @Html.ValidationMessageFor(model => model.Kesimpulan, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-5">
+                @if (userPerm.Any(d => d.IsCreate))
+                {
+                    if (userPerm.Any(d => d.IsSubmit1))
+                    {
+                        if (checkPerm.Contains("IsSubmit2"))
+                        {
+                            <button class="btn btn-primary" name="submit" type="submit" id="submit" value="Submit For Review By @checkPerm.Split(':')[2].Split(';')[0]"> Submit</button>
+                        }
+                        else if (checkPerm.Contains("IsApprove"))
+                        {
+                            <button class="btn btn-primary" name="submit" type="submit" id="submit" value="Submit For Approve By @checkPerm.Split(':')[3].Split(';')[0]"> Submit</button>
+                        }
+                    }
+                    else
+                    {
+                        <button class="btn btn-primary" name="submit" type="submit" id="submit" value="Submit For Review By @checkPerm.Split(':')[1].Split(';')[0]"> Submit</button>
+                    }
+                }
+                else if (userPerm.Any(d => d.IsSubmit1))
+                {
+                    if (checkPerm.Contains("IsSubmit2"))
+                    {
+                        <button class="btn btn-primary" name="submit" type="submit" id="submit" value="Submit For Review By @checkPerm.Split(':')[2].Split(';')[0]"> Submit</button>
+                    }
+                    else if (checkPerm.Contains("IsApprove"))
+                    {
+                        <button class="btn btn-primary" name="submit" type="submit" id="submit" value="Submit For Approve By @checkPerm.Split(':')[3].Split(';')[0]"> Submit</button>
+                    }
+                }
+                else if (userPerm.Any(d => d.IsSubmit2))
+                {
+                    if (checkPerm.Contains("IsApprove"))
+                    {
+                        <button class="btn btn-primary" name="submit" type="submit" id="submit" value="Submit For Approve By @checkPerm.Split(':')[3].Split(';')[0]"> Submit</button>
+                    }
+                }
+                @if (checkPerm.Contains("IsSubmit1"))
+                {
+                    @*<button class="btn btn-primary" name="submit" type="submit" id="submit" value="Submit For Review By @checkPerm.Split(':')[2].Split(';')[0]">Submit</button>*@
+                    @*<input class="btn btn-primary" name="submit" type="submit" id="submit" value="Submit For Review By @checkPerm.Split(':')[1].Split(';')[0]" />*@
+                }
+                else if (checkPerm.Contains("IsSubmit2"))
+                {
+                    @*<button class="btn btn-primary" name="submit" type="submit" id="submit" value="Submit For Review By @checkPerm.Split(':')[3].Split(';')[0]">Submit</button>*@
+                    @*<input class="btn btn-primary" name="submit" type="submit" id="submit" value="Submit For Review By @checkPerm.Split(':')[2].Split(';')[0]" />*@
+                }
+                else if (checkPerm.Contains("IsApprove"))
+                {
+                    @*<button class="btn btn-primary" name="submit" type="submit" id="submit" value="Submit For Approve By @checkPerm.Split(':')[3].Split(';')[0]">Submit</button>*@
+                    @*<input class="btn btn-primary" name="submit" type="submit" id="submit" value="Submit For Approve By @checkPerm.Split(':')[3].Split(';')[0]" />*@
+                }
+                <input class="btn btn-primary" name="submit" type="submit" id="submit" value="Save" />
+            </div>
+        </div>
+    </div>
+}
+
+<div>
+    @Html.ActionLink("Back to List", "Index")
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+    <script type="text/javascript">
+        $(function () {
+            $('.members').autocomplete({
+                source: '@Url.Action("AutocompleteMember")', change: function (event, ui) {
+                    if (!ui.item) {
+                        $(this).val("");
+                    }
+                }
+            });
+
+            $('#supervisor').autocomplete({
+                source: '@Url.Action("AutocompletePengawas")', change: function (event, ui) {
+                    if (!ui.item) {
+                        $(this).val("");
+                    }
+                }
+            });
+            $('#leader').autocomplete({
+                source: '@Url.Action("AutocompleteKetua")', change: function (event, ui) {
+                    if (!ui.item) {
+                        $(this).val("");
+                    }
+                }
+            });
+            $('#pic').autocomplete({
+                source: '@Url.Action("AutocompleteCIA")', change: function (event, ui) {
+                    if (!ui.item) {
+                        $(this).val("");
+                    }
+                }
+            });
+            $('#nomer').autocomplete({
+                source: '@Url.Action("AutocompletePre")', change: function (event, ui) {
+                    if (!ui.item) {
+                        $(this).val("");
+                    }
+                }
+            });
+
+        });
+
+        var countermember = 2;
+        function removeMember(idx) {
+            $("#memberedit" + idx).remove();
+        }
+        $(document).ready(function () {
+            $("#addButton1").click(function () {
+                if (countermember > 10) {
+                    alert("Maksimal 10 Member");
+                    return false;
+                }
+                var newTextBoxDiv = $(document.createElement('div'))
+                     .attr("id", 'memberedit' + countermember).addClass("form-group");
+                var html = '<label class = "control-label col-md-2"></label>' +
+                    '<div class="col-md-5"><input name="members" id="members-' + countermember +
+                    '" value="" class="form-control members" type="text" placeholder = "Auto Complete" ></div>' +
+                    '<div class="col-md-2"><a href="#" class="btn btn-sm red" onclick="removeMember(' + countermember + ');"><i class="fa fa-times"></i></a></div>';
+
+                newTextBoxDiv.after().html(html);
+                newTextBoxDiv.appendTo("#MembersGroup1");
+                countermember++;
+                $('.members').autocomplete({
+                    source: '@Url.Action("AutocompleteMember")', change: function (event, ui) {
+                        if (!ui.item) {
+                            $(this).val("");
+                        }
+                    }
+                });
+            });
+            $("#removeButton1").click(function () {
+                if (countermember == 1) {
+                    alert("No more Member to remove");
+                    return false;
+                }
+                countermember--;
+                $("#memberedit" + countermember).remove();
+            });
+        });
+
+    </script>
+    <script language="javascript" type="text/javascript">
+
+        $.validator.addMethod('daterange', function (value, element) {
+            // Same as above
+            var from = $("#Date_Start").val().split("/");
+            var strDate = new Date(from[2], from[1] - 1, from[0]);
+
+            var to = $("#Date_End").val().split("/");
+            var enDate = new Date(to[2], to[1] - 1, to[0]);
+
+            var currVal = value.split("/");
+            var currDate = new Date(currVal[2], currVal[1] - 1, currVal[0]);
+
+            return currDate >= strDate && currDate <= enDate;
+        });
+
+        $("#apmform").validate({
+            errorLabelContainer: $("ul", $('div.error-container')),
+            wrapper: 'li',
+            rules: {
+                nomer: "required",
+                activid: "required",
+                enggname: "required",
+                Date_Start: "required",
+                Date_End: "required",
+                //WalktroughDateStart: "required",
+                WalktroughDateStart: { 
+                    required: true,
+                    daterange: true
+                },
+                //WalktroughDateEnd: "required",
+                WalktroughDateEnd: {
+                    required: true,
+                    daterange: true
+                },
+                //FieldWorkDateStart: "required",
+                FieldWorkDateStart: {
+                    required: true,
+                    daterange: true
+                },
+                //FieldWorkDateEnd: "required",
+                FieldWorkDateEnd: {
+                    required: true,
+                    daterange: true
+                },
+                //EntryMeetingDateStart: "required",
+                EntryMeetingDateStart: {
+                    required: true,
+                    daterange: true
+                },
+                //ExitMeetingDateStart: "required",
+                ExitMeetingDateStart: {
+                    required: true,
+                    daterange: true
+                },
+                //LHADateStart: "required",
+                LHADateStart: {
+                    required: true,
+                    daterange: true
+                },
+                pic: "required",
+                supervisor: "required",
+                leader: "required",
+                members: "required",
+            },
+            messages: {
+                nomer: "Please enter a Preliminary Survey",
+                activid: "Please enter a Activity",
+                enggname: "Please enter a Engagement",
+                Date_Start: "Please enter a Periode Date Start",
+                Date_End: "Please enter a Periode Date End",
+                //WalktroughDateStart: "Please enter a Walktrough Date Start",
+                WalktroughDateStart: {
+                    required : "Please enter a Walktrough Date Start",
+                    daterange: "Please specify a Walktrough Date Start between Start Date Audit and End Date Audit ."
+                },
+                //WalktroughDateEnd: "Please enter a Walktrough Date End",
+                WalktroughDateEnd: {
+                    required: "Please enter a Walktrough Date End",
+                    daterange: "Please specify a Walktrough Date End between Start Date Audit and End Date Audit ."
+                },
+                //FieldWorkDateStart: "Please enter a Fieldwork Date Start",
+                FieldWorkDateStart: {
+                    required: "Please enter a Fieldwork Date Start",
+                    daterange: "Please specify a Fieldwork Date Start between Start Date Audit and End Date Audit ."
+                },
+                ///FieldWorkDateEnd: "Please enter a Fieldwork Date End",
+                FieldWorkDateEnd: {
+                    required: "Please enter a Fieldwork Date End",
+                    daterange: "Please specify a Fieldwork Date End between Start Date Audit and End Date Audit ."
+                },
+                //EntryMeetingDateStart: "Please enter a Entry Meeting Date",
+                EntryMeetingDateStart: {
+                    required: "Please enter a Entry Meeting Date",
+                    daterange: "Please specify a Entry Meeting Date between Start Date Audit and End Date Audit ."
+                },
+                //ExitMeetingDateStart: "Please enter a Exit Meeting Date",
+                ExitMeetingDateStart: {
+                    required: "Please enter a Please enter a Exit Meeting Date",
+                    daterange: "Please specify a Exit Meeting Date between Start Date Audit and End Date Audit ."
+                },
+                //ExitMeetingDateStart: "Please enter a LHA Date",
+                LHADateStart: {
+                    required: "Please enter a LHA Date",
+                    daterange: "Please specify a LHA Date between Start Date Audit and End Date Audit ."
+                },
+                pic: "Please enter Resp. Person",
+                supervisor: "Please enter Supervisor",
+                leader: "Please enter Team Leader",
+                members: "Please enter Member",
+            }
+        });
+
+        function GetPrelim(_nopre) {
+            var procemessage = "<option value='0'> Please wait...</option>";
+            $("#activid").html(procemessage).show();
+            var url = "/AuditPlanningMemorandums/GetPrelim/";
+
+            $.ajax({
+                url: url,
+                data: { nopre: _nopre },
+                cache: false,
+                type: "POST",
+                success: function (data) {
+                    var markup = "";
+                    for (var x = 0; x < data.length; x++) {
+                        markup += "<option value=" + data[x].Value + ">" + data[x].Text + "</option>";
+                    }
+
+                    $("#activid").html(markup).show();
+
+                },
+                error: function (reponse) {
+                    alert("error : " + reponse);
+                }
+            });
+        }
+
+        function GetEngName(_nopre) {
+
+            var procemessage = "<option value='0'> Please wait...</option>";
+            $("#enggname").html(procemessage).show();
+            var url = "/AuditPlanningMemorandums/GetEngPrelim/";
+
+            $.ajax({
+                url: url,
+                data: { nopre: _nopre },
+                cache: false,
+                type: "POST",
+                success: function (data) {
+                    var markup = "";
+                    for (var x = 0; x < data.length; x++) {
+                        markup += "<option value=" + data[x].Value + ">" + data[x].Text + "</option>";
+                    }
+
+                    $("#enggname").html(markup).show();
+
+                },
+                error: function (reponse) {
+                    alert("error : " + reponse);
+                }
+            });
+        }
+        function GetMem(_nopre) {
+            //alert(member1);
+            var procemessage = "<option value='0'> Please wait...</option>";
+            //$("#member").html(procemessage).show();
+            var url = "/AuditPlanningMemorandums/GetMember/";
+
+            $.ajax({
+                url: url,
+                data: { nopre: _nopre },
+                cache: false,
+                type: "POST",
+                success: function (data) {
+                    var html = "";
+                    countermember = data.split(',')[3].split(';').length;
+                    $('#leader').val(data.split(',')[0])
+                    $('#supervisor').val(data.split(',')[1])
+                    $('#pic').val(data.split(',')[2])
+                    $('#WalktroughDateStart').val(data.split(',')[6])
+                    $('#WalktroughDateEnd').val(data.split(',')[7])
+                    for (i = 1; i < countermember; i++) {
+                        html += '<div id="memberedit' + i + '" class="form-group"> <label class = "control-label col-md-2">Member ' + i + '</label>' +
+                            '<div class="col-md-5"><input name="members" id="member_' + i +
+                            '" value="' + data.split(',')[3].split(';')[i - 1] + '" class="form-control members" type="text"></div></div>';
+                    }
+                    $("#MembersGroup1").html(html).show();
+                    $('.members').autocomplete({
+                        source: '@Url.Action("AutocompleteMember")', change: function (event, ui) {
+                            if (!ui.item) {
+                                $(this).val("");
+                            }
+                        }
+                    });
+                    $('#activid').val(data.split(',')[4])
+                    $('#enggname').val(data.split(',')[5])
+                },
+                error: function (reponse) {
+                    alert("error : " + reponse);
+                }
+            });
+        }
+        $(document).ready(function () {
+            $("#nomer").keyup(function (event) {
+                if (event.keyCode == 13) {
+                    GetPrelim($(this).val());
+                    GetEngName($(this).val());
+                    GetMem($(this).val());
+                }
+            });
+            $("#nomer").keydown(function (event) {
+                if (event.keyCode == 9) {
+                    GetPrelim($(this).val());
+                    GetEngName($(this).val());
+                    GetMem($(this).val());
+                }
+            });
+        });
+
+        $(function () {
+            $("#submit").click(function () {
+                if (confirm("Are You Sure Want To Submit?")) {
+                    $('#submit').submit();
+                } else {
+                    event.preventDefault();
+                }
+            });
+        });
+
+    </script>
+}

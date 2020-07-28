@@ -1,0 +1,133 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<mvcSiteMap xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+            xmlns="http://mvcsitemap.codeplex.com/schemas/MvcSiteMap-File-4.0"
+            xsi:schemaLocation="http://mvcsitemap.codeplex.com/schemas/MvcSiteMap-File-4.0 MvcSiteMapSchema.xsd">
+
+  <mvcSiteMapNode title="Dashboard" controller="Home" action="Index">
+    <mvcSiteMapNode title="User Management" controller="UsersAdmin" action="Index">
+      <mvcSiteMapNode title="User Management Create" controller="UsersAdmin" action="Create"/>
+      <mvcSiteMapNode title="User Management Detail" controller="UsersAdmin" action="Details" preservedRouteParameters="id"/>
+      <mvcSiteMapNode title="User Management Edit" controller="UsersAdmin" action="Edit" preservedRouteParameters="id"/>
+      <mvcSiteMapNode title="User Management Delete" controller="UsersAdmin" action="Delete" preservedRouteParameters="id"/>
+    </mvcSiteMapNode>
+    <mvcSiteMapNode title="Role Management" controller="RolesAdmin" action="Index">
+      <mvcSiteMapNode title="Role Management Create" controller="RolesAdmin" action="Create"/>
+      <mvcSiteMapNode title="Role Management Detail" controller="RolesAdmin" action="Details" preservedRouteParameters="id"/>
+      <mvcSiteMapNode title="Role Management Edit" controller="RolesAdmin" action="Edit" preservedRouteParameters="id"/>
+      <mvcSiteMapNode title="Role Management Delete" controller="RolesAdmin" action="Delete" preservedRouteParameters="id"/>
+    </mvcSiteMapNode>
+    <mvcSiteMapNode title="Organization" controller="Organizations" action="Index">
+      <mvcSiteMapNode title="Organization Create" controller="Organizations" action="Create"/>
+      <mvcSiteMapNode title="Organization Detail" controller="Organizations" action="Details" preservedRouteParameters="id"/>
+      <mvcSiteMapNode title="Organization Edit" controller="Organizations" action="Edit" preservedRouteParameters="id"/>
+      <mvcSiteMapNode title="Organization Delete" controller="Organizations" action="Delete" preservedRouteParameters="id"/>
+    </mvcSiteMapNode>
+    <mvcSiteMapNode title="Position" controller="Positions" action="Index">
+      <mvcSiteMapNode title="Position Create" controller="Positions" action="Create"/>
+      <mvcSiteMapNode title="Position Detail" controller="Positions" action="Details" preservedRouteParameters="id"/>
+      <mvcSiteMapNode title="Position Edit" controller="Positions" action="Edit" preservedRouteParameters="id"/>
+      <mvcSiteMapNode title="Position Delete" controller="Positions" action="Delete" preservedRouteParameters="id"/>
+    </mvcSiteMapNode>
+    <mvcSiteMapNode title="Employee" controller="Employees" action="Index">
+      <mvcSiteMapNode title="Employee Create" controller="Employees" action="Create"/>
+      <mvcSiteMapNode title="Employee Detail" controller="Employees" action="Details" preservedRouteParameters="id"/>
+      <mvcSiteMapNode title="Employee Edit" controller="Employees" action="Edit" preservedRouteParameters="id"/>
+      <mvcSiteMapNode title="Employee Delete" controller="Employees" action="Delete" preservedRouteParameters="id"/>
+    </mvcSiteMapNode>      
+    <mvcSiteMapNode title="Audit Universe" controller="AuditUniverses" action="Index">
+      <mvcSiteMapNode title="Audit Universe Create" controller="AuditUniverses" action="CreateAuditUniverse" preservedRouteParameters="id"/>
+      <mvcSiteMapNode title="Sub Audit Universe Create" controller="AuditUniverses" action="CreateSubAuditUniverse" preservedRouteParameters="id"/>
+    </mvcSiteMapNode>
+    <mvcSiteMapNode title="Questioner" controller="Questioners" action="Index">
+      <mvcSiteMapNode title="Questioner Create" controller="Questioners" action="Create"/>
+      <mvcSiteMapNode title="Questioner Detail" controller="Questioners" action="Details" preservedRouteParameters="id"/>
+      <mvcSiteMapNode title="Questioner Edit" controller="Questioners" action="Edit" preservedRouteParameters="id"/>
+      <mvcSiteMapNode title="Questioner Delete" controller="Questioners" action="Delete" preservedRouteParameters="id"/>
+    </mvcSiteMapNode>
+    <mvcSiteMapNode title="Annual Planning" controller="AnnualPlannings" action="Index">
+      <mvcSiteMapNode title="Annual Planning Create" controller="AnnualPlannings" action="Create"/>
+      <mvcSiteMapNode title="Annual Planning Detail" controller="AnnualPlannings" action="Details" preservedRouteParameters="id"/>
+      <mvcSiteMapNode title="Annual Planning Edit" controller="AnnualPlannings" action="Edit" preservedRouteParameters="id"/>
+      <mvcSiteMapNode title="Annual Planning Delete" controller="AnnualPlannings" action="Delete" preservedRouteParameters="id"/>
+    </mvcSiteMapNode>
+    <mvcSiteMapNode title="Prelimenary Survey" controller="Preliminaries" action="Index">
+      <mvcSiteMapNode title="Prelimenary Survey Create" controller="Preliminaries" action="Create"/>
+      <mvcSiteMapNode title="Prelimenary Survey Detail" controller="Preliminaries" action="Details" preservedRouteParameters="id"/>
+      <mvcSiteMapNode title="Prelimenary Survey Edit" controller="Preliminaries" action="Edit" preservedRouteParameters="id"/>
+      <mvcSiteMapNode title="Prelimenary Survey Delete" controller="Preliminaries" action="Delete" preservedRouteParameters="id"/>
+    </mvcSiteMapNode>
+    <mvcSiteMapNode title="Audit Planning Memorandum" controller="AuditPlanningMemorandums" action="Index">
+      <mvcSiteMapNode title="Audit Planning Memorandum Create" controller="AuditPlanningMemorandums" action="Create"/>
+      <mvcSiteMapNode title="Audit Planning Memorandum Detail" controller="AuditPlanningMemorandums" action="Details" preservedRouteParameters="id"/>
+      <mvcSiteMapNode title="Audit Planning Memorandum Edit" controller="AuditPlanningMemorandums" action="Edit" preservedRouteParameters="id"/>
+      <mvcSiteMapNode title="Audit Planning Memorandum Delete" controller="AuditPlanningMemorandums" action="Delete" preservedRouteParameters="id"/>
+    </mvcSiteMapNode>
+    <mvcSiteMapNode title="Notulen Entry Meeting" controller="NotulenEntryMeetings" action="Index">
+      <mvcSiteMapNode title="Notulen Entry Meeting Create" controller="NotulenEntryMeetings" action="Create"/>
+      <mvcSiteMapNode title="Notulen Entry Meeting Detail" controller="NotulenEntryMeetings" action="Details" preservedRouteParameters="id"/>
+      <mvcSiteMapNode title="Notulen Entry Meeting Edit" controller="NotulenEntryMeetings" action="Edit" preservedRouteParameters="id"/>
+      <mvcSiteMapNode title="Notulen Entry Meeting Delete" controller="NotulenEntryMeetings" action="Delete" preservedRouteParameters="id"/>
+    </mvcSiteMapNode>
+    <mvcSiteMapNode title="Letter Of Command" controller="LetterOfCommands" action="Index">
+      <mvcSiteMapNode title="Letter Of Command Create" controller="LetterOfCommands" action="Create"/>
+      <mvcSiteMapNode title="Letter Of Command Detail" controller="LetterOfCommands" action="Details" preservedRouteParameters="id"/>
+      <mvcSiteMapNode title="Letter Of Command Edit" controller="LetterOfCommands" action="Edit" preservedRouteParameters="id"/>
+      <mvcSiteMapNode title="Letter Of Command Delete" controller="LetterOfCommands" action="Delete" preservedRouteParameters="id"/>
+    </mvcSiteMapNode>
+    <mvcSiteMapNode title="Walktrough" controller="Walktroughs" action="Index">
+      <mvcSiteMapNode title="Walktrough Create" controller="Walktroughs" action="Create"/>
+      <mvcSiteMapNode title="Walktrough Detail" controller="Walktroughs" action="Details" preservedRouteParameters="id"/>
+      <mvcSiteMapNode title="Walktrough Edit" controller="Walktroughs" action="Edit" preservedRouteParameters="id"/>
+      <mvcSiteMapNode title="Walktrough Delete" controller="Walktroughs" action="Delete" preservedRouteParameters="id"/>
+    </mvcSiteMapNode>
+    <mvcSiteMapNode title="Field Work" controller="FieldWorks" action="Index">
+      <mvcSiteMapNode title="Field Work Create" controller="FieldWorks" action="Create"/>
+      <mvcSiteMapNode title="Field Work Detail" controller="FieldWorks" action="Details" preservedRouteParameters="id"/>
+      <mvcSiteMapNode title="Field Work Edit" controller="FieldWorks" action="Edit" preservedRouteParameters="id"/>
+      <mvcSiteMapNode title="Field Work Delete" controller="FieldWorks" action="Delete" preservedRouteParameters="id"/>
+    </mvcSiteMapNode>
+    <mvcSiteMapNode title="Reporting" controller="Reportings" action="Index">
+      <mvcSiteMapNode title="Reporting Create" controller="Reportings" action="Create"/>
+      <mvcSiteMapNode title="Reporting Detail" controller="Reportings" action="Details" preservedRouteParameters="id"/>
+      <mvcSiteMapNode title="Reporting Edit" controller="Reportings" action="Edit" preservedRouteParameters="id"/>
+      <mvcSiteMapNode title="Reporting Delete" controller="Reportings" action="Delete" preservedRouteParameters="id"/>
+    </mvcSiteMapNode>
+    <mvcSiteMapNode title="Feedback" controller="Feedbacks" action="Index">
+      <mvcSiteMapNode title="Feedback Create" controller="Feedbacks" action="Create"/>
+      <mvcSiteMapNode title="Feedback Detail" controller="Feedbacks" action="Details" preservedRouteParameters="id"/>
+      <mvcSiteMapNode title="Feedback Edit" controller="Feedbacks" action="Edit" preservedRouteParameters="id"/>
+      <mvcSiteMapNode title="Feedback Delete" controller="Feedbacks" action="Delete" preservedRouteParameters="id"/>
+    </mvcSiteMapNode>
+    <mvcSiteMapNode title="Consulting Request" controller="ConsultingRequests" action="Index">
+      <mvcSiteMapNode title="Consulting Request Create" controller="ConsultingRequests" action="Create"/>
+      <mvcSiteMapNode title="Consulting Request Detail" controller="ConsultingRequests" action="Details" preservedRouteParameters="id"/>
+      <mvcSiteMapNode title="Consulting Request Edit" controller="ConsultingRequests" action="Edit" preservedRouteParameters="id"/>
+      <mvcSiteMapNode title="Consulting Request Delete" controller="ConsultingRequests" action="Delete" preservedRouteParameters="id"/>
+    </mvcSiteMapNode>
+    <mvcSiteMapNode title="Surat Perintah" controller="ConsultingLetterOfCommands" action="Index">
+      <mvcSiteMapNode title="Surat Perintah Create" controller="ConsultingLetterOfCommands" action="Create"/>
+      <mvcSiteMapNode title="Surat Perintah Detail" controller="ConsultingLetterOfCommands" action="Details" preservedRouteParameters="id"/>
+      <mvcSiteMapNode title="Surat Perintah Edit" controller="ConsultingLetterOfCommands" action="Edit" preservedRouteParameters="id"/>
+      <mvcSiteMapNode title="Surat Perintah Delete" controller="ConsultingLetterOfCommands" action="Delete" preservedRouteParameters="id"/>
+    </mvcSiteMapNode>
+    <mvcSiteMapNode title="Consulting Field Work" controller="ConsultingFieldWorks" action="Index">
+      <mvcSiteMapNode title="Consulting Field Work Create" controller="ConsultingFieldWorks" action="Create"/>
+      <mvcSiteMapNode title="Consulting Field Work Detail" controller="ConsultingFieldWorks" action="Details" preservedRouteParameters="id"/>
+      <mvcSiteMapNode title="Consulting Field Work Edit" controller="ConsultingFieldWorks" action="Edit" preservedRouteParameters="id"/>
+      <mvcSiteMapNode title="Consulting Field Work Delete" controller="ConsultingFieldWorks" action="Delete" preservedRouteParameters="id"/>
+    </mvcSiteMapNode>
+    <mvcSiteMapNode title="Consulting Reporting" controller="ConsultingReportings" action="Index">
+      <mvcSiteMapNode title="Consulting Reporting Create" controller="ConsultingReportings" action="Create"/>
+      <mvcSiteMapNode title="Consulting Reporting Detail" controller="ConsultingReportings" action="Details" preservedRouteParameters="id"/>
+      <mvcSiteMapNode title="Consulting Reporting Edit" controller="ConsultingReportings" action="Edit" preservedRouteParameters="id"/>
+      <mvcSiteMapNode title="Consulting Reporting Delete" controller="ConsultingReportings" action="Delete" preservedRouteParameters="id"/>
+    </mvcSiteMapNode>
+    <mvcSiteMapNode title="Consulting Feedback" controller="ConsultingFeedbacks" action="Index">
+      <mvcSiteMapNode title="Consulting Feedback Create" controller="ConsultingFeedbacks" action="Create"/>
+      <mvcSiteMapNode title="Consulting Feedback Detail" controller="FConsultingFeedbackseedbacks" action="Details" preservedRouteParameters="id"/>
+      <mvcSiteMapNode title="Consulting Feedback Edit" controller="ConsultingFeedbacks" action="Edit" preservedRouteParameters="id"/>
+      <mvcSiteMapNode title="Consulting Feedback Delete" controller="ConsultingFeedbacks" action="Delete" preservedRouteParameters="id"/>
+    </mvcSiteMapNode>
+  </mvcSiteMapNode>
+
+</mvcSiteMap>

@@ -1,0 +1,126 @@
+﻿@{
+    ViewBag.Title = "Position_Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<style>
+    .padding5 {
+        padding: 5px;
+    }
+</style>
+
+<div class="row">
+    <div class="col-md-12">
+        <!-- BEGIN EXAMPLE TABLE PORTLET-->
+        <div class="portlet box red-sunglo">
+            <div class="portlet-title">
+                <div class="caption">
+                    <i class="fa fa-star"></i> Position
+                </div>
+            </div>
+            <div class="portlet-body">
+                <div class="table-toolbar">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="btn-group">
+
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="btn-group pull-right">
+                                <a href="#modal-position" data-toggle="modal" class="btn btn-pertamina-green">
+                                    Add New <i class="fa fa-plus"></i>
+                                </a>
+                                <button class="btn dropdown-toggle" data-toggle="dropdown">
+                                    Tools <i class="fa fa-angle-down"></i>
+                                </button>
+                                <ul class="dropdown-menu pull-right">
+                                    <li>
+                                        <a href="javascript:;">
+                                            Save as PDF
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="javascript:;">
+                                            Export to Excel
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <table class="table table-striped table-hover table-bordered" id="table-position">
+                    <thead>
+                        <tr>
+                            <th>
+                                Position
+                            </th>
+                            <th>
+                                Job Description
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>
+                                <a href="@Url.Action("Position_Details", "Designs")">Main Director</a>
+                            </td>
+                            <td>
+                                Job descripttion here
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <!-- END EXAMPLE TABLE PORTLET-->
+    </div>
+</div>
+
+<!-- MODAL CREATE START -->
+<div class="modal fade" id="modal-position" tabindex="-1" role="basic" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                <h4 class="modal-title"><i class="fa fa-plus-circle"></i> <b>Add New Position</b></h4>
+            </div>
+            <div class="modal-body">
+                <form id="new-organization" role="form">
+                    <table id="table-new-organization">
+                        <tr class="padding5">
+                            <td class="padding5">
+                                Position
+                            </td>
+                            <td class="padding5">
+                                :
+                            </td>
+                            <td class="padding5">
+                                <input type="text" name="Position" class="form-control" value="" style="width:100%;">
+                            </td>
+                        </tr>
+                        <tr class="padding5">
+                            <td class="padding5">
+                                Job Description
+                            </td>
+                            <td class="padding5">
+                                :
+                            </td>
+                            <td class="padding5">
+                                <input type="text" name="Job Description" class="form-control" value="" style="width:100%;">
+                            </td>
+                        </tr>
+                    </table>
+                    <div class="modal-footer" style="margin-top:10px; margin-bottom:-10px;">
+                        <button type="button" class="btn btn-pertamina-red" data-dismiss="modal"><i class="fa fa-times-circle"></i> Cancel</button>
+                        <button type="submit" class="btn btn-pertamina-blue" data-dismiss="modal"><i class="fa fa-download"></i> Save</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+<!-- MODAL CREATE END -->

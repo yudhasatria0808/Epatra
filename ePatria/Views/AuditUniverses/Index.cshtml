@@ -1,0 +1,166 @@
+﻿@model  List<ePatria.Models.Activity>
+@{
+    ViewBag.Title = "Index";
+}
+<style>
+    .divScroll {
+        overflow: scroll;
+        height: 380px;
+        width: 1057px;
+    }
+</style>
+<style>
+.collapsed {
+    width:15px;
+    background-image: url('../Content/themes/base/images/ui-icons_454545_256x240.png');
+    background-repeat: no-repeat;
+    background-position: -36px -17px;
+    display:inline-block;
+    cursor:pointer;
+}
+.expands {
+    width: 15px;
+    background-image: url('../Content/themes/base/images/ui-icons_454545_256x240.png');
+    background-repeat: no-repeat;
+    background-position: -50px -17px;
+    display: inline-block;
+    cursor:pointer;
+}
+    .treeview ul {
+        font: 14px Arial, Sans-Serif;
+        margin: 0px;
+        padding-left: 20px;
+        padding-right: 5px;
+        list-style: none;
+    }
+
+    .treeview > li > a {
+        font-weight: bold;
+    }
+
+    .treeview li {
+    }
+
+        .treeview li a {
+            padding: 0px;
+            font-size: 12px;
+            display: inline-block;
+            text-decoration: none;
+            width: auto;
+        }
+</style> 
+<script>
+    $(document).ready(function () {
+        $(".treeview li>ul").css('display', 'none'); // Hide all 2-level ul 
+        $(".collapsible").click(function (e) {
+            e.preventDefault();
+            $(this).toggleClass("collapsed expands");
+            $(this).closest('li').children('ul').slideToggle();
+        });
+    });
+</script>   
+<div class="row" style="margin-top:20px;">
+    <div class="col-md-12">
+        <!-- BEGIN EXAMPLE TABLE PORTLET-->
+        <div class="portlet box red-sunglo">
+            <div class="portlet-title">
+                <div class="caption">
+                    <i class="fa fa-user"></i> Audit Universe
+                </div>
+            </div>
+            <div class="portlet-body">
+                <div class="table-toolbar">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="btn-group">
+
+                            </div>
+                        </div>
+                        @using Microsoft.AspNet.Identity;
+                        @{ var permission = HelperController.getPermission(User.Identity.GetUserId(), "Audit Universe");
+                            var isSuperAdmin = HelperController.isSuperAdmin(User.Identity.GetUserId());
+                            if (permission != null && permission.Any(q => q.IsCreate == true) || isSuperAdmin)
+                            {
+                                <div class="col-md-6">
+                                    <div class="btn-group pull-right">
+                                        <a href="@Url.Action("CreateAuditUniverse")" class="btn green">Add New <i class="fa fa-plus"></i></a>
+                                        <div class="btn-group">
+                                            <button class="btn dropdown-toggle" data-toggle="dropdown">
+                                                Tools <i class="fa fa-angle-down"></i>
+                                            </button>
+                                            <ul class="dropdown-menu pull-right">
+                                            <li>
+                                                    <div id="editor"></div>
+                                                    <a id="pdfBtn">
+                                                    Save as PDF
+                                                    </a>
+                                            </li>
+                                        </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                        }
+                    </div>
+                </div>
+                <div class="treeview divScroll" id="treeview">
+
+                    @if (Model != null && Model.Count() > 0)
+                    {
+                        <ul>
+
+                            @TreeViewActivity.GetTreeView(this.Html, Model, Model.FirstOrDefault().ActivityParentID)
+                        </ul>
+                    }
+                </div>
+
+            </div>
+        </div>
+        <!-- END EXAMPLE TABLE PORTLET-->
+    </div>
+</div>
+<div class="modal fade " id="CreateSubAuditUniverse" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content" style="color:#000;">
+
+        </div>
+    </div>
+</div>
+
+<!-- END EXAMPLE TABLE PORTLET-->
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+    @if (ViewBag.message != null)
+    {
+    <script>
+        $(document).ready(function () {
+            toastr.success("@ViewBag.message", "Success");
+        });
+    </script>
+    } else if (ViewBag.messageerror != null)
+    {
+        <script>
+            $(document).ready(function () {
+                toastr.error("@ViewBag.messageerror", "Error");
+            });
+        </script>
+    } 
+}
+
+<script type="text/javascript" src="~/Content/ChartPdf/jspdf.min.js"></script>
+<script>
+var doc = new jsPDF();
+var specialElementHandlers = {
+    '#editor': function (element, renderer) {
+        return true;
+    }
+};
+
+$('#pdfBtn').click(function () {
+    doc.fromHTML($('#treeview').html(), 15, 15, {
+        'width': 170,
+            'elementHandlers': specialElementHandlers
+    });
+    doc.save('AuditUniverse.pdf');
+});
+</script>

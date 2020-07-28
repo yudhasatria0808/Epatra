@@ -1,0 +1,83 @@
+﻿@model ePatria.Models.ConsultingReporting
+
+@{
+    ViewBag.Title = "Details";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Details</h2>
+
+<div>
+    <h4>ConsultingReporting</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.ConsultingLetterOfCommand.NomorSP)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.ConsultingLetterOfCommand.NomorSP)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.ActivityID)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.ActivityID)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.NoLaporan)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.NoLaporan)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Kepada)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Kepada)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Dari)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Dari)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Lampiran)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Lampiran)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Perihal)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Perihal)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Hasil)
+        </dt>
+
+        <dd>
+            @Html.Raw(Model.Hasil)
+        </dd>
+
+    </dl>
+</div>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id = Model.ConsultingReportingID }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>

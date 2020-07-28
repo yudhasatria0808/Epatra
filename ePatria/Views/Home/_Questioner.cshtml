@@ -1,0 +1,49 @@
+﻿@model IEnumerable<ePatria.Models.Questioner>
+
+@{
+    ViewBag.Title = "Index";
+    Layout = null;
+}
+@using Microsoft.AspNet.Identity;
+@{ var Perm = HelperController.getPermission(User.Identity.GetUserId(), "Questioner"); }
+@{ var checkPerm = HelperController.getPermissionRoleByPerm("Questioner", User.Identity.GetUserId());
+    var isSuperAdmin = HelperController.isSuperAdmin(User.Identity.GetUserId());
+}
+@foreach (var item in Model)
+{
+    <li>
+        <div class="col1">
+            <div class="cont">
+                <div class="cont-col1">
+                    <div class="label label-sm label-info">
+                        <i class="fa fa-bell-o"></i>
+                    </div>
+                </div>
+                <div class="cont-col2">
+                    <div class="desc">
+                        <label><i>Questioner</i> @item.Name, Status : <i>@item.Status</i></label>
+                        @if (Perm != null && Perm.Any(q => q.IsUpdate == true) || isSuperAdmin)
+                        {
+                            if (item.Status == "Draft")
+                            {
+                                <label>
+                                    [@Html.ActionLink("Edit", "../Questioners/Edit", new { id = item.QuestionerID }) |
+                                    @Html.ActionLink("Details", "../Questioners/Details", new { id = item.QuestionerID }) |
+                                    @Html.ActionLink("Delete", "../Questioners/Delete", new { id = item.QuestionerID })]
+                                </label>
+                            } else {
+                                <label>
+                                    [@Html.ActionLink("Details", "../Questioners/Details", new { id = item.QuestionerID })]
+                                </label>
+                            }
+                        } else {
+                            <label>
+                                [@Html.ActionLink("Details", "../Questioners/Details", new { id = item.QuestionerID })]
+                            </label>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </li>
+}

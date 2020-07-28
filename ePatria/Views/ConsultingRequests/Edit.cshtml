@@ -1,0 +1,258 @@
+﻿@model ePatria.Models.ConsultingRequest
+
+@{
+    ViewBag.Title = "Edit";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Edit</h2>
+@using Microsoft.AspNet.Identity;
+@{ 
+    var checkPerm = HelperController.getPermissionRoleByPerm("Consulting Request", User.Identity.GetUserId());
+    var userPerm = HelperController.getPermission(User.Identity.GetUserId(), "Consulting Request");
+    }
+@using (Html.BeginForm("Edit", "ConsultingRequests", FormMethod.Post, new { enctype = "multipart/form-data", id="crequestform" }))
+{
+    @Html.AntiForgeryToken()
+    
+    <div class="form-horizontal">
+        <h4>Consulting Request</h4>
+        <hr />
+        <div class="error-container">
+            <ul></ul>
+        </div>
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        @Html.HiddenFor(model => model.ConsultingRequestID)
+        @Html.HiddenFor(model => model.Status)
+        <div class="form-group">
+            @Html.LabelFor(model => model.NoRequest, "No.Request", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-5">
+                @Html.EditorFor(model => model.NoRequest, new { htmlAttributes = new { @class = "form-control", @readonly = true } })
+                @Html.ValidationMessageFor(model => model.NoRequest, "", new { @class = "text-danger" })
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(model => model.NoSurat, "No.Surat", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-5">
+                @Html.EditorFor(model => model.NoSurat, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.NoSurat, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.RequesterID, "Requester", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-5">
+                @Html.TextBox("requester", null, new { @class = "form-control", @placeholder ="Auto Complete" })
+                @Html.ValidationMessageFor(model => model.RequesterID, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group input-group-sm">
+            @Html.LabelFor(model => model.Date_Start, "Tanggal Surat", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-2">
+                @Html.TextBoxFor(model => model.Date_Start, "{0:dd/MM/yyyy}", new { @class = "form-control datepicker", @readonly = true })
+                @Html.ValidationMessageFor(model => model.Date_Start, "", new { @class = "text-danger" })
+            </div>
+            @*<div class="col-md-2">
+                @Html.TextBoxFor(model => model.Date_End, "{0:dd/MM/yyyy}", new { @class = "form-control datepicker", @readonly = true })
+                @Html.ValidationMessageFor(model => model.Date_End, "", new { @class = "text-danger" })
+            </div>*@
+        </div>
+
+        <div class="form-group">
+            @*@Html.LabelFor(model => model.ActivityID, "Activity", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-5">
+                @Html.DropDownList("ActivityID", null, htmlAttributes: new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.ActivityID, "", new { @class = "text-danger" })
+            </div>*@
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.ActivityStr, "Perihal", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-5">
+                @Html.EditorFor(model => model.ActivityStr, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.ActivityStr, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.EvaluationResult, "Evaluasi", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-5">
+                @Html.TextAreaFor(model => model.EvaluationResult, new { @class = "form-control", @rows = "4" })
+                @Html.ValidationMessageFor(model => model.EvaluationResult, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.Label("File", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @if (ViewBag.paths != null)
+                {
+                    @*if (ViewBag.Extension1 == "image")
+                    {
+                        <img src="@ViewBag.subPath1" alt="image" width="20%" height="20%"/>
+                        @Html.ActionLink("View Full Size", "../"+(string)ViewBag.subPath1, null, new { target="_blank" })
+                    } else
+                    {
+                       @Html.LabelFor(model => model.EmployeeID, (string)ViewBag.newFName1) <br />
+                       @Html.ActionLink("Download File", "../"+(string)ViewBag.subPath1, null, new { target="_blank" })
+                    }*@
+                    int i = 0;
+                    List<string> images = new List<string>();
+                    foreach (var path in ViewBag.paths)
+                    {
+                        i++;
+                        string imageid = "image" + i.ToString();
+                        <div class="image">
+                            <img src="@path" alt="image" width="20%" height="20%" id=@imageid style="display:none" />
+                            <div>
+                                @Html.Label("Delete", null, new { @class = "removeImage btn btn-xs red", @style = "cursor:pointer" })
+                                @Html.ActionLink("Download", "../" + (string)path, null, new { target = "_blank", @class = "btn btn-xs green" })
+                                @Html.LabelFor(model => model.ConsultingRequestID, (string)path.Split('/')[3])
+                                @{images.Add(Convert.ToString(path));}
+                            </div>
+                        </div>
+                    }
+                    Session["Images"] = images.ToArray();
+                }
+                <input type="file" name="files" id="file1" class="file1" />
+                <div class="preview"></div>
+            </div>
+        </div>
+        <script>
+            $('.removeImage').click(function () {
+                $(this).parent().parent().remove();
+                var images = [];
+                if ($('.image').length > 0) {
+                    $('.image').each(function (index) {
+                        images.push($(this).find('img').attr('src'));
+                    });
+                } else
+                    images = "deleteall";
+                $.ajax({
+                    type: "POST",
+                    traditional: true,
+                    url: "../getImages",
+                    data: { images: images }
+                });
+            });
+            $(function () {
+                $("input[name=files]").previewimage({
+                    div: ".preview"
+                });
+            });
+        </script>
+        <style type="text/css">
+            input[type='file'] {
+                color: transparent;
+            }
+        </style>
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                @if (userPerm.Any(d => d.IsCreate))
+                {
+                    if (userPerm.Any(d => d.IsSubmit1))
+                    {
+                        if (checkPerm.Contains("IsSubmit2"))
+                        {
+                            <button class="btn btn-primary" name="submit" type="submit" id="submit" value="Submit For Review By @checkPerm.Split(':')[2].Split(';')[0]"> Submit</button>
+                        }
+                        else if (checkPerm.Contains("IsApprove"))
+                        {
+                            <button class="btn btn-primary" name="submit" type="submit" id="submit" value="Submit For Approve By @checkPerm.Split(':')[3].Split(';')[0]"> Submit</button>
+                        }
+                    }
+                    else
+                    {
+                        <button class="btn btn-primary" name="submit" type="submit" id="submit" value="Submit For Review By @checkPerm.Split(':')[1].Split(';')[0]"> Submit</button>
+                    }
+                }
+                else if (userPerm.Any(d => d.IsSubmit1))
+                {
+                    if (checkPerm.Contains("IsSubmit2"))
+                    {
+                        <button class="btn btn-primary" name="submit" type="submit" id="submit" value="Submit For Review By @checkPerm.Split(':')[2].Split(';')[0]"> Submit</button>
+                    }
+                    else if (checkPerm.Contains("IsApprove"))
+                    {
+                        <button class="btn btn-primary" name="submit" type="submit" id="submit" value="Submit For Approve By @checkPerm.Split(':')[3].Split(';')[0]"> Submit</button>
+                    }
+                }
+                else if (userPerm.Any(d => d.IsSubmit2))
+                {
+                    if (checkPerm.Contains("IsApprove"))
+                    {
+                        <button class="btn btn-primary" name="submit" type="submit" id="submit" value="Submit For Approve By @checkPerm.Split(':')[3].Split(';')[0]"> Submit</button>
+                    }
+                }
+                
+                @*@if (checkPerm.Contains("IsSubmit1"))
+                {
+                    <input class="btn btn-primary" name="submit" type="submit" id="submit" value="Submit For Review By @checkPerm.Split(':')[1].Split(';')[0]" />
+                }
+                else if (checkPerm.Contains("IsSubmit2"))
+                {
+                    <input class="btn btn-primary" name="submit" type="submit" id="submit" value="Submit For Review By @checkPerm.Split(':')[2].Split(';')[0]" />
+                }
+                else if (checkPerm.Contains("IsApprove"))
+                {
+                    <input class="btn btn-primary" name="submit" type="submit" id="submit" value="Submit For Approve By @checkPerm.Split(':')[3].Split(';')[0]" />
+                }*@
+                <input class="btn btn-primary" name="submit" type="submit" id="submit" value="Save" />
+            </div>
+        </div>
+    </div>
+}
+
+<div>
+    @Html.ActionLink("Back to List", "Index")
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+        <script type="text/javascript">
+            $(function () {
+                $('#requester').autocomplete({
+                    source: '@Url.Action("Autocomplete")', change: function (event, ui) {
+                        if (!ui.item) {
+                            $(this).val("");
+                        }
+                    }
+                });
+                $('#NoSurat').autocomplete({
+                    source: '@Url.Action("NoSuratAutocomplete")', change: function (event, ui) {
+                        if (!ui.item) {
+                            $(this).val("");
+                        }
+                    }
+                });
+            })
+            $("#crequestform").validate({
+                errorLabelContainer: $("ul", $('div.error-container')),
+                wrapper: 'li',
+                rules: {
+                    NoRequest: "required",
+                    NoSurat: "required",
+                    requester: "required",
+                    Date_Start: "required",
+                    //Date_End: "required",
+                    //ActivityID: "required",
+                    ActivityStr: "required",
+                    EvaluationResult: "required",
+                    File: "required",
+                },
+                messages: {
+                    NoRequest: "Please enter No. Request",
+                    NoSurat: "Please enter No. Surat",
+                    requester: "Please enter Requester",
+                    Date_Start: "Please enter Date Start",
+                    //Date_End: "Please enter Date End",
+                    //ActivityID: "Please select Activity",
+                    ActivityStr: "Please enter Activity",
+                    EvaluationResult: "Please enter Evaluation Result",
+                    File: "Please choose File",
+                }
+            });
+        </script>
+}

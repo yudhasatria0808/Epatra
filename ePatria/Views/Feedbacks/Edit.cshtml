@@ -1,0 +1,205 @@
+﻿@model ePatria.Models.Feedback
+
+@{  
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Add New Questioner</h2>
+
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+    
+    <div class="form-horizontal">
+        <h4>Feedback</h4>
+        <hr />
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        @Html.HiddenFor(model => model.FeedbackID)
+        <div class="col-md-10">
+            <div class="portlet box blue">
+                <div class="portlet-title">
+                    <div class="caption"><i class="fa fa-gift"></i>Select Question</div>
+                </div>
+                <div class="portlet-body">
+                    <div id="QuestionsGroup">
+                        @{var x = 0;}
+                        @if (ViewBag.feedbackQ != null) {
+                            foreach (var quest in ViewBag.feedbackQ.Split(';')) {
+                                x++;
+                                string ques = ViewBag.feedbackQ;
+                                if (x < ques.Split(';').Count()) {
+                                    <div class="form-group" id="questiondiv-@x">
+                                        @Html.Label("Question " + @x, htmlAttributes: new { @class = "control-label col-md-2", @id = "questionlabel#1" })
+                                        <div class="col-md-5">
+                                            @Html.DropDownList("Questioners", new SelectList(ViewBag.Quests, "QuestionerID", "Name", quest), null, htmlAttributes: new { @class = "form-control", @id = "questionddl-"+@x, @Name = "question#"+@x})
+                                        </div>
+                                    </div>
+                                }
+                            }
+                        }
+                    </div>
+                    <div class="form-group">
+                        <div class="col-md-offset-2 col-md-5">
+                            <a href="#" class="btn btn-sm green" id='addButton'><i class="fa fa-plus"></i>Add More Question</a>
+                            <a href="#" class="btn btn-sm red" id='removeButton'><i class="fa fa-times"></i>Remove Question</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-10">
+            <div class="portlet box blue">
+                <div class="portlet-title">
+                    <div class="caption"><i class="fa fa-gift"></i>Select PIC</div>
+                </div>
+                <div class="portlet-body">
+                    <div id="PICsGroup">
+                        @{var y = 0;}
+                        @if (ViewBag.pics != null) {
+                            foreach (var pic in ViewBag.pics) {
+                                y++;
+                                var picCount = ViewBag.pics;
+                                if (y < picCount.Count + 1) {
+                                    <div class="form-group" id="picdiv-@y">
+                                        @Html.Label("PIC " + @y, htmlAttributes: new { @class = "control-label col-md-2", @id = "piclabel#1" })
+                                        <div class="col-md-4">
+                                            <input name="pic#@y" id="pic-@y" class="form-control member" type="text" placeholder = "Auto Complete" value="@pic" />
+                                        </div>
+                                    </div>
+                                }
+                            }
+                        }
+                    </div>
+                    <div class="form-group">
+                        <div class="col-md-offset-2 col-md-5">
+                            <a href="#" class="btn btn-sm green" id='addButtonPIC'><i class="fa fa-plus"></i>Add More PIC</a>
+                            <a href="#" class="btn btn-sm red" id='removeButtonPIC'><i class="fa fa-times"></i>Remove PIC</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="button" value="Send URL" onclick="this.disabled = true; 
+    this.value = 'Sending…';SaveFeedbackDetails($('#FeedbackID').val());" class="btn btn-default"/>
+            </div>
+        </div>
+    </div>
+}
+
+<div>
+    @Html.ActionLink("Back to List", "Index")
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}
+<script>
+    @{ string q = ViewBag.feedbackQ != null ? ViewBag.feedbackQ : "0"; }
+    @{ var p = ViewBag.pics != null ? ViewBag.pics : "0"; }
+    var counter = 1;
+    var dataQuest = @q;
+    if (dataQuest != "0")
+        counter = @q.Split(';').Count();
+    var counterpic = 2;
+    
+        counterpic = @p.Count + 1;
+    $(document).ready(function () {
+        $("#addButton").click(function () {
+            if (counter > 10) {
+                alert("Maksimal 10 Questions");
+                return false;
+            }
+            var newDDLDiv = $(document.createElement('div'))
+                 .attr("id", 'questiondiv-' + counter).addClass("form-group");
+            var questionArr = @Html.Raw(Json.Encode(@ViewBag.Questss));
+            var html = '<label class = "control-label col-md-2">Question ' + counter + '</label>' +
+            '<div class="col-md-5"><select name="question#' + counter +
+            '" id="questionddl-' + counter + '" value="" class="form-control valid" >';
+            for (var i = 0; i < questionArr.length; i++) {
+                html += "<option value=" + questionArr[i].Value +">" + questionArr[i].Text + "</option>"
+            }
+            html += '</select></div>';
+            newDDLDiv.after().html(html);
+            newDDLDiv.appendTo("#QuestionsGroup");
+            counter++;
+        });
+        $("#removeButton").click(function () {
+            if (counter == 1) {
+                alert("No more Question to remove");
+                return false;
+            }
+            counter--;
+            $("#questiondiv-" + counter).remove();
+        });
+        $("#addButtonPIC").click(function () {
+            if (counterpic > 10) {
+                alert("Maksimal 10 PICs");
+                return false;
+            }
+            var newTextBoxDiv = $(document.createElement('div'))
+                 .attr("id", 'picdiv-' + counterpic).addClass("form-group");
+            var html = '<label class = "control-label col-md-2">PIC ' + counterpic + '</label>' +
+            '<div class="col-md-4"><input type="text" name="pic#' + counterpic +
+            '" id="pic-' + counterpic + '" value="" class="form-control pic" placeholder="Auto Complete" >';
+            html += '</input></div>';
+            newTextBoxDiv.after().html(html);
+            newTextBoxDiv.appendTo("#PICsGroup");
+            counterpic++;
+            $('.pic').autocomplete({
+                source: '@Url.Action("PICAutocomplete")', change: function (event, ui) {
+                    if (!ui.item) {
+                        $(this).val("");
+                    }
+                }
+            });
+        });
+        $("#removeButtonPIC").click(function () {
+            if (counterpic == 1) {
+                alert("No more PIC to remove");
+                return false;
+            }
+            counterpic--;
+            $("#picdiv-" + counterpic).remove();
+        });
+    });
+    $(function () {
+        $('#pic-1').autocomplete({
+            source: '@Url.Action("PICAutocomplete")', change: function (event, ui) {
+                if (!ui.item) {
+                    $(this).val("");
+                }
+            }
+        });
+    });
+
+    function SaveFeedbackDetails(_feedbackId){
+        var _questions = "";
+        var _pics = "";
+        for (i = 1; i < counter; i++) {
+            _questions += $("#questionddl-" + i + " option:selected").val() + ";"
+        }
+        for (i = 1; i < counterpic; i++) {
+            _pics += $("#pic-" + i).val() + ";"
+        }
+        $.ajax({
+            url: "../SaveDetailFeedback/",
+            data: {
+                feedbackID: _feedbackId,
+                questions: _questions,
+                pics: _pics
+            },
+            cache: false,
+            type: "POST",
+            success: function (data) {
+                window.location.href = "../index";
+            },
+            error: function (reponse) {
+                alert("error : " + reponse);
+            }
+        });
+    }
+</script>

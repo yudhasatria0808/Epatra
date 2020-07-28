@@ -1,0 +1,50 @@
+﻿@model IEnumerable<ePatria.Models.LetterOfCommand>
+
+@{
+    ViewBag.Title = "Index";
+    Layout = null;
+}
+
+@using Microsoft.AspNet.Identity;
+@{ var Perm = HelperController.getPermission(User.Identity.GetUserId(), "Surat Perintah");
+    var isSuperAdmin = HelperController.isSuperAdmin(User.Identity.GetUserId());
+}
+@foreach (var item in Model)
+{
+    <li>
+        <div class="col1">
+            <div class="cont">
+                <div class="cont-col1">
+                    <div class="label label-sm label-success">
+                        <i class="fa fa-bar-chart-o"></i>
+                    </div>
+                </div>
+                <div class="cont-col2">
+                    <div class="desc">
+                        <label><i>SP</i> <a href="@Url.Action("Details", "LetterOfCommands", new { id = item.LetterOfCommandID })"> @Html.DisplayFor(modelItem => item.NomorSP)</a>, Status : <i>@item.Status</i></label>
+                        @if (Perm != null && Perm.Any(q => q.IsUpdate == true) || isSuperAdmin)
+                        {
+                            if (item.Status == "Draft")
+                            {
+                                <label>
+                                    [@Html.ActionLink("Edit", "../LetterOfCommands/Edit", new { id = item.LetterOfCommandID }) |
+                                    @Html.ActionLink("Details", "../LetterOfCommands/Details", new { id = item.LetterOfCommandID }) |
+                                    @Html.ActionLink("Preview", "../LetterOfCommands/Preview", new { id = item.LetterOfCommandID }) |
+                                    @Html.ActionLink("Delete", "../LetterOfCommands/Delete", new { id = item.LetterOfCommandID })]
+                                </label>
+                            } else {
+                                <label>
+                                    [@Html.ActionLink("Details", "../LetterOfCommands/Details", new { id = item.LetterOfCommandID }) |  @Html.ActionLink("Preview", "../LetterOfCommands/Preview", new { id = item.LetterOfCommandID })]
+                                </label>
+                            }
+                        } else {
+                            <label>
+                                [@Html.ActionLink("Details", "../LetterOfCommands/Details", new { id = item.LetterOfCommandID }) |  @Html.ActionLink("Preview", "../LetterOfCommands/Preview", new { id = item.LetterOfCommandID })]
+                            </label>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </li>
+}

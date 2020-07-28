@@ -1,0 +1,184 @@
+﻿<style>
+    .padding5 {
+        padding: 5px;
+    }
+</style>
+
+<div class="modal-dialog modal-lg">
+    <div class="modal-content">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+            <h4 class="modal-title"><b><i class="fa fa-edit"></i> Edit Preparation</b></h4>
+        </div>
+        <div class="modal-body">
+            <form id="edit-preparation" role="form">
+                <table id="table-edit-preparation">
+                    <tr>
+                        <td class="padding5">
+                            <b>Activity</b>
+                        </td>
+                        <td class="padding5">
+                            :
+                        </td>
+                        <td class="padding5">
+                            <input type="text" name="Activity" class="form-control" value="Activity A" style="width:100%;" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="padding5">
+                            <b>Engagement Name</b>
+                        </td>
+                        <td class="padding5">
+                            :
+                        </td>
+                        <td class="padding5">
+                            <input type="text" name="Engagement Name" class="form-control" value="Engagement A" style="width:100%;" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="padding5">
+                            <b>Period</b>
+                        </td>
+                        <td class="padding5">
+                            :
+                        </td>
+                        <td class="padding5">
+                            <div class="input-group" id="defaultrange">
+                                <input type="text" class="form-control">
+                                <span class="input-group-btn">
+                                    <button class="btn default date-range-toggle" type="button"><i class="fa fa-calendar"></i></button>
+                                </span>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="padding5">
+                            <b>LC Attachment</b>
+                        </td>
+                        <td class="padding5">
+                            :
+                        </td>
+                        <td class="padding5">
+                            <input type="file" name="LC Attachment" class="form-control" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="padding5">
+                            <b>Responsible Person</b>
+                        </td>
+                        <td class="padding5">
+                            :
+                        </td>
+                        <td class="padding5">
+                            <select name="Responsible Person" class="form-control">
+                                <option value="">Select...</option>
+                            </select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="padding5">
+                            <b>Supervisor</b>
+                        </td>
+                        <td class="padding5">
+                            :
+                        </td>
+                        <td class="padding5">
+                            <select name="Responsible Person" class="form-control">
+                                <option value="">Select...</option>
+                            </select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="padding5">
+                            <b>Team Leader</b>
+                        </td>
+                        <td class="padding5">
+                            :
+                        </td>
+                        <td class="padding5">
+                            <select name="Responsible Person" class="form-control">
+                                <option value="">Select...</option>
+                            </select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="padding5">
+                            <b>Member</b>
+                        </td>
+                        <td class="padding5">
+                            :
+                        </td>
+                        <td class="padding5">
+                            <select name="Member" class="form-control">
+                                <option value="">Select...</option>
+                            </select>
+                        </td>
+                        <td>
+                            <button type="button" onclick="AddMember(this)" class="btn btn-pertamina-green">
+                                <i class="fa fa-plus"></i> Add
+                            </button>
+                            <button type="button" onclick="deleteRow(this)" class="btn btn-pertamina-red">
+                                <i class="fa fa-trash-o" style="margin-left:10px;"></i> Delete
+                            </button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="padding5">
+                            <b></b>
+                        </td>
+                        <td class="padding5"></td>
+                        <td class="padding5">
+                            <select name="Member" class="form-control">
+                                <option value="">Select...</option>
+                            </select>
+                        </td>
+                        <td>
+                            <button type="button" onclick="deleteRow(this)" class="btn btn-pertamina-red">
+                                <i class="fa fa-times-circle" style="margin-left:10px;"></i> Cancel
+                            </button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="padding5">
+                            <b></b>
+                        </td>
+                        <td class="padding5"></td>
+                        <td class="padding5">
+                            <select name="Member" class="form-control">
+                                <option value="">Select...</option>
+                            </select>
+                        </td>
+                        <td>
+                            <button type="button" onclick="deleteRow(this)" class="btn btn-pertamina-red">
+                                <i class="fa fa-times-circle" style="margin-left:10px;"></i> Cancel
+                            </button>
+                        </td>
+                    </tr>
+                </table>
+                <div class="modal-footer" style="margin-top:10px; margin-bottom:-10px;">
+                    <button type="button" class="btn btn-pertamina-red" data-dismiss="modal"><i class="fa fa-times-circle"></i> Cancel</button>
+                    <button type="submit" class="btn btn-pertamina-blue" data-dismiss="modal"><i class="fa fa-download"></i> Save</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    <!-- /.modal-content -->
+</div>
+
+<script>
+    function AddMember() {
+        var table = document.getElementById("table-edit-preparation");
+        var row = table.insertRow();
+        var cell1 = row.insertCell(0);
+        var cell2 = row.insertCell(1);
+        var cell3 = row.insertCell(2);
+        var cell4 = row.insertCell(3);
+        cell3.className = 'padding5';
+        cell3.innerHTML = '<input type="text" name="Member" class="form-control" value="" />';
+        cell4.innerHTML = '<button type="button" onclick="deleteRow(this)" class="btn btn-pertamina-red"><i class="fa fa-times-circle" style="margin-left:10px;"></i> Cancel</button>';
+    }
+    function deleteRow(r) {
+        var i = r.parentNode.parentNode.rowIndex;
+        document.getElementById("table-edit-preparation").deleteRow(i);
+    }
+</script>

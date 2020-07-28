@@ -1,0 +1,88 @@
+﻿@model ePatria.Models.Walktrough
+@{
+    ViewBag.Title = "Details";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Details</h2>
+
+<div>
+    <h4>Walktrough</h4>
+    <hr />
+    @*<div class="form-horizontal">
+        <div class="form-group">
+            <label class="control-label col-md-1">Business Process</label>
+            <div class="col-md-4">
+                @Html.TextBoxFor(model => model.BusinessProces, new { @class = "form-control input-sm" })
+            </div>
+        </div>
+    </div>*@
+
+    <dl class="dl-horizontal">
+        <dt>
+            Document No
+        </dt>
+
+        <dd>
+            <b>:</b>&nbsp;&nbsp;&nbsp;@Html.Display("No")
+        </dd>
+
+        <dt>
+            Document Name
+        </dt>
+
+        <dd>
+            <b>:</b>&nbsp;&nbsp;&nbsp;@Html.Display("Name")
+        </dd>
+
+        <dt>
+            Remarks
+        </dt>
+
+        <dd>
+            <b>:</b>&nbsp;&nbsp;&nbsp;@Html.Display("Mark")
+        </dd>
+
+
+        <dt>
+            @Html.DisplayName("File")
+        </dt>
+
+        <dd>
+            @if (ViewBag.paths != null)
+            {
+                @*if (ViewBag.Extension1 == "image")
+                {
+                    <img src="@ViewBag.subPath1" alt="image" width="20%" height="20%"/>
+                    @Html.ActionLink("View Full Size", "../"+(string)ViewBag.subPath1, null, new { target="_blank" })
+                } else
+                {
+                   @Html.LabelFor(model => model.EmployeeID, (string)ViewBag.newFName1) <br />
+                   @Html.ActionLink("Download File", "../"+(string)ViewBag.subPath1, null, new { target="_blank" })
+                }*@
+                foreach (var path in ViewBag.paths)
+                {
+                    <div>
+                        @Html.ActionLink("Download", "../" + (string)path, null, new { target = "_blank", @class = "btn btn-xs green" })
+                        @Html.Label("BusinessID", (string)path.Split('/')[3])
+                    </div>
+
+                }
+            }
+        </dd> 
+
+    </dl>
+</div>
+<p>
+    @Html.ActionLink("Back to List", "Index")
+</p>
+<style>
+.dl-horizontal dt{
+    text-align: left;
+    width: 125px;
+}
+
+.dl-horizontal dd{
+    margin-left: 0;
+}
+</style>

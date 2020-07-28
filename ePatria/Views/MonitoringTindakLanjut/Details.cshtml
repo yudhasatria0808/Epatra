@@ -1,0 +1,122 @@
+﻿@model ePatria.Models.ExitMeeting
+
+@{
+    ViewBag.Title = "Details";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="row" style="margin-top:20px;">
+    <div class="col-md-12">
+        <!-- BEGIN EXAMPLE TABLE PORTLET-->
+        <div class="portlet box red-sunglo">
+            <div class="portlet-title">
+                <div class="caption">
+                    <i class="fa fa-eye"></i> Annual Planning
+                </div>
+            </div>
+            <div class="portlet-body">
+                <div class="table-toolbar">
+                    <table>
+                        <tr>
+                            <td class="padding5">
+                                <b>Nomer SP</b>
+                            </td>
+                            <td class="padding5">
+                                :
+                            </td>
+                            <td class="padding5">
+                                @Html.DisplayFor(model => model.LetterOfCommand.NomorSP)
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="padding5">
+                                <b>Activity</b>
+                            </td>
+                            <td class="padding5">
+                                :
+                            </td>
+                            <td class="padding5">
+                                @Html.DisplayFor(model => model.Activity.Name)
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="padding5">
+                                <b>Engagement Name</b>
+                            </td>
+                            <td class="padding5">
+                                :
+                            </td>
+                            <td class="padding5">
+                                @Html.DisplayFor(model => model.EngagementActivity.Name)
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="padding5">
+                                <b>Periode</b>
+                            </td>
+                            <td class="padding5">
+                                :
+                            </td>
+                            <td class="padding5">
+                                from @Html.DisplayFor(model => model.Date_Start)  
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="padding5">
+                                <b>Reviewer 1</b>
+                            </td>
+                            <td class="padding5">
+                                :
+                            </td>
+                            <td class="padding5">
+                                @Html.DisplayFor(model => model.Reviewer1) 
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="padding5">
+                                <b>Reviewer 2</b>
+                            </td>
+                            <td class="padding5">
+                                :
+                            </td>
+                            <td class="padding5">
+                                @Html.DisplayFor(model => model.Reviewer2)
+                            </td>
+                        </tr>
+
+                    </table>
+                    <div class="btn-group pull-right">
+                        @using (Html.BeginForm("UpdateStatus", "ExitMeetings", "POST"))
+                        {
+                            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                            @Html.AntiForgeryToken()
+
+                            @Html.Hidden("ExitMeetingID")
+                         
+                            if (Model.Status == "Pending" && HttpContext.Current.User.IsInRole("PDQA") || Model.Status == "Pending" &&
+                                    HttpContext.Current.User.IsInRole("Admin") || Model.Status == "Pending" && HttpContext.Current.User.IsInRole("SuperAdmin"))
+                            {
+                                <input class="btn btn-primary" name="submit" type="submit" id="submit" value="Submit for Approval" />
+                                @*<input class="btn btn-primary" name="submit" type="submit" id="submit" value="Cek Out" />*@
+                            }
+                            if (HttpContext.Current.User.IsInRole("CIA") || HttpContext.Current.User.IsInRole("Admin") || HttpContext.Current.User.IsInRole("SuperAdmin"))
+                            {
+                                if (Model.Status == "Pending for Approval" || Model.Status == null)
+                                {
+                                    <input class="btn btn-primary" name="submit" type="submit" id="submit" value="Approve" />
+                                }
+                            }
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="btn-group pull-left">
+    <div class="col-md-1">
+        <a href="@Url.Action("Index", "ExitMeetings")" class="btn btn-default">
+            <i class="fa fa-arrow-circle-left"> Back</i>
+        </a>
+    </div>
+</div>                

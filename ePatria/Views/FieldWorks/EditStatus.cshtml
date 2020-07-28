@@ -1,0 +1,47 @@
+﻿@model ePatria.Models.RCMDetailRiskControlIssue
+
+@{
+    Layout = null;
+}
+
+
+<div class="form-horizontal">
+    @Html.Hidden("RCMDetailRiskControlIssueID")
+    @Html.Hidden("Status_Approval")
+    @if ((string)ViewBag.Status_Approval == null && HttpContext.Current.User.IsInRole("Pengawas") || (string)ViewBag.Status_Approval == null &&
+        HttpContext.Current.User.IsInRole("Admin") || (string)ViewBag.Status_Approval == null && HttpContext.Current.User.IsInRole("SuperAdmin"))
+    {
+        <button type="button" class="btn btn-outline red" onclick="javascript:UpdateStatusIssue($('#RCMDetailRiskControlIssueID').val(),'Review',$('#FieldWorkID').val());">
+            Submit
+        </button>
+    }
+    @if ((string)ViewBag.Status_Approval == "Review" && HttpContext.Current.User.IsInRole("CIA") ||(string)ViewBag.Status_Approval == "Review" 
+        && HttpContext.Current.User.IsInRole("Admin") ||(string)ViewBag.Status_Approval == "Review" && HttpContext.Current.User.IsInRole("SuperAdmin"))
+    {
+        <button type="button" class="btn btn-outline blue" onclick="javascript: UpdateStatusIssue($('#RCMDetailRiskControlIssueID').val(), 'Approve', $('#FieldWorkID').val());">
+            Submit
+        </button>
+    }
+</div>
+
+<script> 
+    function UpdateStatusIssue(_issueID, _status,_id) {
+        $.ajax({
+            url: "../UpdateStatusIssue/",
+            data: {
+                issueID: _issueID,
+                status: _status,
+                id: _id,
+            },
+            cache: false,
+            type: "POST",
+            success: function (data) {
+                $('#table-editissue').load("@ViewBag.Issues #table-editissue");
+                $('#editResponse').modal('hide');
+            },
+            error: function (reponse) {
+                alert("error : " + reponse);
+            }
+        });
+    };
+</script>

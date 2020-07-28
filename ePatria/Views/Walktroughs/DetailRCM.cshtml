@@ -1,0 +1,1052 @@
+@model ePatria.Models.RiskControlMatrix
+
+@{
+    Layout = null;
+}
+
+
+@using Microsoft.AspNet.Identity;
+@{ var checkPerm = HelperController.getPermissionRoleByPerm("RCM", User.Identity.GetUserId()); }
+@{ var Perm = HelperController.getPermission(User.Identity.GetUserId(), "RCM"); }
+@{ var empName = HelperController.getNameByUserName(User.Identity.Name);
+    var isSuperAdmin = HelperController.isSuperAdmin(User.Identity.GetUserId());
+}
+<div>
+    <hr />
+
+    <dl class="dl-horizontal">
+        
+
+        <dt>
+            Business Process
+        </dt>
+
+        <dd>
+            <b>:</b>&nbsp;&nbsp;&nbsp;@Model.getBPMName(Model.BusinessProcesID)
+        </dd>
+
+        <dt>
+            Sub Business Process
+        </dt>
+
+        <dd>
+            <b>:</b>&nbsp;&nbsp;&nbsp;@Html.DisplayFor(model => model.SubBusinessProcess)
+        </dd>
+
+        <dt>
+            Objectives
+        </dt>
+
+        <dd>
+            <b>:</b>&nbsp;&nbsp;&nbsp;@Html.DisplayFor(model => model.Objectives)
+        </dd>
+    </dl>
+</div>
+@Html.Hidden("RiskControlMatrixID")
+@Html.Hidden("Status")
+@Html.Hidden("WalktroughID")
+@Html.Hidden("prelimID")
+
+<section>
+<div class="col-md-3">
+    <div class="form-group">
+        <label>Risks</label>
+        @if (Perm != null && Perm.Any(q => q.IsCreate == true) || isSuperAdmin)
+        {
+            if (ViewBag.RCMStatus == "Draft" || ViewBag.RCMStatus == "Pending for Review by " + checkPerm.Split(':')[1].Split(';')[0])
+            {
+                <a href="#" class="btn btn-icon-only green" data-toggle = "modal" data-target = "#addRisk"><i class="fa fa-plus"></i></a>
+                <a href="#" class="btn btn-icon-only yellow" data-toggle = "modal" data-target = "#editRisk"><i class="fa fa-edit"></i></a>
+                <button class="btn btn-icon-only red" id="delRisk" data-original-title="Are you sure to delete this Risk?" onclick="javascript:delRisk()"><i class="fa fa-times"></i></button>
+            }
+        }
+        @Html.ListBox(
+            "riskId", 
+            ViewBag.RDR as SelectList,
+            new { @class = "form-control", data_placeholder = "Choose a Risk...", @onchange = "javascript:GetControlByRiskId(this.value);" } 
+        )
+    </div>
+</div>
+<script language="javascript" type="text/javascript">
+    window.onload = view();
+    $('#detailRCM').on('shown', function () { view(); });
+    $('#detailRCM').on('hide', function () { viewblank(); });
+
+    function view() {
+        var valueRiskId = $('#riskId option:first-child').attr("selected", "selected").val();
+        if (valueRiskId != null) {
+            GetControl(valueRiskId);
+            var valueControl = $('#controllist option:first-child').attr("selected", "selected").val();
+            if (valueControl != null)
+                GetAuditStepByRiskControlId(valueControl);
+        }    
+    }
+    
+    function viewblank() {
+        $('#controllist').html("");
+        $('#auditlist').val("");
+        
+    }
+
+    function GetControl(_riskId) {
+        $("#riskname").val($("#riskId option:selected").text());
+        $("#LinkSetReview").attr("href", "/FieldWorks/SetControlReview/0");
+        $("#AddDetailIssue").attr("href", "/FieldWorks/AddDetailIssue/0");
+        $("#auditlist").html("");
+        $.ajax({
+            url: "../GetControlsByRiskId/",
+            data: { riskId: _riskId },
+            cache: false,
+            type: "POST",
+            async: false,
+
+            success: function (data) {
+                var markup = "";
+                var text = "";
+                var review = false;
+                for (var x = 0; x < data.length; x++) {
+                    markup += "<option value=" + data[x].Value + ">" + data[x].Text + "</option>";
+                }
+                if (markup.indexOf("Pending") != -1) {
+                    pending = false;
+                }
+                $("#controllist").html(markup).show();
+                $('#auditlist').val("");
+            },
+            error: function (reponse) {
+                alert("error : " + reponse);
+            }
+
+        });
+    }
+    
+    function SaveRisk(_rcmId, _riskName) {
+        if ($("#risk").val() == "") {
+            alert("Please Fill Name Risk.")
+            return false;
+        }
+        $.ajax({
+            url: "../SaveRisk/",
+            data: {
+                rcmId: _rcmId,
+                riskName: _riskName
+            },
+            cache: false,
+            type: "POST",
+            success: function (data) {
+                var markup = "";
+                for (var x = 0; x < data.length; x++) {
+                    markup += "<option value=" + data[x].Value + ">" + data[x].Text + "</option>";
+                }
+                $("#riskId").html(markup).show();
+                $('#addRisk').modal('hide');
+            },
+            error: function (reponse) {
+                alert("error : " + reponse);
+            }
+        });
+    }
+
+    function UpdateRisk(_rcmId, _riskId, _riskName) {
+        if ($("#riskname").val() == "") {
+            alert("Please Fill Name Risk.")
+            return false;
+        }
+        $.ajax({
+            url: "../UpdateRisk/",
+            data: {
+                rcmId: _rcmId,
+                riskId: _riskId,
+                riskName: _riskName
+            },
+            cache: false,
+            type: "POST",
+            success: function (data) {
+                var markup = "";
+                for (var x = 0; x < data.length; x++) {
+                    markup += "<option value=" + data[x].Value + ">" + data[x].Text + "</option>";
+                }
+                $("#riskId").html(markup).show();
+                $('#editRisk').modal('hide');
+                $("#riskname").val("");
+            },
+            error: function (reponse) {
+                //alert("error : " + reponse);
+                alert("Please select a Risk first");
+            }
+        });
+    }
+
+    function DeleteRisk(_rcmId, _riskId) {
+        $.ajax({
+            url: "../DeleteRisk/",
+            data: {
+                rcmId: _rcmId,
+                riskId: _riskId
+            },
+            cache: false,
+            type: "POST",
+            success: function (data) {
+                var markup = "";
+                for (var x = 0; x < data.length; x++) {
+                    markup += "<option value=" + data[x].Value + ">" + data[x].Text + "</option>";
+                }
+                $("#riskId").html(markup).show();
+                $("#controllist").html("");
+                $("#auditlist").html("");
+            },
+            error: function (reponse) {
+                //alert("error : " + reponse);
+                alert("Please select a Risk first");
+            }
+        });
+    }
+
+    function SaveControl(_riskId, _controlName) {
+        if ($("#control").val() == "") {
+            alert("Please Fill Name Control.")
+            return false;
+        }
+        $.ajax({
+            url: "../SaveControl/",
+            data: {
+                riskId: _riskId,
+                controlName: _controlName
+            },
+            cache: false,
+            type: "POST",
+            success: function (data) {
+                var markup = "";
+                for (var x = 0; x < data.length; x++) {
+                    markup += "<option value=" + data[x].Value + ">" + data[x].Text + "</option>";
+                }
+                $("#controllist").html(markup).show();
+                $('#addControl').modal('hide');
+            },
+            error: function (reponse) {
+                alert("error : " + reponse);
+            }
+        });
+    }
+
+    function UpdateControl(_riskId, _controlId, _controlName) {
+        if ($("#controlName").val() == "") {
+            alert("Please Fill Name Control.")
+            return false;
+        }
+        $.ajax({
+            url: "../UpdateControl/",
+            data: {
+                riskId: _riskId,
+                controlId: _controlId,
+                controlName: _controlName
+            },
+            cache: false,
+            type: "POST",
+            success: function (data) {
+                var markup = "";
+                for (var x = 0; x < data.length; x++) {
+                    markup += "<option value=" + data[x].Value + ">" + data[x].Text + "</option>";
+                }
+                $("#controllist").html(markup).show();
+                $('#editControl').modal('hide');
+                $("#controlName").val("");
+            },
+            error: function (reponse) {
+                //alert("error : " + reponse);
+                alert("Please select a Control first");
+            }
+        });
+    }
+
+    function DeleteControl(_riskId, _controlId) {
+        $.ajax({
+            url: "../DeleteControl/",
+            data: {
+                riskId: _riskId,
+                controlId: _controlId
+            },
+            cache: false,
+            type: "POST",
+            success: function (data) {
+                var markup = "";
+                for (var x = 0; x < data.length; x++) {
+                    markup += "<option value=" + data[x].Value + ">" + data[x].Text + "</option>";
+                }
+                $("#controllist").html(markup).show();
+                $("#auditlist").html("");
+            },
+            error: function (reponse) {
+                //alert("error : " + reponse);
+                alert("Please select a Control first");
+            }
+        });
+    }
+
+    function SaveAudit(_controlId, _auditName) {
+        if ($("#audit").val() == "") {
+            alert("Please Fill Name Audit.")
+            return false;
+        }
+        $.ajax({
+            url: "../SaveAudit/",
+            data: {
+                controlId: _controlId,
+                auditName: _auditName
+            },
+            cache: false,
+            type: "POST",
+            success: function (data) {
+                var markup = "";
+                for (var x = 0; x < data.length; x++) {
+                    //markup += "<option value=" + data[x].Value + ">" + data[x].Text + "</option>";
+                    markup = data[x].Text;
+                }
+                $('#auditlist').val(markup);
+                $('#auditName').val(markup);
+                //$("#auditlist").html(markup).show();
+                $('#addAudit').modal('hide');
+                $('#addAuditStep').addClass('disabled');
+            },
+            error: function (reponse) {
+                alert("error : " + reponse);
+            }
+        });
+    }
+
+    function UpdateAudit(_controlId, _auditName) {
+        if ($("#auditName").val() == "") {
+            alert("Please Fill Name Audit.")
+            return false;
+        }
+        $.ajax({
+            url: "../UpdateAudit/",
+            data: {
+                controlId: _controlId,
+                //auditId: _auditId,
+                auditName: _auditName
+            },
+            cache: false,
+            type: "POST",
+            success: function (data) {
+                var markup = "";
+                for (var x = 0; x < data.length; x++) {
+                    // markup += "<option value=" + data[x].Value + ">" + data[x].Text + "</option>";
+                    markup = data[x].Text;
+                }
+                
+                //$("#auditlist").html(markup).show();
+                $('#auditlist').val(markup);
+                $('#editAudit').modal('hide');
+                $("#auditName").val("");
+            },
+            error: function (reponse) {
+                //alert("error : " + reponse);
+                alert("Please select an Audit Step first");
+            }
+        });
+    }
+
+    function DeleteAudit(_controlId) {
+        $.ajax({
+            url: "../DeleteAudit/",
+            data: {
+                controlId: _controlId
+                //auditId: _auditId
+            },
+            cache: false,
+            type: "POST",
+            success: function (data) {
+                var markup = "";
+                for (var x = 0; x < data.length; x++) {
+                    markup = data[x].Text;
+                    //markup += "<option value=" + data[x].Value + ">" + data[x].Text + "</option>";
+                }
+                $('#auditlist').val(markup);
+                $('#addAuditStep').removeClass('disabled');
+                //$("#auditlist").html(markup).show();
+            },
+            error: function (reponse) {
+                //alert("error : " + reponse);
+                alert("Please select an Audit Step first");
+            }
+        });
+    }
+
+    function GetControlByRiskId(_riskId) {
+        
+        $("#riskname").val($("#riskId option:selected").text());
+        $("#auditlist").html("");
+        $.ajax({
+            url: "../GetControlsByRiskId/",
+            data: { riskId: _riskId },
+            cache: false,
+            type: "POST",
+            success: function (data) {
+                var markup = "";
+                for (var x = 0; x < data.length; x++) {
+                    markup += "<option value=" + data[x].Value + ">" + data[x].Text + "</option>";
+                }
+                $("#controllist").html(markup).show();
+                $('#auditlist').val("");
+            },
+            error: function (reponse) {
+                alert("error : " + reponse);
+            }
+        });
+
+    }
+    function GetAuditStepByRiskControlId(_controlId) {
+        $("#controlName").val($("#controllist option:selected").text());
+        $.ajax({
+            url: "../GetAuditStepByRiskControlId/",
+            data: { controlId: _controlId },
+            cache: false,
+            type: "POST",
+            success: function (data) {
+                var markup = "";
+                for (var x = 0; x < data.length; x++) {
+                    //markup += "<option value=" + data[x].Value + ">" + data[x].Text + "</option>";
+                    markup = data[x].Text;
+                }
+                $("#auditlist").val(markup);
+                $('#auditName').val(markup);
+                //$("#auditlist").html(markup).show();
+                if (markup == "") {
+                    $('#addAuditStep').removeClass('disabled');
+                } else {
+                    $('#addAuditStep').addClass('disabled');
+                }
+            },
+            error: function (reponse) {
+                alert("error : " + reponse);
+            }
+        });
+
+    }
+    function delRisk() {
+        $('#delRisk').confirmation({
+            onConfirm: function () { DeleteRisk($('#RiskControlMatrixID').val(), $('#riskId option:selected').val()) },
+            placement: 'top'
+        });
+        $('#delRisk').confirmation('show');
+    }
+    function delControl() {
+        $('#delControl').confirmation({
+            onConfirm: function () { DeleteControl($('#riskId option:selected').val(), $('#controllist option:selected').val()) },
+            placement: 'top'
+        });
+        $('#delControl').confirmation('show');
+    }
+    function delAudit() {
+        $('#delAudit').confirmation({
+            onConfirm: function () { DeleteAudit($('#controllist option:selected').val()) },
+            placement: 'top'
+        });
+        $('#delAudit').confirmation('show');
+    }
+    
+    $('#detailRCM').on('hide', function () {
+        $("#table-rcm").load(location.href + " #table-rcm");
+    });
+    $('#detailRCM').on('shown', function () {
+        //$("#review-rcm").load(location.href + " #review-rcm");
+        if ($("#Status").val() == "Approve") {
+            //alert("masuk app");
+            $("#btn-checkout").css("display", "inline");
+            $("#btn-approve").css("display", "none");
+        }
+        else {
+            //alert("masuk checkout");
+            $("#btn-approve").css("display", "inline");
+            $("#btn-checkout").css("display", "none");
+        }
+    })
+    if ($("#Status").val() == "Approve") {
+        //alert("masuk app");
+        $("#btn-checkout").css("display", "inline");
+        $("#btn-approve").css("display", "none");
+    }
+    else {
+        //alert("masuk checkout");
+        $("#btn-approve").css("display", "inline");
+        $("#btn-checkout").css("display", "none");
+    }
+    $('#blockui_sample_3_1_1').trigger('click');
+    $("#blockui_sample_3_1_element").removeAttr('id');
+    
+</script>
+<div class="col-md-3">
+    <div class="form-group">
+        <label>Control</label>
+        @if (Perm != null && Perm.Any(q => q.IsCreate == true) || isSuperAdmin)
+        {
+            if (ViewBag.RCMStatus == "Draft" || ViewBag.RCMStatus == "Pending for Review by " + checkPerm.Split(':')[1].Split(';')[0])
+            {
+                <a href="#" class="btn btn-icon-only green" data-toggle = "modal" data-target = "#addControl"><i class="fa fa-plus"></i></a>
+                <a href="#" class="btn btn-icon-only yellow" data-toggle = "modal" data-target = "#editControl"><i class="fa fa-edit"></i></a>
+                <button class="btn btn-icon-only red" id="delControl" data-original-title="Are you sure to delete this Control?" onclick="javascript:delControl()"><i class="fa fa-times"></i></button>
+            }
+        }
+        <select multiple class="form-control" id="controllist" onchange="javascript:GetAuditStepByRiskControlId(this.value);"></select>
+    </div>
+</div>
+<div class="col-md-6">
+    <div class="form-group">
+        <label>Audit Step</label>
+        @if (Perm != null && Perm.Any(q => q.IsCreate == true) || isSuperAdmin)
+        {
+            if (ViewBag.RCMStatus == "Draft" || ViewBag.RCMStatus == "Pending for Review by " + checkPerm.Split(':')[1].Split(';')[0])
+            {
+                <a href="#" class="btn btn-icon-only green" data-toggle = "modal" data-target = "#addAudit" id="addAuditStep"><i class="fa fa-plus"></i></a>
+                <a href="#" class="btn btn-icon-only yellow" data-toggle = "modal" data-target = "#editAudit"><i class="fa fa-edit"></i></a>
+                <button class="btn btn-icon-only red" id="delAudit" data-original-title="Are you sure to delete this Audit Step?" onclick="javascript:delAudit()"><i class="fa fa-times"></i></button>
+            }
+        }
+        <textarea aria-invalid="false" class="form-control valid" readonly="True" style= "margin: 0px -0.5px 0px 0px; height: 94px; width: 554px;" id="auditlist" onchange="javascript:$('#auditName').val($('#auditlist option:selected').text());"> </textarea>
+        @*<select multiple class="form-control" id="auditlist" onchange="javascript:$('#auditName').val($('#auditlist option:selected').text());"></select>*@
+    </div>
+</div>
+
+<div id="addRisk" class="modal fade" tabindex="-1" data-width="700">
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+        <h4 class="modal-title">Add Risk</h4>
+    </div>
+    <div class="modal-body">
+        <div class="form-horizontal">
+            <div class="form-group">
+                @Html.Label("Risk Name", htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-5">
+                    @Html.TextBox("risk", null, new { @class = "form-control" })
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button type="button" data-dismiss="modal" class="btn btn-outline dark">Close</button>
+        <button type="button" class="btn green" onclick="javascript:SaveRisk($('#RiskControlMatrixID').val(), $('#risk').val());">Save</button>
+    </div>
+</div>
+
+<div id="editRisk" class="modal fade" tabindex="-1" data-width="700">
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+        <h4 class="modal-title">Edit Risk</h4>
+    </div>
+    <div class="modal-body">
+        <div class="form-horizontal">
+            <div class="form-group">
+                @Html.Label("Risk Name", htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-5">
+                    @Html.TextBox("riskname", null, new { @class = "form-control" })
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button type="button" data-dismiss="modal" class="btn btn-outline dark">Close</button>
+        <button type="button" class="btn green" onclick="javascript:UpdateRisk($('#RiskControlMatrixID').val(), $('#riskId option:selected').val(), $('#riskname').val());">Save</button>
+    </div>
+</div>
+
+<div id="addControl" class="modal fade" tabindex="-1" data-width="700">
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+        <h4 class="modal-title">Add Control</h4>
+    </div>
+    <div class="modal-body">
+        <div class="form-horizontal">
+            <div class="form-group">
+                @Html.Label("Control Name", htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-5">
+                    @Html.TextBox("control", null, new { @class = "form-control" })
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button type="button" data-dismiss="modal" class="btn btn-outline dark">Close</button>
+        <button type="button" class="btn green" onclick="javascript:SaveControl($('#riskId option:selected').val(), $('#control').val());">Save</button>
+    </div>
+</div>
+
+<div id="editControl" class="modal fade" tabindex="-1" data-width="700">
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+        <h4 class="modal-title">Edit Control</h4>
+    </div>
+    <div class="modal-body">
+        <div class="form-horizontal">
+            <div class="form-group">
+                @Html.Label("Control Name", htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-5">
+                    @Html.TextBox("controlName", null, new { @class = "form-control" })
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button type="button" data-dismiss="modal" class="btn btn-outline dark">Close</button>
+        <button type="button" class="btn green" onclick="javascript:UpdateControl($('#riskId option:selected').val(), $('#controllist option:selected').val(), $('#controlName').val());">Save</button>
+    </div>
+</div>
+
+<div id="addAudit" class="modal fade" tabindex="-1" data-width="700">
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+        <h4 class="modal-title">Add Audit Step</h4>
+    </div>
+    <div class="modal-body">
+        <div class="form-horizontal">
+            <div class="form-group">
+                @Html.Label("Audit Step", htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-5">
+                    @Html.TextArea("audit", null, new { @class = "form-control", @rows = "7", @style="width:500px" })
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button type="button" data-dismiss="modal" class="btn btn-outline dark">Close</button>
+        <button type="button" class="btn green" onclick="javascript:SaveAudit($('#controllist option:selected').val(), $('#audit').val());">Save</button>
+    </div>
+</div>
+
+<div id="editAudit" class="modal fade" tabindex="-1" data-width="700">
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+        <h4 class="modal-title">Edit Audit Step</h4>
+    </div>
+    <div class="modal-body">
+        <div class="form-horizontal">
+            <div class="form-group">
+                @Html.Label("Audit Step", htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-5">
+                    @Html.TextArea("auditName", null, new { @class = "form-control", @rows = "7", @style="width:500px"})
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button type="button" data-dismiss="modal" class="btn btn-outline dark">Close</button>
+        <button type="button" class="btn green" onclick="javascript:UpdateAudit($('#controllist option:selected').val(), $('#auditName').val());">Save</button>
+    </div>
+</div>
+<div class="modal-footer">
+    <hr />
+    @if (checkPerm.Contains("IsSubmit1"))
+    {
+        if (Perm != null && Perm.Any(q => q.IsSubmit1 == true) || isSuperAdmin)
+        {
+            if (Model.Status == "Pending for Review by " + checkPerm.Split(':')[1].Split(';')[0])
+            {
+                if (checkPerm.Split(':')[1].Split(';')[0] == "Member")
+                {
+                    if (Model.Walktrough.Preliminary.MemberID != null)
+                    {
+                        if (Model.Walktrough.Preliminary.MemberID.Contains(empName) || isSuperAdmin)
+                        {
+                            if (checkPerm.Contains("IsSubmit2"))
+                            {
+                                <button type="button" id="btn-submit" class="btn btn-outline green" onclick="javascript:UpdateRCMStatus($('#RiskControlMatrixID').val(), 'Pending for Review by @checkPerm.Split(':')[2].Split(';')[0]', $('#WalktroughID').val());">Submit</button>
+                                @*<button type="button" id="btn-submit" class="btn btn-outline green" onclick="javascript:UpdateRCMStatus($('#RiskControlMatrixID').val(), 'Pending for Review by @checkPerm.Split(':')[2].Split(';')[0]', $('#WalktroughID').val());">Submit For Review By @checkPerm.Split(':')[2].Split(';')[0]</button>*@
+                                @*<button type="button" id="btn-submit" class="btn btn-outline red" onclick="javascript:UpdateRCMStatus($('#RiskControlMatrixID').val(), 'Draft', $('#WalktroughID').val());">Send Back</button>*@
+                            }
+                            else if (checkPerm.Contains("IsApprove"))
+                            {
+                                <button type="button" id="btn-submit" class="btn btn-outline green" onclick="javascript:UpdateRCMStatus($('#RiskControlMatrixID').val(), 'Pending for Approve by @checkPerm.Split(':')[3].Split(';')[0]', $('#WalktroughID').val());">Submit</button>
+                                @*<button type="button" id="btn-submit" class="btn btn-outline green" onclick="javascript:UpdateRCMStatus($('#RiskControlMatrixID').val(), 'Pending for Approve by @checkPerm.Split(':')[3].Split(';')[0]', $('#WalktroughID').val());">Submit For Approve By @checkPerm.Split(':')[3].Split(';')[0]</button>*@
+                                @*<button type="button" id="btn-submit" class="btn btn-outline red" onclick="javascript:UpdateRCMStatus($('#RiskControlMatrixID').val(), 'Draft', $('#WalktroughID').val());">Send Back</button>*@
+                            }
+                        }
+                    }
+                    else
+                    {
+                        if (checkPerm.Contains("IsSubmit2"))
+                        {
+                            <button type="button" id="btn-submit" class="btn btn-outline green" onclick="javascript:UpdateRCMStatus($('#RiskControlMatrixID').val(), 'Pending for Review by @checkPerm.Split(':')[2].Split(';')[0]', $('#WalktroughID').val());">Submit</button>
+                            @*<button type="button" id="btn-submit" class="btn btn-outline green" onclick="javascript:UpdateRCMStatus($('#RiskControlMatrixID').val(), 'Pending for Review by @checkPerm.Split(':')[2].Split(';')[0]', $('#WalktroughID').val());">Submit For Review By @checkPerm.Split(':')[2].Split(';')[0]</button>*@
+                            @*<button type="button" id="btn-submit" class="btn btn-outline red" onclick="javascript:UpdateRCMStatus($('#RiskControlMatrixID').val(), 'Draft', $('#WalktroughID').val());">Send Back</button>*@
+                        }
+                        else if (checkPerm.Contains("IsApprove"))
+                        {
+                            <button type="button" id="btn-submit" class="btn btn-outline green" onclick="javascript:UpdateRCMStatus($('#RiskControlMatrixID').val(), 'Pending for Approve by @checkPerm.Split(':')[3].Split(';')[0]', $('#WalktroughID').val());">Submit</button>
+                            @*<button type="button" id="btn-submit" class="btn btn-outline green" onclick="javascript:UpdateRCMStatus($('#RiskControlMatrixID').val(), 'Pending for Approve by @checkPerm.Split(':')[3].Split(';')[0]', $('#WalktroughID').val());">Submit For Approve By @checkPerm.Split(':')[3].Split(';')[0]</button>*@
+                            @*<button type="button" id="btn-submit" class="btn btn-outline red" onclick="javascript:UpdateRCMStatus($('#RiskControlMatrixID').val(), 'Draft', $('#WalktroughID').val());">Send Back</button>*@
+                        }
+                    }
+                }
+                if (checkPerm.Split(':')[1].Split(';')[0] == "Ketua Tim")
+                {
+                    if (Model.Walktrough.Preliminary.TeamLeaderID != null)
+                    {
+                        if (Model.Walktrough.Preliminary.TeamLeaderID == empName || isSuperAdmin)
+                        {
+                            if (checkPerm.Contains("IsSubmit2"))
+                            {
+                                <button type="button" id="btn-submit" class="btn btn-outline green" onclick="javascript:UpdateRCMStatus($('#RiskControlMatrixID').val(), 'Pending for Review by @checkPerm.Split(':')[2].Split(';')[0]', $('#WalktroughID').val());">Submit</button>
+                                @*<button type="button" id="btn-submit" class="btn btn-outline red" onclick="javascript:UpdateRCMStatus($('#RiskControlMatrixID').val(), 'Draft', $('#WalktroughID').val());">Send Back</button>*@
+                            }
+                            else if (checkPerm.Contains("IsApprove"))
+                            {
+                                <button type="button" id="btn-submit" class="btn btn-outline green" onclick="javascript:UpdateRCMStatus($('#RiskControlMatrixID').val(), 'Pending for Approve by @checkPerm.Split(':')[3].Split(';')[0]', $('#WalktroughID').val());">Submit</button>
+                                @*<button type="button" id="btn-submit" class="btn btn-outline red" onclick="javascript:UpdateRCMStatus($('#RiskControlMatrixID').val(), 'Draft', $('#WalktroughID').val());">Send Back</button>*@
+                            }
+                        }
+                    } else {
+                        if (checkPerm.Contains("IsSubmit2"))
+                        {
+                            <button type="button" id="btn-submit" class="btn btn-outline green" onclick="javascript:UpdateRCMStatus($('#RiskControlMatrixID').val(), 'Pending for Review by @checkPerm.Split(':')[2].Split(';')[0]', $('#WalktroughID').val());">Submit</button>
+                            @*<button type="button" id="btn-submit" class="btn btn-outline red" onclick="javascript:UpdateRCMStatus($('#RiskControlMatrixID').val(), 'Draft', $('#WalktroughID').val());">Send Back</button>*@
+                        }
+                        else if (checkPerm.Contains("IsApprove"))
+                        {
+                            <button type="button" id="btn-submit" class="btn btn-outline green" onclick="javascript:UpdateRCMStatus($('#RiskControlMatrixID').val(), 'Pending for Approve by @checkPerm.Split(':')[3].Split(';')[0]', $('#WalktroughID').val());">Submit</button>
+                            @*<button type="button" id="btn-submit" class="btn btn-outline red" onclick="javascript:UpdateRCMStatus($('#RiskControlMatrixID').val(), 'Draft', $('#WalktroughID').val());">Send Back</button>*@
+                        }
+                    }
+                }
+                if (checkPerm.Split(':')[1].Split(';')[0] == "Pengawas")
+                {
+                    if (Model.Walktrough.Preliminary.SupervisorID != null)
+                    {
+                        if (Model.Walktrough.Preliminary.SupervisorID == empName || isSuperAdmin)
+                        {
+                            if (checkPerm.Contains("IsSubmit2"))
+                            {
+                                <button type="button" id="btn-submit" class="btn btn-outline green" onclick="javascript:UpdateRCMStatus($('#RiskControlMatrixID').val(), 'Pending for Review by @checkPerm.Split(':')[2].Split(';')[0]', $('#WalktroughID').val());">Submit</button>
+                                @*<button type="button" id="btn-submit" class="btn btn-outline green" onclick="javascript:UpdateRCMStatus($('#RiskControlMatrixID').val(), 'Pending for Review by @checkPerm.Split(':')[2].Split(';')[0]', $('#WalktroughID').val());">Submit For Review By @checkPerm.Split(':')[2].Split(';')[0]</button>*@
+                                @*<button type="button" id="btn-submit" class="btn btn-outline red" onclick="javascript:UpdateRCMStatus($('#RiskControlMatrixID').val(), 'Draft', $('#WalktroughID').val());">Send Back</button>*@
+                            }
+                            else if (checkPerm.Contains("IsApprove"))
+                            {
+                                <button type="button" id="btn-submit" class="btn btn-outline green" onclick="javascript:UpdateRCMStatus($('#RiskControlMatrixID').val(), 'Pending for Approve by @checkPerm.Split(':')[3].Split(';')[0]', $('#WalktroughID').val());">Submit</button>
+                                @*<button type="button" id="btn-submit" class="btn btn-outline green" onclick="javascript:UpdateRCMStatus($('#RiskControlMatrixID').val(), 'Pending for Approve by @checkPerm.Split(':')[3].Split(';')[0]', $('#WalktroughID').val());">Submit For Approve By @checkPerm.Split(':')[3].Split(';')[0]</button>*@
+                                @*<button type="button" id="btn-submit" class="btn btn-outline red" onclick="javascript:UpdateRCMStatus($('#RiskControlMatrixID').val(), 'Draft', $('#WalktroughID').val());">Send Back</button>*@
+                            }
+                        }
+                    }
+                    else
+                    {
+                        if (checkPerm.Contains("IsSubmit2"))
+                        {
+                            <button type="button" id="btn-submit" class="btn btn-outline green" onclick="javascript:UpdateRCMStatus($('#RiskControlMatrixID').val(), 'Pending for Review by @checkPerm.Split(':')[2].Split(';')[0]', $('#WalktroughID').val());">Submit</button>
+                            @*<button type="button" id="btn-submit" class="btn btn-outline green" onclick="javascript:UpdateRCMStatus($('#RiskControlMatrixID').val(), 'Pending for Review by @checkPerm.Split(':')[2].Split(';')[0]', $('#WalktroughID').val());">Submit For Review By @checkPerm.Split(':')[2].Split(';')[0]</button>*@
+                            @*<button type="button" id="btn-submit" class="btn btn-outline red" onclick="javascript:UpdateRCMStatus($('#RiskControlMatrixID').val(), 'Draft', $('#WalktroughID').val());">Send Back</button>*@
+                        }
+                        else if (checkPerm.Contains("IsApprove"))
+                        {
+                            <button type="button" id="btn-submit" class="btn btn-outline green" onclick="javascript:UpdateRCMStatus($('#RiskControlMatrixID').val(), 'Pending for Approve by @checkPerm.Split(':')[3].Split(';')[0]', $('#WalktroughID').val());">Submit</button>
+                            @*<button type="button" id="btn-submit" class="btn btn-outline green" onclick="javascript:UpdateRCMStatus($('#RiskControlMatrixID').val(), 'Pending for Approve by @checkPerm.Split(':')[3].Split(';')[0]', $('#WalktroughID').val());">Submit For Approve By @checkPerm.Split(':')[3].Split(';')[0]</button>*@
+                            @*<button type="button" id="btn-submit" class="btn btn-outline red" onclick="javascript:UpdateRCMStatus($('#RiskControlMatrixID').val(), 'Draft', $('#WalktroughID').val());">Send Back</button>*@
+                        }
+                    }
+                }
+                if (checkPerm.Split(':')[1].Split(';')[0] == "CIA")
+                {
+                    if (Model.Walktrough.Preliminary.PICID != null)
+                    {
+                        if (Model.Walktrough.Preliminary.PICID == empName || isSuperAdmin)
+                        {
+                            if (checkPerm.Contains("IsSubmit2"))
+                            {
+                                <button type="button" id="btn-submit" class="btn btn-outline green" onclick="javascript:UpdateRCMStatus($('#RiskControlMatrixID').val(), 'Pending for Review by @checkPerm.Split(':')[2].Split(';')[0]', $('#WalktroughID').val());">Submit</button>
+                                @*<button type="button" id="btn-submit" class="btn btn-outline green" onclick="javascript:UpdateRCMStatus($('#RiskControlMatrixID').val(), 'Pending for Review by @checkPerm.Split(':')[2].Split(';')[0]', $('#WalktroughID').val());">Submit For Review By @checkPerm.Split(':')[2].Split(';')[0]</button>*@
+                                @*<button type="button" id="btn-submit" class="btn btn-outline red" onclick="javascript:UpdateRCMStatus($('#RiskControlMatrixID').val(), 'Draft', $('#WalktroughID').val());">Send Back</button>*@
+                            }
+                            else if (checkPerm.Contains("IsApprove"))
+                            {
+                                <button type="button" id="btn-submit" class="btn btn-outline green" onclick="javascript:UpdateRCMStatus($('#RiskControlMatrixID').val(), 'Pending for Approve by @checkPerm.Split(':')[3].Split(';')[0]', $('#WalktroughID').val());">Submit</button>
+                                @*<button type="button" id="btn-submit" class="btn btn-outline green" onclick="javascript:UpdateRCMStatus($('#RiskControlMatrixID').val(), 'Pending for Approve by @checkPerm.Split(':')[3].Split(';')[0]', $('#WalktroughID').val());">Submit For Approve By @checkPerm.Split(':')[3].Split(';')[0]</button>*@
+                                @*<button type="button" id="btn-submit" class="btn btn-outline red" onclick="javascript:UpdateRCMStatus($('#RiskControlMatrixID').val(), 'Draft', $('#WalktroughID').val());">Send Back</button>*@
+                            }
+                        }
+                    }
+                    else
+                    {
+                        if (checkPerm.Contains("IsSubmit2"))
+                        {
+                            <button type="button" id="btn-submit" class="btn btn-outline green" onclick="javascript:UpdateRCMStatus($('#RiskControlMatrixID').val(), 'Pending for Review by @checkPerm.Split(':')[2].Split(';')[0]', $('#WalktroughID').val());">Submit</button>
+                            @*<button type="button" id="btn-submit" class="btn btn-outline green" onclick="javascript:UpdateRCMStatus($('#RiskControlMatrixID').val(), 'Pending for Review by @checkPerm.Split(':')[2].Split(';')[0]', $('#WalktroughID').val());">Submit For Review By @checkPerm.Split(':')[2].Split(';')[0]</button>*@
+                            @*<button type="button" id="btn-submit" class="btn btn-outline red" onclick="javascript:UpdateRCMStatus($('#RiskControlMatrixID').val(), 'Draft', $('#WalktroughID').val());">Send Back</button>*@
+                        }
+                        else if (checkPerm.Contains("IsApprove"))
+                        {
+                            <button type="button" id="btn-submit" class="btn btn-outline green" onclick="javascript:UpdateRCMStatus($('#RiskControlMatrixID').val(), 'Pending for Approve by @checkPerm.Split(':')[3].Split(';')[0]', $('#WalktroughID').val());">Submit</button>
+                            @*<button type="button" id="btn-submit" class="btn btn-outline green" onclick="javascript:UpdateRCMStatus($('#RiskControlMatrixID').val(), 'Pending for Approve by @checkPerm.Split(':')[3].Split(';')[0]', $('#WalktroughID').val());">Submit For Approve By @checkPerm.Split(':')[3].Split(';')[0]</button>*@
+                            @*<button type="button" id="btn-submit" class="btn btn-outline red" onclick="javascript:UpdateRCMStatus($('#RiskControlMatrixID').val(), 'Draft', $('#WalktroughID').val());">Send Back</button>*@
+                        }
+                    }
+                }
+            }
+        }
+    }
+    @if (checkPerm.Contains("IsSubmit2"))
+    {
+        if (Perm != null && Perm.Any(q => q.IsSubmit2 == true) || isSuperAdmin)
+        {
+            if (Model.Status == "Pending for Review by " + checkPerm.Split(':')[2].Split(';')[0])
+            {
+                if (checkPerm.Split(':')[2].Split(';')[0] == "Member")
+                {
+                    if (Model.Walktrough.Preliminary.MemberID != null)
+                    {
+                        if (Model.Walktrough.Preliminary.MemberID.Contains(empName) || isSuperAdmin)
+                        {
+                            if (checkPerm.Contains("IsApprove"))
+                            {
+                                <button type="button" id="btn-submit" class="btn btn-outline green" onclick="javascript:UpdateRCMStatus($('#RiskControlMatrixID').val(), 'Pending for Approve by @checkPerm.Split(':')[3].Split(';')[0]', $('#WalktroughID').val());">Submit</button>
+                                @*<button type="button" id="btn-submit" class="btn btn-outline green" onclick="javascript:UpdateRCMStatus($('#RiskControlMatrixID').val(), 'Pending for Approve by @checkPerm.Split(':')[3].Split(';')[0]', $('#WalktroughID').val());">Submit For Approve By @checkPerm.Split(':')[3].Split(';')[0]</button>*@
+                                if (checkPerm.Split(':')[1].Split(';')[0] != checkPerm.Split(':')[2].Split(';')[0]) {
+                                    <button type="button" id="btn-submit" class="btn btn-outline red" onclick="javascript:UpdateRCMStatus($('#RiskControlMatrixID').val(), 'Draft', $('#WalktroughID').val());">Send Back</button>
+                                }
+                            }
+                        }
+                    }
+                    else
+                    {
+                        if (checkPerm.Contains("IsApprove"))
+                        {
+                            <button type="button" id="btn-submit" class="btn btn-outline green" onclick="javascript:UpdateRCMStatus($('#RiskControlMatrixID').val(), 'Pending for Approve by @checkPerm.Split(':')[3].Split(';')[0]', $('#WalktroughID').val());">Submit</button>
+                            @*<button type="button" id="btn-submit" class="btn btn-outline green" onclick="javascript:UpdateRCMStatus($('#RiskControlMatrixID').val(), 'Pending for Approve by @checkPerm.Split(':')[3].Split(';')[0]', $('#WalktroughID').val());">Submit For Approve By @checkPerm.Split(':')[3].Split(';')[0]</button>*@
+                            if (checkPerm.Split(':')[1].Split(';')[0] != checkPerm.Split(':')[2].Split(';')[0]) {
+                                <button type="button" id="btn-submit" class="btn btn-outline red" onclick="javascript:UpdateRCMStatus($('#RiskControlMatrixID').val(), 'Draft', $('#WalktroughID').val());">Send Back</button>
+                            }
+                        }
+                    }
+                }
+                if (checkPerm.Split(':')[2].Split(';')[0] == "Ketua Tim")
+                {
+                    if (Model.Walktrough.Preliminary.TeamLeaderID != null)
+                    {
+                        if (Model.Walktrough.Preliminary.TeamLeaderID == empName || isSuperAdmin)
+                        {
+                            if (checkPerm.Contains("IsApprove"))
+                            {
+                                <button type="button" id="btn-submit" class="btn btn-outline green" onclick="javascript:UpdateRCMStatus($('#RiskControlMatrixID').val(), 'Pending for Approve by @checkPerm.Split(':')[3].Split(';')[0]', $('#WalktroughID').val());">Submit</button>
+                                @*<button type="button" id="btn-submit" class="btn btn-outline green" onclick="javascript:UpdateRCMStatus($('#RiskControlMatrixID').val(), 'Pending for Approve by @checkPerm.Split(':')[3].Split(';')[0]', $('#WalktroughID').val());">Submit For Approve By @checkPerm.Split(':')[3].Split(';')[0]</button>*@
+                                if (checkPerm.Split(':')[1].Split(';')[0] != checkPerm.Split(':')[2].Split(';')[0]) {
+                                    <button type="button" id="btn-submit" class="btn btn-outline red" onclick="javascript:UpdateRCMStatus($('#RiskControlMatrixID').val(), 'Draft', $('#WalktroughID').val());">Send Back</button>
+                                }
+                            }
+                        }
+                    }
+                    else
+                    {
+                        if (checkPerm.Contains("IsApprove"))
+                        {
+                            <button type="button" id="btn-submit" class="btn btn-outline green" onclick="javascript:UpdateRCMStatus($('#RiskControlMatrixID').val(), 'Pending for Approve by @checkPerm.Split(':')[3].Split(';')[0]', $('#WalktroughID').val());">Submit</button>
+                            @*<button type="button" id="btn-submit" class="btn btn-outline green" onclick="javascript:UpdateRCMStatus($('#RiskControlMatrixID').val(), 'Pending for Approve by @checkPerm.Split(':')[3].Split(';')[0]', $('#WalktroughID').val());">Submit For Approve By @checkPerm.Split(':')[3].Split(';')[0]</button>*@
+                            if (checkPerm.Split(':')[1].Split(';')[0] != checkPerm.Split(':')[2].Split(';')[0]) {
+                                <button type="button" id="btn-submit" class="btn btn-outline red" onclick="javascript:UpdateRCMStatus($('#RiskControlMatrixID').val(), 'Draft', $('#WalktroughID').val());">Send Back</button>
+                            }
+                        }
+                    }
+                }
+                if (checkPerm.Split(':')[2].Split(';')[0] == "Pengawas")
+                {
+                    if (Model.Walktrough.Preliminary.SupervisorID != null)
+                    {
+                        if (Model.Walktrough.Preliminary.SupervisorID == empName || isSuperAdmin)
+                        {
+                            if (checkPerm.Contains("IsApprove"))
+                            {
+                                <button type="button" id="btn-submit" class="btn btn-outline green" onclick="javascript:UpdateRCMStatus($('#RiskControlMatrixID').val(), 'Pending for Approve by @checkPerm.Split(':')[3].Split(';')[0]', $('#WalktroughID').val());">Submit</button>
+                                @*<button type="button" id="btn-submit" class="btn btn-outline green" onclick="javascript:UpdateRCMStatus($('#RiskControlMatrixID').val(), 'Pending for Approve by @checkPerm.Split(':')[3].Split(';')[0]', $('#WalktroughID').val());">Submit For Approve By @checkPerm.Split(':')[3].Split(';')[0]</button>*@
+                                if (checkPerm.Split(':')[1].Split(';')[0] != checkPerm.Split(':')[2].Split(';')[0]) {
+                                    <button type="button" id="btn-submit" class="btn btn-outline red" onclick="javascript:UpdateRCMStatus($('#RiskControlMatrixID').val(), 'Draft', $('#WalktroughID').val());">Send Back</button>
+                                }
+                            }
+                        }
+                    }
+                    else
+                    {
+                        if (checkPerm.Contains("IsApprove"))
+                        {
+                            <button type="button" id="btn-submit" class="btn btn-outline green" onclick="javascript:UpdateRCMStatus($('#RiskControlMatrixID').val(), 'Pending for Approve by @checkPerm.Split(':')[3].Split(';')[0]', $('#WalktroughID').val());">Submit</button>
+                            @*<button type="button" id="btn-submit" class="btn btn-outline green" onclick="javascript:UpdateRCMStatus($('#RiskControlMatrixID').val(), 'Pending for Approve by @checkPerm.Split(':')[3].Split(';')[0]', $('#WalktroughID').val());">Submit For Approve By @checkPerm.Split(':')[3].Split(';')[0]</button>*@
+                            if (checkPerm.Split(':')[1].Split(';')[0] != checkPerm.Split(':')[2].Split(';')[0]) {
+                                <button type="button" id="btn-submit" class="btn btn-outline red" onclick="javascript:UpdateRCMStatus($('#RiskControlMatrixID').val(), 'Draft', $('#WalktroughID').val());">Send Back</button>
+                            }
+                        }
+                    }
+                }
+                if (checkPerm.Split(':')[2].Split(';')[0] == "CIA")
+                {
+                    if (Model.Walktrough.Preliminary.PICID != null)
+                    {
+                        if (Model.Walktrough.Preliminary.PICID == empName || isSuperAdmin)
+                        {
+                            if (checkPerm.Contains("IsApprove"))
+                            {
+                                <button type="button" id="btn-submit" class="btn btn-outline green" onclick="javascript:UpdateRCMStatus($('#RiskControlMatrixID').val(), 'Pending for Approve by @checkPerm.Split(':')[3].Split(';')[0]', $('#WalktroughID').val());">Submit</button>
+                                @*<button type="button" id="btn-submit" class="btn btn-outline green" onclick="javascript:UpdateRCMStatus($('#RiskControlMatrixID').val(), 'Pending for Approve by @checkPerm.Split(':')[3].Split(';')[0]', $('#WalktroughID').val());">Submit For Approve By @checkPerm.Split(':')[3].Split(';')[0]</button>*@
+                                if (checkPerm.Split(':')[1].Split(';')[0] != checkPerm.Split(':')[2].Split(';')[0]) {
+                                    <button type="button" id="btn-submit" class="btn btn-outline red" onclick="javascript:UpdateRCMStatus($('#RiskControlMatrixID').val(), 'Draft', $('#WalktroughID').val());">Send Back</button>
+                                }
+                            }
+                        }
+                    }
+                    else
+                    {
+                        if (checkPerm.Contains("IsApprove"))
+                        {
+                            <button type="button" id="btn-submit" class="btn btn-outline green" onclick="javascript:UpdateRCMStatus($('#RiskControlMatrixID').val(), 'Pending for Approve by @checkPerm.Split(':')[3].Split(';')[0]', $('#WalktroughID').val());">Submit</button>
+                            @*<button type="button" id="btn-submit" class="btn btn-outline green" onclick="javascript:UpdateRCMStatus($('#RiskControlMatrixID').val(), 'Pending for Approve by @checkPerm.Split(':')[3].Split(';')[0]', $('#WalktroughID').val());">Submit For Approve By @checkPerm.Split(':')[3].Split(';')[0]</button>*@
+                            if (checkPerm.Split(':')[1].Split(';')[0] != checkPerm.Split(':')[2].Split(';')[0]) {
+                                <button type="button" id="btn-submit" class="btn btn-outline red" onclick="javascript:UpdateRCMStatus($('#RiskControlMatrixID').val(), 'Draft', $('#WalktroughID').val());">Send Back</button>
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+    @if (checkPerm.Contains("IsApprove"))
+    {
+        if (Perm != null && Perm.Any(q => q.IsApprove == true) || isSuperAdmin)
+        {
+            if (Model.Status == "Pending for Approve by " + checkPerm.Split(':')[3].Split(';')[0])
+            {
+                if (checkPerm.Split(':')[3].Split(';')[0] == "Member")
+                {
+                    if (Model.Walktrough.Preliminary.MemberID != null)
+                    {
+                        if (Model.Walktrough.Preliminary.MemberID.Contains(empName) || isSuperAdmin)
+                        {
+                            <button type="button" id="btn-submit" class="btn btn-outline green" onclick="javascript:UpdateRCMStatus($('#RiskControlMatrixID').val(), 'Approve', $('#WalktroughID').val());">Approve</button>
+                            <button type="button" id="btn-submit" class="btn btn-outline red" onclick="javascript:UpdateRCMStatus($('#RiskControlMatrixID').val(), 'Draft', $('#WalktroughID').val());">Send Back</button>
+                        }
+                    } else {
+                        <button type="button" id="btn-submit" class="btn btn-outline green" onclick="javascript:UpdateRCMStatus($('#RiskControlMatrixID').val(), 'Approve', $('#WalktroughID').val());">Approve</button>
+                        <button type="button" id="btn-submit" class="btn btn-outline red" onclick="javascript:UpdateRCMStatus($('#RiskControlMatrixID').val(), 'Draft', $('#WalktroughID').val());">Send Back</button>
+                    }
+                }
+                if (checkPerm.Split(':')[3].Split(';')[0] == "Ketua Tim")
+                {
+                    if (Model.Walktrough.Preliminary.TeamLeaderID != null)
+                    {
+                        if (Model.Walktrough.Preliminary.TeamLeaderID == empName || isSuperAdmin)
+                        {
+                            <button type="button" id="btn-submit" class="btn btn-outline green" onclick="javascript:UpdateRCMStatus($('#RiskControlMatrixID').val(), 'Approve', $('#WalktroughID').val());">Approve</button>
+                            <button type="button" id="btn-submit" class="btn btn-outline red" onclick="javascript:UpdateRCMStatus($('#RiskControlMatrixID').val(), 'Draft', $('#WalktroughID').val());">Send Back</button>
+                        }
+                    } else {
+                        <button type="button" id="btn-submit" class="btn btn-outline green" onclick="javascript:UpdateRCMStatus($('#RiskControlMatrixID').val(), 'Approve', $('#WalktroughID').val());">Approve</button>
+                        <button type="button" id="btn-submit" class="btn btn-outline red" onclick="javascript:UpdateRCMStatus($('#RiskControlMatrixID').val(), 'Draft', $('#WalktroughID').val());">Send Back</button>
+                    }
+                }
+                if (checkPerm.Split(':')[3].Split(';')[0] == "Pengawas")
+                {
+                    if (Model.Walktrough.Preliminary.SupervisorID != null)
+                    {
+                        if (Model.Walktrough.Preliminary.SupervisorID == empName || isSuperAdmin)
+                        {
+                            <button type="button" id="btn-submit" class="btn btn-outline green" onclick="javascript:UpdateRCMStatus($('#RiskControlMatrixID').val(), 'Approve', $('#WalktroughID').val());">Approve</button>
+                            <button type="button" id="btn-submit" class="btn btn-outline red" onclick="javascript:UpdateRCMStatus($('#RiskControlMatrixID').val(), 'Draft', $('#WalktroughID').val());">Send Back</button>
+                        }
+                    } else {
+                        <button type="button" id="btn-submit" class="btn btn-outline green" onclick="javascript:UpdateRCMStatus($('#RiskControlMatrixID').val(), 'Approve', $('#WalktroughID').val());">Approve</button>
+                        <button type="button" id="btn-submit" class="btn btn-outline red" onclick="javascript:UpdateRCMStatus($('#RiskControlMatrixID').val(), 'Draft', $('#WalktroughID').val());">Send Back</button>
+                    }
+                }
+                if (checkPerm.Split(':')[3].Split(';')[0] == "CIA")
+                {
+                    if (Model.Walktrough.Preliminary.PICID != null)
+                    {
+                        if (Model.Walktrough.Preliminary.PICID == empName || isSuperAdmin)
+                        {
+                            <button type="button" id="btn-submit" class="btn btn-outline green" onclick="javascript:UpdateRCMStatus($('#RiskControlMatrixID').val(), 'Approve', $('#WalktroughID').val());">Approve</button>
+                            <button type="button" id="btn-submit" class="btn btn-outline red" onclick="javascript:UpdateRCMStatus($('#RiskControlMatrixID').val(), 'Draft', $('#WalktroughID').val());">Send Back</button>
+                        }
+                    } else {
+                        <button type="button" id="btn-submit" class="btn btn-outline green" onclick="javascript:UpdateRCMStatus($('#RiskControlMatrixID').val(), 'Approve', $('#WalktroughID').val());">Approve</button>
+                        <button type="button" id="btn-submit" class="btn btn-outline red" onclick="javascript:UpdateRCMStatus($('#RiskControlMatrixID').val(), 'Draft', $('#WalktroughID').val());">Send Back</button>
+                    }
+                }
+            }
+        }
+    }
+    
+    @if (Perm != null && Perm.Any(q => q.IsUpdate == true) || isSuperAdmin)
+    {
+        if (Model.Status == "Draft" || Model.Status == "Submit For Review By " + checkPerm.Split(':')[1].Split(';')[0])
+        {
+            if (Perm.Any(d => d.IsCreate))
+            {
+                if (Perm.Any(d => d.IsSubmit1))
+                {
+                    if (checkPerm.Contains("IsSubmit2"))
+                    {
+                        <button class="btn btn-outline green" name="submit" type="submit" id="submit" onclick="javascript:UpdateRCMStatus($('#RiskControlMatrixID').val(), 'Pending for Review by @checkPerm.Split(':')[2].Split(';')[0]', $('#WalktroughID').val());"> Submit</button>
+                    }
+                    else if (checkPerm.Contains("IsApprove"))
+                    {
+                        <button class="btn btn-outline green" name="submit" type="submit" id="submit" onclick="javascript:UpdateRCMStatus($('#RiskControlMatrixID').val(), 'Pending for Approve by @checkPerm.Split(':')[3].Split(';')[0]', $('#WalktroughID').val());"> Submit</button>
+                    }
+                }
+                else
+                {
+                    <button class="btn btn-outline green" name="submit" type="submit" id="submit" onclick="javascript:UpdateRCMStatus($('#RiskControlMatrixID').val(), 'Pending for Review by @checkPerm.Split(':')[1].Split(';')[0]', $('#WalktroughID').val());"> Submit</button>
+                }
+            }
+            else if (Perm.Any(d => d.IsSubmit1))
+            {
+                if (checkPerm.Contains("IsSubmit2"))
+                {
+                    <button class="btn btn-outline green" name="submit" type="submit" id="submit" onclick="javascript:UpdateRCMStatus($('#RiskControlMatrixID').val(), 'Pending for Review by @checkPerm.Split(':')[2].Split(';')[0]', $('#WalktroughID').val());"> Submit</button>
+                }
+                else if (checkPerm.Contains("IsApprove"))
+                {
+                    <button class="btn btn-outline green" name="submit" type="submit" id="submit" onclick="javascript:UpdateRCMStatus($('#RiskControlMatrixID').val(), 'Pending for Approve by @checkPerm.Split(':')[3].Split(';')[0]', $('#WalktroughID').val());"> Submit</button>
+                }
+            }
+            else if (Perm.Any(d => d.IsSubmit2))
+            {
+                if (checkPerm.Contains("IsApprove"))
+                {
+                    <button class="btn btn-outline green" name="submit" type="submit" id="submit" onclick="javascript:UpdateRCMStatus($('#RiskControlMatrixID').val(), 'Pending for Approve by @checkPerm.Split(':')[3].Split(';')[0]', $('#WalktroughID').val());"> Submit</button>
+                }
+            }
+
+
+
+
+            @*if (checkPerm.Contains("IsSubmit1"))
+            {
+                <button type="button" id="btn-submit" class="btn btn-outline green" onclick="javascript:UpdateRCMStatus($('#RiskControlMatrixID').val(), 'Pending for Review by @checkPerm.Split(':')[3].Split(';')[0]', $('#WalktroughID').val());">Submit</button>
+            }
+            else if (checkPerm.Contains("IsSubmit2"))
+            {
+                <button type="button" id="btn-submit" class="btn btn-outline green" onclick="javascript:UpdateRCMStatus($('#RiskControlMatrixID').val(), 'Pending for Review by @checkPerm.Split(':')[2].Split(';')[0]', $('#WalktroughID').val());">Submit</button>
+            }
+            else if (checkPerm.Contains("IsApprove"))
+            {
+                <button type="button" id="btn-submit" class="btn btn-outline green" onclick="javascript:UpdateRCMStatus($('#RiskControlMatrixID').val(), 'Pending for Approve by @checkPerm.Split(':')[3].Split(';')[0]', $('#WalktroughID').val());">Submit</button>
+            }*@
+            <button type="button" id="btn-submit" class="btn btn-outline red" onclick="javascript:UpdateRCMStatus($('#RiskControlMatrixID').val(), 'Draft', $('#WalktroughID').val());">Save</button>
+        }
+    }   
+        <button type="button" data-dismiss="modal" class="btn btn-outline dark">Close</button>
+        @*<button type="button" class="btn green">Save changes</button>*@
+</div>
+</section>
+<section id="review-rcm">
+    @Html.Partial("_ReviewRCM")
+</section>
+@*<p>
+    @Html.ActionLink("Edit", "Edit", new { id = Model.RiskControlMatrixID }) |
+    @Html.ActionLink("Delete", "Delete", new { id = Model.RiskControlMatrixID }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>*@
+<style>
+.dl-horizontal dt{
+    text-align: left;
+    width: 170px;
+}
+
+.dl-horizontal dd{
+    margin-left: 0;
+}
+</style>

@@ -1,0 +1,73 @@
+﻿@{
+    ViewBag.Title = "ApprovalLevel_Index";
+}
+
+<div class="row" style="margin-top:20px;">
+    <div class="col-md-12">
+        <!-- BEGIN EXAMPLE TABLE PORTLET-->
+        <div class="portlet box red-sunglo">
+            <div class="portlet-title">
+                <div class="caption">
+                    <i class="fa fa-check-circle"></i> Approval Level
+                </div>
+            </div>
+            <div class="portlet-body">
+                <table class="table table-striped table-hover table-bordered" id="table-approval-level">
+                    <thead>
+                        <tr>
+                            <th>
+                                Features
+                            </th>
+                            <th>
+                                Status
+                            </th>
+                            <th>
+                                Approval
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>
+                                <a href="@Url.Action("ApprovalLevel_Details", "Designs")">Planning</a>
+                            </td>
+                            <td>
+                                Reviewer
+                            </td>
+                            <td>
+                                John Doe (john_doe)
+                            </td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td>
+                                Reviewer
+                            </td>
+                            <td>
+                                Justin Bieber (justin_bieber)
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <!-- END EXAMPLE TABLE PORTLET-->
+    </div>
+</div>
+<!-- MODAL CREATE START -->
+<div class="modal fade" id="modal-create" tabindex="-1" role="basic" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                <h4 class="modal-title"><i class="fa fa-plus-circle"></i> Add New Approval</h4>
+            </div>
+            <div class="modal-body">
+                @Html.Partial("ApprovalLevel_Create")
+            </div>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+<!-- MODAL CREATE END -->

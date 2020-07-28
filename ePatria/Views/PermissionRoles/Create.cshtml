@@ -1,0 +1,313 @@
+﻿@model ePatria.Models.PermissionRoles
+
+@{
+    ViewBag.Title = "Create";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Create</h2>
+<div class="btn-group pull-right">
+    <a href="#" class="btn green" data-toggle = "modal" data-target = "#indexPermission"><i class="fa fa-edit"></i>Edit Permissions</a>
+</div>
+
+@using (Html.BeginForm("Create", "PermissionRoles", FormMethod.Post, new { enctype = "multipart/form-data" }))
+{
+    @Html.AntiForgeryToken()
+    
+    <div class="form-horizontal">
+        <h4>Permission</h4>
+        <hr />
+        <span id="validationMessage"></span>
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+        <div class="form-group">
+            @Html.Label("Permission Name", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-5">
+                @Html.DropDownList("permissionID", null, htmlAttributes: new { @class = "form-control"})
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.Label("Role", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-5">
+                @Html.DropDownList("roleID", null, htmlAttributes: new { @class = "form-control"})
+            </div>
+        </div>
+        
+        <div class="form-group">
+            @Html.Label("Is Create", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-5">
+                @Html.CheckBoxFor(model => model.IsCreate, new { @class = "form-control" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.Label("Is Read", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-5">
+                @Html.CheckBoxFor(model => model.IsRead, new { @class = "form-control" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.Label("Is Update", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-5">
+                @Html.CheckBoxFor(model => model.IsUpdate, new { @class = "form-control" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.Label("Is Delete", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-5">
+                @Html.CheckBoxFor(model => model.IsDelete, new { @class = "form-control" })
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.Label("Is First Submit", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-5">
+                @Html.CheckBoxFor(model => model.IsSubmit1, new { @class = "form-control" })
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.Label("Is Second Submit", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-5">
+                @Html.CheckBoxFor(model => model.IsSubmit2, new { @class = "form-control" })
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.Label("Is Approve", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-5">
+                @Html.CheckBoxFor(model => model.IsApprove, new { @class = "form-control" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Save" class="btn blue" onclick="return submitWith();"/>
+            </div>
+        </div>
+    </div>
+}
+
+<div id="indexPermission" class="modal fade" tabindex="-1" data-width="700">
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+        <h4 class="modal-title">Permissions</h4>
+    </div>
+    <div class="modal-body">
+        <div class="table-toolbar">
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="btn-group">
+
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="btn-group pull-right">
+
+                        <a href="#" class="btn green" data-toggle = "modal" data-target = "#addPermission"><i class="fa fa-plus"></i>Add Permission</a>
+                        
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="form-horizontal">
+            <table class="table table-striped table-hover table-bordered" id="table-permissions">
+                <thead>
+                    <tr>
+                        <th>
+                            Permission Name
+                        </th>
+                        <th>
+                            Description
+                        </th>
+                        <th> Action </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in ViewBag.Permissions)
+                    {
+                        <tr>
+                            <td>
+                                <a href="EditPermission/@item.permissionID" data-toggle="modal" data-target="#editPermission">@item.PermissionName</a>
+                            </td>
+                            <td>
+                                @item.Desc
+                            </td>
+                            <td>
+                                <a href="#" id="delperm-@item.permissionID" data-original-title="Are you sure to delete this Permission?" onclick="javascript:delPerm(@item.permissionID)">Delete</a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button type="button" data-dismiss="modal" class="btn btn-outline dark">Close</button>
+    </div>
+</div>
+
+<div id="addPermission" class="modal fade" tabindex="-1" data-width="700">
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+        <h4 class="modal-title">Add New Permission</h4>
+    </div>
+    <div class="modal-body">
+        <div class="form-horizontal">
+            <div class="form-group">
+                @Html.Label("Permission Name", htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-5">
+                    @Html.TextBox("permName", null, new { @class = "form-control" })
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.Label("Description", htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-5">
+                    @Html.TextBox("desc", null, new { @class = "form-control" })
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button type="button" data-dismiss="modal" class="btn btn-outline dark">Close</button>
+        <button type="button" class="btn green" onclick="javascript:SavePerm($('#permName').val(), $('#desc').val());">Save</button>
+    </div>
+</div>
+
+<div id="editPermission" class="modal fade" tabindex="-1" data-width="700">
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+        <h4 class="modal-title">Edit Permission</h4>
+    </div>
+    <div class="modal-body">
+    </div>
+    <div class="modal-footer">
+        <button type="button" data-dismiss="modal" class="btn btn-outline dark">Close</button>
+        <button type="button" class="btn green" onclick="javascript:UpdatePerm($('#permId').val(), $('#PermissionName').val(), $('#Desc').val(), $('#Status').val());">Save</button>
+    </div>
+</div>
+
+<script>
+    function SavePerm(_permName, _desc) {
+        if ($("#permName").val() == "") {
+            alert("Please Insert Permission Name.")
+            return false;
+        }
+        if ($("#desc").val() == "") {
+            alert("Please Insert Description.")
+            return false;
+        }
+        $.ajax({
+            url: "SavePerm",
+            data: {
+                permName: _permName,
+                desc: _desc
+            },
+            cache: false,
+            type: "POST",
+            success: function (data) {
+                $('#addPermission').modal('hide'); var markup = "";
+                $.each(data, function (index, element) {
+                    for (var x = 0; x < element.length; x++) {
+                        markup += "<tr role='row' class='odd'><td><a href='EditPermission/" + element[x].permissionID + "' data-toggle='modal' data-target='#editPermission'>" + element[x].PermissionName + "</a></td><td>" + element[x].Desc + "</td><td><a href='#' id='delperm-" + element[x].permissionID +"' data-original-title='Are you sure to delete this Permission?' onclick='javascript:delPerm(" + element[x].permissionID + ")'>Delete</a></td></tr>"
+                    }
+                    $("#table-permissions tbody").html(markup).show();
+                });
+                $("#table-permissions").dataTable().destroy();
+                //var lmTable = $("#table-permissions").dataTable({ bRetrieve: true });
+                //lmTable.fnDraw();
+            },
+            error: function (reponse) {
+                alert("error : " + reponse);
+            }
+        });
+    }
+
+    function UpdatePerm(_permId, _permName, _desc, _status) {
+        if ($("#PermissionName").val() == "") {
+            alert("Please Insert Permission Name.")
+            return false;
+        }
+        if ($("#Desc").val() == "") {
+            alert("Please Insert Description.")
+            return false;
+        }
+        $.ajax({
+            url: "UpdatePerm",
+            data: {
+                permId: _permId,
+                permName: _permName,
+                desc: _desc,
+                status: _status
+            },
+            cache: false,
+            type: "POST",
+            success: function (data) {
+                $('#editPermission').modal('hide'); var markup = "";
+                $.each(data, function (index, element) {
+                    for (var x = 0; x < element.length; x++) {
+                        markup += "<tr role='row' class='odd'><td><a href='EditPermission/" + element[x].permissionID + "' data-toggle='modal' data-target='#editPermission'>" + element[x].PermissionName + "</a></td><td>" + element[x].Desc + "</td><td><a href='#' id='delperm-" + element[x].permissionID + "' data-original-title='Are you sure to delete this Permission?' onclick='javascript:delPerm(" + element[x].permissionID + ")'>Delete</a></td></tr>"
+                    }
+                    $("#table-permissions tbody").html(markup).show();
+                });
+                $("#table-permissions").dataTable().destroy();
+            },
+            error: function (reponse) {
+                alert("error : " + reponse);
+            }
+        });
+    }
+    
+    function delPerm(_permId) {
+        $("#delperm-" + _permId).confirmation({
+            onConfirm: function () { DeletePerm(_permId) },
+            placement: 'top'
+        });
+        $("#delperm-" + _permId).confirmation('show');
+    }
+
+    function DeletePerm(_permId) {
+        $.ajax({
+            url: "DeletePerm",
+            data: {
+                permId: _permId
+            },
+            cache: false,
+            type: "POST",
+            success: function (data) {
+                var markup = "";
+                $.each(data, function (index, element) {
+                    for (var x = 0; x < element.length; x++) {
+                        markup += "<tr role='row' class='odd'><td><a href='EditPermission/" + element[x].permissionID + "' data-toggle='modal' data-target='#editPermission'>" + element[x].PermissionName + "</a></td><td>" + element[x].Desc + "</td><td><a href='#' id='delperm-" + element[x].permissionID + "' data-original-title='Are you sure to delete this Permission?' onclick='javascript:delPerm(" + element[x].permissionID + ")'>Delete</a></td></tr>"
+                    }
+                    $("#table-permissions tbody").html(markup).show();
+                });
+                $("#table-permissions").dataTable().destroy();
+                //var lmTable = $("#table-permissions").dataTable({ bRetrieve: true });
+                //lmTable.fnDraw();
+            },
+            error: function (reponse) {
+                alert("error : " + reponse);
+            }
+        });
+    }
+</script>
+
+<div>
+    @Html.ActionLink("Back to List", "Index")
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+    <script>
+        $('#table-permissions').DataTable();
+        function submitWith() {
+            var checkedCount = $("input:checked").length;
+            var valid = checkedCount > 0;
+            if (!valid) {
+                $('#validationMessage').html('You Must Select At Least One Option.').css('color', '#ed6b75');
+            }
+            return valid;
+        }
+    </script>
+}

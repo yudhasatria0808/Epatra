@@ -1,0 +1,52 @@
+﻿@model ePatria.Models.BusinessProces
+
+@{
+    ViewBag.Title = "Details";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Details</h2>
+
+<div>
+    <h4>BusinessProces</h4>
+    <hr />
+    <dl class="dl-horizontal">
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Walktrough.Remarks)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Walktrough.Remarks)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.DocumentNo)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.DocumentNo)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.DocumentName)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.DocumentName)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.FolderName)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.FolderName)
+        </dd>
+
+    </dl>
+</div>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id = Model.BusinessProcesID }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>
